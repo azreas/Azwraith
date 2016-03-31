@@ -20,16 +20,40 @@ exports.enterRegist = function (req, res){
  * @param res
  */
 exports.regist = function (req, res){
+    console.log("user regist ...");
     var params = {
         account : {
-            user : req.body.user
+            user : {
+                email:req.body.email,
+                password:req.body.passwd
+            }
         }
     }
     // 调用底层服务实现 注册
     httpUtil.post("/v1/user", params, function(result){
-        console.log("regist result ---> "+result);
-        res.render('index', { title: 'Express', result:result });
+        try {
+            console.log("regist result ---> "+result);
+            result = JSON.parse(result);
+            console.log("regist result.result ---> "+result.result);
+
+            res.json(result);
+        } catch (e) {
+            res.status(e.status || 500);
+            res.render('error', {
+                message: e.message,
+                error: e
+            });
+        }
     });
+}
+
+/**
+ * 进入登录界面
+ * @param req
+ * @param res
+ */
+exports.enterLogin = function (req, res){
+    res.render('login', { title: '登录'});
 }
 
 /**
