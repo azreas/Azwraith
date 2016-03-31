@@ -7,15 +7,14 @@ var docker = require("../../modules/docker");
 
 /**
  * 创建容器
- * @param request 请求对象
- * @param content 请求内容
- * @param callback 回调函数
+ * @param req
+ * @param res
  */
-exports.create = function (request, content, callback){
+exports.create = function (req, res){
     var opts = {
-        Image: request.body.image, // 镜像名称
-        Cmd: request.body.command, // 执行命令
-        name: request.body.name // 容器名称
+        Image: req.body.image, // 镜像名称
+        Cmd: req.body.command, // 执行命令
+        name: req.body.name // 容器名称
     }
     // 调用 docker api 实现创建容器
     docker.createContainer(opts, function (err, container) {
@@ -32,19 +31,18 @@ exports.create = function (request, content, callback){
                 msg : "创建容器失败，未知错误"
             }
         }
-        callback(err, result);
+        res.render('index', { title: 'Express' });
     });
 }
 
 /**
  * 删除容器
- * @param request 请求对象
- * @param content 请求内容
- * @param callback 回调函数
+ * @param req
+ * @param res
  */
-exports.delete = function (request, content, callback){
+exports.delete = function (req, res){
     // 调用 docker api 实现删除容器
-    var container = docker.getContainer(request.params.id);
+    var container = docker.getContainer(req.params.id);
     container.remove(function (err, data) {
         var result;
         if (!err && !data) {
@@ -58,30 +56,29 @@ exports.delete = function (request, content, callback){
                 msg : "删除容器失败,"+data
             }
         }
-        callback(err, result);
+        res.render('index', { title: 'Express' });
     });
 }
 
 /**
  * 根据容器 id 更改容器配置
- * @param request 请求对象
- * @param content 请求内容
- * @param callback 回调函数
+ * @param req
+ * @param res
  */
-exports.update = function (request, content, callback){
+exports.update = function (req, res){
     var opts = {
-        BlkioWeight: request.body.BlkioWeight,
-        CpuShares: request.body.CpuShares,
-        CpuPeriod: request.body.CpuPeriod,
-        CpuQuota: request.body.CpuQuota,
-        CpusetCpus: request.body.CpusetCpus,
-        CpusetMems: request.body.CpusetMems,
-        Memory: request.body.Memory,
-        MemorySwap: request.body.MemorySwap,
-        MemoryReservation: request.body.MemoryReservation,
-        KernelMemory: request.body.KernelMemory
+        BlkioWeight: req.body.BlkioWeight,
+        CpuShares: req.body.CpuShares,
+        CpuPeriod: req.body.CpuPeriod,
+        CpuQuota: req.body.CpuQuota,
+        CpusetCpus: req.body.CpusetCpus,
+        CpusetMems: req.body.CpusetMems,
+        Memory: req.body.Memory,
+        MemorySwap: req.body.MemorySwap,
+        MemoryReservation: req.body.MemoryReservation,
+        KernelMemory: req.body.KernelMemory
     }
-    var container = docker.getContainer(request.body.id);
+    var container = docker.getContainer(req.body.id);
     container.update(opts, function (err, data) {
         var result;
         if (!err && !data) {
@@ -95,17 +92,16 @@ exports.update = function (request, content, callback){
                 msg : "更新容器失败,"+data
             }
         }
-        callback(err, result);
+        res.render('index', { title: 'Express' });
     });
 }
 
 /**
  * 获取所有容器
- * @param request 请求对象
- * @param content 请求内容
- * @param callback 回调函数
+ * @param req
+ * @param res
  */
-exports.listAll = function (request, content, callback){
+exports.listAll = function (req, res){
     docker.listContainers({all: true}, function (err, containers) {
         var result;
         if (!err) {
@@ -120,18 +116,17 @@ exports.listAll = function (request, content, callback){
                 msg : "获取容器失败,未知错误"
             }
         }
-        callback(err, result);
+        res.render('index', { title: 'Express' });
     });
 }
 
 /**
  * 根据容器 id 获取指定容器
- * @param request 请求对象
- * @param content 请求内容
- * @param callback 回调函数
+ * @param req
+ * @param res
  */
-exports.get = function (request, content, callback){
-    var container = docker.getContainer(request.params.id);
+exports.get = function (req, res){
+    var container = docker.getContainer(req.params.id);
     container.inspect(function (err, data) {
         var result;
         if (!err) {
@@ -146,18 +141,17 @@ exports.get = function (request, content, callback){
                 msg : "根据容器 id 获取指定容器失败,未知错误"
             }
         }
-        callback(err, result);
+        res.render('index', { title: 'Express' });
     });
 }
 
 /**
  * 启动容器
- * @param request 请求对象
- * @param content 请求内容
- * @param callback 回调函数
+ * @param req
+ * @param res
  */
-exports.start = function (request, content, callback){
-    var container = docker.getContainer(request.params.id);
+exports.start = function (req, res){
+    var container = docker.getContainer(req.params.id);
     container.start(function (err, data) {
         var result;
         if (!err && !data) {
@@ -171,18 +165,17 @@ exports.start = function (request, content, callback){
                 msg : "启动容器失败,"+data
             }
         }
-        callback(err, result);
+        res.render('index', { title: 'Express' });
     });
 }
 
 /**
  * 关闭容器
- * @param request 请求对象
- * @param content 请求内容
- * @param callback 回调函数
+ * @param req
+ * @param res
  */
-exports.stop = function (request, content, callback){
-    var container = docker.getContainer(request.params.id);
+exports.stop = function (req, res){
+    var container = docker.getContainer(req.params.id);
     container.stop(function (err, data) {
         var result;
         if (!err && !data) {
@@ -196,7 +189,7 @@ exports.stop = function (request, content, callback){
                 msg : "关闭容器失败,"+data
             }
         }
-        callback(err, result);
+        res.render('index', { title: 'Express' });
     });
 }
 

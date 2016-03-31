@@ -7,11 +7,10 @@ var docker = require("../../modules/docker");
 
 /**
  * 获取所有镜像
- * @param request 请求对象
- * @param content 请求内容
- * @param callback 回调函数
+ * @param req
+ * @param res
  */
-exports.listAll = function (request, content, callback){
+exports.listAll = function (req, res){
     docker.listImages({all: true}, function (err, images) {
         var result;
         if (!err) {
@@ -26,17 +25,16 @@ exports.listAll = function (request, content, callback){
                 msg : "获取所有镜像失败,"+err
             }
         }
-        callback(err, result);
+        res.render('index', { title: 'Express' });
     });
 }
 
 /**
  * 根据镜像名称获取指定镜像
- * @param request 请求对象
- * @param content 请求内容
- * @param callback 回调函数
+ * @param req
+ * @param res
  */
-exports.get = function (request, content, callback){
+exports.get = function (req, res){
     var image = docker.getImage(request.params.name);
     image.inspect(function(err,data){
         var result;
@@ -52,6 +50,6 @@ exports.get = function (request, content, callback){
                 msg : "获取镜像失败,"+err
             }
         }
-        callback(err, result);
+        res.render('index', { title: 'Express' });
     });
 }

@@ -8,6 +8,9 @@ var express = require('express')
 var router = express.Router();
 
 module.exports = function(app){
+    // 进入注册界面
+    router.get( '/regist', user_impl.enterRegist);
+
     // 注册
     router.post( '/regist', user_impl.regist);
 
