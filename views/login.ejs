@@ -41,6 +41,14 @@
       var username = $("#username").val();
       var passwd = $("#passwd").val();
       console.log(username+passwd);
+      $.ajax({
+        url: '/login',
+        type: 'post',
+        data:{
+          email: username,
+          password: passwd
+        }
+      });
     });
   })();
 

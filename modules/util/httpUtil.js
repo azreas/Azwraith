@@ -179,6 +179,74 @@ exports.get = function(){
 }
 
 /**
+ * 发送 put 请求
+ * @param options 路径参数（必需）
+ *         options 可以是 String ，表示 path
+ *         options 可以是 对象 {host:"host",port:port,path:"path",method:"method"}，对象参数可选
+ * @param reqJosnData 请求参数（可选）
+ *         reqJosnData 是对象 例：{name:"name"}
+ * @param callback 回调函数（必需）
+ */
+exports.put = function(){
+    var options;
+    var reqJosnData;
+    var callback;
+    if (arguments.length==3) {
+        // 判断第一个参数类型，若是 string，则表示 path，反之为对象
+        if (typeof arguments[0] == "string") {
+            options = {
+                path : arguments[0]
+            }
+        } else {
+            options = arguments[0];
+        }
+        reqJosnData = arguments[1];
+        callback = arguments[2];
+    } else if (arguments.length==2) {
+        // 判断第一个参数类型，若是 string，则表示 path，反之为对象
+        if (typeof arguments[0] == "string") {
+            options = {
+                path : arguments[0]
+            }
+        } else {
+            options = arguments[0];
+        }
+        reqJosnData = {};
+        callback = arguments[1];
+    } else {
+        throw Error("http put request arguments is error");
+    }
+
+    reqJosnData = JSON.stringify(reqJosnData);
+    var headers = {
+        'Content-Type' : 'application/json; charset=UTF-8',
+        'Content-Length' : Buffer.byteLength(reqJosnData, 'utf8')
+    };
+    var preoptions = {
+        host : userservice.host,
+        port : userservice.port,
+        path : '/',
+        method : 'PUT',
+        headers : headers
+    };
+    // 合并对象
+    options = joinObject(options,preoptions);
+
+    var reqPost = http.request(options, function(resPost) {
+        resPost.on('data', function(data) {
+            callback(data);
+        });
+    });
+
+    // 发送REST请求时传入JSON数据
+    reqPost.write(reqJosnData);
+    reqPost.end();
+    reqPost.on('error', function(e) {
+        console.error(e);
+    });
+}
+
+/**
  * 发送 delete 请求
  * @param options 路径参数（必需）
  *         options 可以是 String ，表示 path
