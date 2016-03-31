@@ -12,5 +12,5 @@ module.exports = function(app){
   router.get('/', index_impl.home);
 
   // router 命名空间
-  app.use('/index', router);
+  app.use('/', router);
 };
