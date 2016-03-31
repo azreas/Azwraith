@@ -9,13 +9,16 @@ var router = express.Router();
 
 module.exports = function(app){
     // 进入注册界面
-    router.get( '/', user_impl.enterRegist);
+    router.get( '/regist', user_impl.enterRegist);
 
     // 注册
-    router.post( '/', user_impl.regist);
+    router.post( '/regist', user_impl.regist);
+
+    // 进入登录界面
+    router.get( '/login', user_impl.enterLogin);
 
     // 登录
-    router.post( '/', user_impl.login);
+    router.post( '/login', user_impl.login);
 
     // 根据用户 id 更新用户信息
     router.post( '/update', user_impl.update);
@@ -24,6 +27,5 @@ module.exports = function(app){
     router.post( '/get/:id', user_impl.get);
 
     // router 命名空间
-    app.use('/regist', router);
-    app.use('/login', router);
+    app.use('/', router);
 };
