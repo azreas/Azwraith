@@ -51,8 +51,16 @@
       var email = $("#email").val();
       var passwd = $("#passwd").val();
       console.log(email+passwd);
+      $.ajax({
+        url: '/regist',
+        type: 'post',
+        data:{
+              email: email,
+              password: passwd
+        }
+      });
     });
-  });
+  })();
 
 </script>
 </body>

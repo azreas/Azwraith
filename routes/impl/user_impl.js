@@ -21,6 +21,7 @@ exports.enterRegist = function (req, res){
  */
 exports.regist = function (req, res){
     console.log("user regist ...");
+    console.log(req);
     var params = {
         account : {
             user : {
@@ -29,6 +30,7 @@ exports.regist = function (req, res){
             }
         }
     }
+    console.log("params   "+ params);
     // 调用底层服务实现 注册
     httpUtil.post("/v1/user", params, function(result){
         try {
