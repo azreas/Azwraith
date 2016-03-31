@@ -25,7 +25,10 @@ var joinObject = function(o,n,override){
 /**
  * 发送 post 请求
  * @param options 路径参数（必需）
+ *         options 可以是 String ，表示 path
+ *         options 可以是 对象 {host:"host",port:port,path:"path",method:"method"}，对象参数可选
  * @param reqJosnData 请求参数（可选）
+ *         reqJosnData 是对象 例：{name:"name"}
  * @param callback 回调函数（必需）
  */
 exports.post = function(){
@@ -90,7 +93,10 @@ exports.post = function(){
 /**
  * 发送 get 请求
  * @param options 路径参数（必需）
+ *         options 可以是 String ，表示 path
+ *         options 可以是 对象 {host:"host",port:port,path:"path",method:"method"}，对象参数可选
  * @param reqJosnData 请求参数（可选）
+ *         reqJosnData 是对象 例：{name:"name"}
  * @param callback 回调函数（必需）
  */
 exports.get = function(){
@@ -174,6 +180,8 @@ exports.get = function(){
 /**
  * 发送 delete 请求
  * @param options 路径参数（必需）
+ *         options 可以是 String ，表示 path
+ *         options 可以是 对象 {host:"host",port:port,path:"path",method:"method"}，对象参数可选
  * @param callback 回调函数（必需）
  */
 exports.delete = function(){

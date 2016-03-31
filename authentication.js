@@ -3,8 +3,6 @@
  * Created by lingyuwang on 2016/3/28.
  */
 
-var redisUtil = require("./modules/util/redisUtil");
-
 module.exports = function(app){
     // 基于 Cookie token 鉴权
     /*app.use(function(req, res, next) {

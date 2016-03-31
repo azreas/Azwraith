@@ -4,7 +4,6 @@
  */
 
 var mongoPool = require("../../../modules/db/mongodb").mongoPool;
-var redisUtil = require("../../../modules/util/redisUtil");
 var httpUtil = require("../../../modules/util/httpUtil");
 
 exports.home = function(req, res) {

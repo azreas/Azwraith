@@ -33,8 +33,9 @@ require('./routes/api/api')(app);
 require('./errorhandle')(app);
 
 
-http.createServer(app).listen(appConfig.port, function(){
+/*http.createServer(app).listen(appConfig.port, function(){
   console.log('dirname ---> '+__dirname);
   console.log('Express server listening on port ---> '+appConfig.port);
-});
+});*/
 
+module.exports = app;
