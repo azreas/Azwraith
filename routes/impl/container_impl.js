@@ -3,7 +3,7 @@
  * Created by lingyuwang on 2016/3/29.
  */
 
-var docker = require("../../../modules/docker");
+var docker = require("../../modules/docker");
 
 /**
  * 创建容器

@@ -6,13 +6,11 @@
 var index_impl = require('./impl/index_impl');
 
 var express = require('express')
-var indexRouter = express.Router();
+var router = express.Router();
 
 module.exports = function(app){
-  indexRouter.get('/', index_impl.home);
-
-
+  router.get('/', index_impl.home);
 
   // router 命名空间
-  app.use('/index', indexRouter);
+  app.use('/index', router);
 };

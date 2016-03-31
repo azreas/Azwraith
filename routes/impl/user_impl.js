@@ -3,7 +3,7 @@
  * Created by lingyuwang on 2016/3/29.
  */
 
-var httpUtil = require("../../../modules/util/httpUtil");
+var httpUtil = require("../../modules/util/httpUtil");
 
 /**
  * 注册

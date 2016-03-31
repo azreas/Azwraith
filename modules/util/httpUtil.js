@@ -1,4 +1,5 @@
 /**
+ * http 请求工具类
  * Created by lingyuwang on 2016/3/24.
  */
 var http = require('http');

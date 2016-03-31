@@ -1,4 +1,5 @@
 /**
+ * mongodb 连接池
  * Created by lingyuwang on 2016/3/22.
  */
 var mongodb_setting = require('../../settings').mongodb;

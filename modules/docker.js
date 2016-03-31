@@ -1,5 +1,5 @@
 /**
- * docker 单例
+ * docker 实例
  * Created by lingyuwang on 2016/3/29.
  */
 
@@ -13,4 +13,4 @@ var docker = new Docker({
     timeout: dockerConfig.timeout
 });
 
-modules.exports = docker;
+module.exports = docker;

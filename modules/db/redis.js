@@ -1,4 +1,5 @@
 /**
+ * redis 连接池
  * Created by lingyuwang on 2016/3/22.
  */
 
