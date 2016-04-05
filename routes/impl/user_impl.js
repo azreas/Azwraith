@@ -21,7 +21,7 @@ exports.enterRegist = function (req, res){
  */
 exports.regist = function (req, res){
     console.log("user regist ...");
-    console.log(req);
+    //console.log(req);
     var params = {
         account : {
             user : {
@@ -29,7 +29,7 @@ exports.regist = function (req, res){
                 password:req.body.passwd
             }
         }
-    }
+    };
     console.log("params   "+ params);
     // 调用底层服务实现 注册
     httpUtil.post("/v1/user", params, function(result){
@@ -37,7 +37,15 @@ exports.regist = function (req, res){
             console.log("regist result ---> "+result);
             result = JSON.parse(result);
             console.log("regist result.result ---> "+result.result);
-
+            //if(result.result === true){
+            //    res.render('regist', {
+            //        title: '恭喜注册成功！'
+            //    });
+            //}else if(result.result === false){
+            //    res.render('regist', {
+            //        title: '注册失败！'
+            //    });
+            //}
             res.json(result);
         } catch (e) {
             res.status(e.status || 500);
@@ -47,7 +55,7 @@ exports.regist = function (req, res){
             });
         }
     });
-}
+};
 
 /**
  * 进入登录界面
