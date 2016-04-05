@@ -20,6 +20,9 @@ module.exports = function(app){
     // 获取所有容器
     app.get( '/list/all', container_impl.listAll);
 
+    // 根据用户id获取其所有容器信息
+    app.get( '/list/:uid', container_impl.listByUid);
+
     // 根据容器 id 获取指定容器
     app.get( '/get/:id', container_impl.get);
 

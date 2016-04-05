@@ -31,6 +31,10 @@ exports.create = function (req, res){
                 msg : "创建容器失败，未知错误"
             }
         }
+
+        // 容器创建成功，绑定用户与容器的关系，传用户id 与 容器id 到后台服务实现绑定
+        //TODO
+
         res.render('index', { title: 'Express' });
     });
 }
@@ -117,6 +121,50 @@ exports.listAll = function (req, res){
             }
         }
         res.render('index', { title: 'Express' });
+    });
+}
+
+/**
+ * 根据用户id获取其所有容器信息
+ * @param req
+ * @param res
+ */
+exports.listByUid = function (req, res){
+    /*// 根据token获取用户id
+    httpUtil.get("/v1/auth/"+req.cookies.token, function(result){
+        try {
+            console.log("token result ---> "+result);
+            result = JSON.parse(result);
+            console.log("token result.result ---> "+result.result);
+
+            var uid = result.id;
+
+            // 调用后台服务接口 根据用户id获取其所有容器信息
+            //TODO
+
+        } catch (e) {
+            res.status(e.status || 500);
+            res.render('error', {
+                message: e.message,
+                error: e
+            });
+        }
+    });*/
+
+    httpUtil.get("/.../"+req.params.uid, function(result){
+        try {
+            console.log("listByUid result ---> "+result);
+            result = JSON.parse(result);
+            console.log("listByUid result.result ---> "+result.result);
+            //TODO
+            res.json(result);
+        } catch (e) {
+            res.status(e.status || 500);
+            res.render('error', {
+                message: e.message,
+                error: e
+            });
+        }
     });
 }
 

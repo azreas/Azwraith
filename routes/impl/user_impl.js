@@ -24,10 +24,8 @@ exports.regist = function (req, res){
     //console.log(req);
     var params = {
         account : {
-            user : {
-                email:req.body.email,
-                password:req.body.passwd
-            }
+            email:req.body.email,
+            password:req.body.passwd
         }
     };
     console.log("params   "+ params);
@@ -46,6 +44,11 @@ exports.regist = function (req, res){
             //        title: '注册失败！'
             //    });
             //}
+
+            // 注册成功，跳到 登录 页面
+
+            // 注册失败，抛出 500 错误
+
             res.json(result);
         } catch (e) {
             res.status(e.status || 500);
@@ -76,7 +79,7 @@ exports.login = function (req, res){
     var params = {
         account : {
             email:req.body.email,
-            password:req.body.passwd
+            password:req.body.password
         }
     }
     // 调用底层服务实现 登录
@@ -86,7 +89,24 @@ exports.login = function (req, res){
             result = JSON.parse(result);
             console.log("login result.result ---> "+result.result);
 
-            res.json(result);
+            // 登录成功，获取token，将其存入cookie，然后跳到 总览 页面
+            if (result.result === true) {
+                // 根据 token 获取用户id
+                httpUtil.get("/v1/auth/"+result.token, function(tokenResult){
+                    console.log("token result ---> "+tokenResult);
+                    tokenResult = JSON.parse(tokenResult);
+                    console.log("token result.result ---> "+tokenResult.result);
+
+                    var uid = tokenResult.id;
+                    res.setHeader("Set-Cookie", ['token='+result.token]);
+                    //TODO
+                    //res.redirect('/test'/*, { title: '测试',uid: uid}*/);
+                    res.render('test', { title: 'Express' });
+                });
+            } else {
+                // 登录失败，返回 错误 提示信息
+                //TODO
+            }
         } catch (e) {
             res.status(e.status || 500);
             res.render('error', {
@@ -207,7 +227,7 @@ exports.update = function (req, res){
 }
 
 /**
- * 根据用户 id 查询用户信息
+ * 根据用户 id 获取用户基本信息
  * @param req
  * @param res
  */
@@ -217,7 +237,53 @@ exports.get = function (req, res){
             console.log("get result ---> "+result);
             result = JSON.parse(result);
             console.log("get result.result ---> "+result.result);
+            //TODO
+            res.json(result);
+        } catch (e) {
+            res.status(e.status || 500);
+            res.render('error', {
+                message: e.message,
+                error: e
+            });
+        }
+    });
+}
 
+/**
+ * 根据用户 id 获取用户所属资源信息
+ * @param req
+ * @param res
+ */
+exports.getResource = function (req, res){
+    httpUtil.get("/.../"+req.params.id, function(result){
+        try {
+            console.log("getResource result ---> "+result);
+            result = JSON.parse(result);
+            console.log("getResource result.result ---> "+result.result);
+            //TODO
+            res.json(result);
+        } catch (e) {
+            res.status(e.status || 500);
+            res.render('error', {
+                message: e.message,
+                error: e
+            });
+        }
+    });
+}
+
+/**
+ * 根据用户 id 获取用户操作日志
+ * @param req
+ * @param res
+ */
+exports.getLog = function (req, res){
+    httpUtil.get("/.../"+req.params.id, function(result){
+        try {
+            console.log("getLog result ---> "+result);
+            result = JSON.parse(result);
+            console.log("getLog result.result ---> "+result.result);
+            //TODO
             res.json(result);
         } catch (e) {
             res.status(e.status || 500);
