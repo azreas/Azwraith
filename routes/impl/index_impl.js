@@ -10,6 +10,6 @@ exports.home = function(req, res) {
     res.render('index', { title: 'Express' });
 }
 
-exports.test = function(req, res) {
-    res.render('test', { title: 'Express',uid:req.params.uid });
+exports.console = function(req, res) {
+    res.render('console', { title: '控制台',uid:req.params.uid });
 }

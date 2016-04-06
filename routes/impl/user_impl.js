@@ -49,7 +49,7 @@ exports.regist = function (req, res){
 
             // 注册失败，抛出 500 错误
 
-            res.render('test', { title: '测试' });
+            res.render('login', { title: '登录' });
         } catch (e) {
             res.status(e.status || 500);
             res.render('error', {
@@ -100,11 +100,12 @@ exports.login = function (req, res){
                     var uid = tokenResult.id;
                     res.setHeader("Set-Cookie", ['token='+result.token]);
                     //TODO
-                    res.redirect('/test/'+uid);
+                    res.redirect('/console/'+uid);
                 });
             } else {
                 // 登录失败，返回 错误 提示信息
                 //TODO
+                console.log('123123123');
             }
         } catch (e) {
             res.status(e.status || 500);

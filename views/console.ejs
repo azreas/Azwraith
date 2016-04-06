@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta charset="UTF-8">
+  <meta name="renderer" content="webkit">
+  <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css?rev=0.1.0">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+  <!--浏览器窗口图标-->
+  <!--<link rel="icon" type="image/x-icon" href="/images/favicon.ico">-->
+  <link rel="stylesheet" href="/stylesheets/container/dashboard.css?rev=0.1.0">
+  <script src="/jquery/dist/jquery.min.js"></script>
+  <meta content="_csrf" name="csrf-param">
+  <meta content="FDs3VXHK-FKQuYYYVhnwDOafqB-hqLoTq2bQ" name="csrf-token">
+  <link id="console_main_css" rel="stylesheet" href="/stylesheets/container/main.css?rev=0.1.0">
+  <link rel="stylesheet" href="/stylesheets/container/layer.css" id="layui_layer_skinlayercss">
+  <title>零云 - 服务</title>
+</head>
+  <body>
+    <% include header.ejs %>
+    <% include pageContainer.ejs %>
+
+
+  <script>
+    (function(){
+      $('.foldingpad').click(function(){
+        if ($(this).hasClass('rotate')) {
+          _unfold(); //展开
+        } else {
+          _shrink();
+        }
+      });
+      // left nav shrink 收缩
+      function _shrink(){
+        $('.nav-li').addClass('live-hover');
+        $('.foldingpad').addClass('rotate');
+        $('.page-container').css('margin-left','55px');
+        $('.foldingpad').css('left','65px')
+        $('.page-sidebar').css('margin-left','-200px');
+        $('.page-small-sidebar').css('margin-left','0px');
+        $('.global-notice').css('left','90px')
+      }
+      // left nav unfold 展开
+      function _unfold(){
+        $('.nav-li').removeClass('live-hover');
+        $('.foldingpad').removeClass('rotate');
+        $('.page-container').css('margin-left','200px');
+        $('.page-sidebar').css('margin-left','0px');
+        $('.page-small-sidebar').css('margin-left','-55px');
+        $('.global-notice').css('left','235px')
+        $('.foldingpad').css('left','210px')
+      }
+    })();
+  </script>
+  </body>
+</html>
