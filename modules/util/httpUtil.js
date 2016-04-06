@@ -162,9 +162,12 @@ exports.get = function(){
             query += reqJosnData[p];
         }
     }
-    console.log("query ---> "+query)
+
     // 加上请求参数
-    options.path += query;
+    if (query.length>1) {
+        options.path += query;
+    }
+    console.log("query ---> "+query);
 
     var reqGet = http.request(options, function(reqGet) {
         reqGet.on('data', function(data) {

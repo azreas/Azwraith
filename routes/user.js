@@ -23,8 +23,8 @@ module.exports = function(app){
     // 根据用户 id 更改密码
     router.put( '/pwd/:id', user_impl.updatePwd);
 
-    // 根据用户 id 登出
-    router.delete( '/logout/:id', user_impl.logout);
+    // 根据 token 登出
+    router.get( '/logout', user_impl.logout);
 
     // 登录
     router.post( '/login', user_impl.login);

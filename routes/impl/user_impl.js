@@ -49,7 +49,7 @@ exports.regist = function (req, res){
 
             // 注册失败，抛出 500 错误
 
-            res.json(result);
+            res.render('test', { title: '测试' });
         } catch (e) {
             res.status(e.status || 500);
             res.render('error', {
@@ -100,8 +100,7 @@ exports.login = function (req, res){
                     var uid = tokenResult.id;
                     res.setHeader("Set-Cookie", ['token='+result.token]);
                     //TODO
-                    res.render('test', { title: 'Express',uid:uid });
-                    //res.redirect('/test'/*, { title: '测试',uid: uid}*/);
+                    res.redirect('/test/'+uid);
                 });
             } else {
                 // 登录失败，返回 错误 提示信息
@@ -172,19 +171,29 @@ exports.updatePwd = function (req, res){
 }
 
 /**
- * 根据用户 id 登出
+ * 根据 token 登出
  * @param req
  * @param res
  */
 exports.logout = function (req, res){
     console.log("user logout ...");
-    httpUtil.delete("/v1/auth/"+req.params.id, function(result){
+    httpUtil.delete("/v1/auth/"+req.cookies.token, function(result){
         try {
             console.log("logout result ---> "+result);
             result = JSON.parse(result);
             console.log("logout result.result ---> "+result.result);
 
-            res.json(result);
+            // 若成功，则重定向到首页
+            if (result.result === true) {
+                // 删除 cookie 里的 token
+                var exp = new Date();
+                exp.setTime(exp.getTime() - 1);
+                res.setHeader("Set-Cookie", ['token=0;Expires='+exp.toGMTString()]);
+                res.redirect('/');
+            } else {
+                // 失败，则抛出 500 错误
+                throw new Error(500);
+            }
         } catch (e) {
             res.status(e.status || 500);
             res.render('error', {

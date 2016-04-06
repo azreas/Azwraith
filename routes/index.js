@@ -11,7 +11,7 @@ var router = express.Router();
 module.exports = function(app){
   router.get('/', index_impl.home);
 
-  router.get('/test', index_impl.test);
+  router.get('/test/:uid', index_impl.test);
 
   // router 命名空间
   app.use('/', router);
