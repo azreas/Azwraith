@@ -7,6 +7,6 @@
 .form-group input{width: 300px;height: 40px;text-indent:15px}
 .signup-title{height: 50px;line-height: 50px;font-size: 20px;text-align: center;border-bottom: 1px solid #ededed}
 .username-input,.passwd-input,.signup-button,#signup,#login{width: 300px;height: 40px;margin: 0 auto}
-.signup-button button{background: #00afdd;width: 300px;height: 40px;border-radius: 5px;color: white;font-size: 16px;border: none;cursor: pointer}
-.signup-button button:hover{background: #008CD6;}
+.signup-button input{background: #00afdd;width: 300px;height: 40px;border-radius: 5px;color: white;font-size: 16px;border: none;cursor: pointer}
+.signup-button input:hover{background: #008CD6;}
 #signup,#login{color: #337ab7;font-size: 12px;cursor:pointer;display: block}

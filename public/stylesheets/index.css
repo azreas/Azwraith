@@ -220,9 +220,9 @@ header ul.user-navbar li a.font-size {
 }
 
 .navbar-default .navbar-nav>li>a:focus, .navbar-default .navbar-nav>li>a:hover {
-  color: #333;
-  background-color: #fff;
-  text-decoration: none;
+  color: #fff;
+  background: rgba(255,255,255,.3);
+  border-color: #fff;
 }
 
 .proceed:hover {
