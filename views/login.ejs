@@ -9,47 +9,49 @@
 </head>
 <body>
 <div id="wrapper">
-  <div class="form-login">
-    <div class="form-group">
-      <p class="signup-title">登陆</p>
-    </div>
-    <div class="form-group">
-      <div class="username-input">
-        <input id="username" type="text" name="username" placeholder="请输入用户名">
+  <form method="post" action="/login">
+    <div class="form-login">
+      <div class="form-group">
+        <p class="signup-title">登陆</p>
+      </div>
+      <div class="form-group">
+        <div class="username-input">
+          <input id="username" type="text" name="username" placeholder="请输入用户名">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="passwd-input">
+          <input id="passwd" type="password" name="passwd" placeholder="请输入密码">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="signup-button">
+          <input type="submit" id="submit" value="登 录"></input>
+          <input type="hidden">
+        </div>
+      </div>
+      <div class="form-group">
+        <a href="/regist" id="signup">注册新账户</a>
       </div>
     </div>
-    <div class="form-group">
-      <div class="passwd-input">
-        <input id="passwd" type="password" name="passwd" placeholder="请输入密码">
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="signup-button">
-        <button id="submit">登 录</button>
-        <input type="hidden">
-      </div>
-    </div>
-    <div class="form-group">
-      <a href="/regist" id="signup">注册新账户</a>
-    </div>
-  </div>
+  </form>
 </div>
 
 <script>
   (function(){
-    $("#submit").on("click",function(){
-      var username = $("#username").val();
-      var passwd = $("#passwd").val();
-      console.log(username+passwd);
-      $.ajax({
-        url: '/login',
-        type: 'post',
-        data:{
-          email: username,
-          password: passwd
-        }
-      });
-    });
+//    $("#submit").on("click",function(){
+//      var username = $("#username").val();
+//      var passwd = $("#passwd").val();
+//      console.log(username+passwd);
+//      $.ajax({
+//        url: '/login',
+//        type: 'post',
+//        data:{
+//          email: username,
+//          password: passwd
+//        }
+//      });
+//    });
   })();
 
 </script>

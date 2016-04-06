@@ -9,60 +9,62 @@
 </head>
 <body>
 <div id="wrapper">
-  <div class="form-signup">
-    <div class="form-group">
-      <p class="signup-title">注册</p>
-    </div>
-    <div class="form-group">
-      <div class="username-input">
-        <input id="username" type="text" name="username" placeholder="用户名">
+  <form method="post" action="/regist">
+    <div class="form-signup">
+      <div class="form-group">
+        <p class="signup-title">注册</p>
+      </div>
+      <div class="form-group">
+        <div class="username-input">
+          <input id="username" type="text" name="username" placeholder="用户名">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="passwd-input">
+          <input id="email" type="email" name="email" placeholder="邮箱">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="passwd-input">
+          <input id="passwd" type="password" name="passwd" placeholder="密码">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="passwd-input">
+          <input id="confirmPwd" type="password" name="confirmPwd" placeholder="确认密码">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="signup-button">
+          <input type="submit" id="submit" value="注 册"></input>
+          <input type="hidden">
+        </div>
+      </div>
+      <div class="form-group">
+        <a href="/login" id="login">切换到登录</a>
       </div>
     </div>
-    <div class="form-group">
-      <div class="passwd-input">
-        <input id="email" type="email" name="email" placeholder="邮箱">
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="passwd-input">
-        <input id="passwd" type="password" name="passwd" placeholder="密码">
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="passwd-input">
-        <input id="confirmPwd" type="password" name="confirmPwd" placeholder="确认密码">
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="signup-button">
-        <button id="submit">注 册</button>
-        <input type="hidden">
-      </div>
-    </div>
-    <div class="form-group">
-      <a href="/login" id="login">切换到登录</a>
-    </div>
-  </div>
+  </form>
 </div>
 
 <script>
   (function(){
-    $("#submit").on("click",function(){
-      var email = $("#email").val();
-      var passwd = $("#passwd").val();
-      console.log(email+passwd);
-      $.ajax({
-        url: '/regist',
-        type: 'post',
-        data:{
-              email: email,
-              password: passwd
-        },
-        success: function(data){
-          console.log(data);
-        }
-      });
-    });
+//    $("#submit").on("click",function(){
+//      var email = $("#email").val();
+//      var passwd = $("#passwd").val();
+//      console.log(email+passwd);
+//      $.ajax({
+//        url: '/regist',
+//        type: 'post',
+//        data:{
+//              email: email,
+//              password: passwd
+//        },
+//        success: function(data){
+//          console.log(data);
+//        }
+//      });
+//    });
   })();
 
 </script>
