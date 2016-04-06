@@ -78,8 +78,8 @@ exports.login = function (req, res){
     console.log("user login ...");
     var params = {
         account : {
-            email:req.body.email,
-            password:req.body.password
+            email:req.body.username,
+            password:req.body.passwd
         }
     }
     // 调用底层服务实现 登录
@@ -100,8 +100,8 @@ exports.login = function (req, res){
                     var uid = tokenResult.id;
                     res.setHeader("Set-Cookie", ['token='+result.token]);
                     //TODO
+                    res.render('test', { title: 'Express',uid:uid });
                     //res.redirect('/test'/*, { title: '测试',uid: uid}*/);
-                    res.render('test', { title: 'Express' });
                 });
             } else {
                 // 登录失败，返回 错误 提示信息

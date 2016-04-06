@@ -11,5 +11,5 @@ exports.home = function(req, res) {
 }
 
 exports.test = function(req, res) {
-    res.render('test', { title: 'Express' });
+    res.render('test', { title: 'Express',uid:uid });
 }

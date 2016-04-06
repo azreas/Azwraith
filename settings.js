@@ -42,7 +42,7 @@ var dockerConfig = {
 var userservice = {
     //host : '192.168.1.253',
     //port : 9000
-    host : '192.168.1.253',
+    host : '192.168.1.236',
     port : 9000
 }
 /********************* request docker service end *********************/
