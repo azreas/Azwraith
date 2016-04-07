@@ -107,8 +107,7 @@ exports.login = function (req, res){
                 });
             } else {
                 // 登录失败，重定向回 登录页面 带着提示信息和回显信息
-                //TODO
-                console.log('123123123');
+                res.redirect("login");
             }
         } catch (e) {
             res.status(e.status || 500);
