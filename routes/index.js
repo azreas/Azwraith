@@ -9,7 +9,6 @@ var express = require('express');
 var router = express.Router();
 
 module.exports = function(app){
-  router.get('/', index_impl.home);
 
   router.get('/console/:uid', index_impl.console);
 

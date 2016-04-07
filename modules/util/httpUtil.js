@@ -167,7 +167,6 @@ exports.get = function(){
     if (query.length>1) {
         options.path += query;
     }
-    console.log("query ---> "+query);
 
     var reqGet = http.request(options, function(reqGet) {
         reqGet.on('data', function(data) {

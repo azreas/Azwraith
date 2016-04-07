@@ -3,44 +3,29 @@
  * Created by lingyuwang on 2016/3/28.
  */
 
+var httpUtil = require("./util/httpUtil");
+
 module.exports = function(app){
     // 基于 Cookie token 鉴权
-    /*app.use(function(req, res, next) {
-        // 获取 Cookie token
-        var token = req.cookies.token;
-        console.log("token ---> "+token);
-
-        // 判断 token 是否为空，若为空，则返回提示信息
-        if (!token) {
-            res.writeHead(200, {'Content-Type': 'application/json;charset=utf-8'});
-            res.json({
-                code : "401",
-                msg : "用户未登录，请求失败"
-            });
-            return;
-        }
-
-        // 根据 token 值，获取 登录用户信息，若得到的值为空，则认证失败
-        redisUtil.get(token, function(err, res){
-            if (!res) {
-                res.writeHead(200, {'Content-Type': 'application/json;charset=utf-8'});
-                res.json({
-                    code : "401",
-                    msg : "token已过期，请求失败"
-                });
-                return;
-            }
-
-            // 鉴权成功，则继续
-            next();
-        });
-    });*/
     app.use(function(req, res, next) {
         // 获取 Cookie token
         var token = req.cookies.token;
         console.log("token ---> "+token);
+        // 若 token 有效，则调用后台接口验证用户是否已登录
+        if (token && token.length>0) {
+            httpUtil.get("/v1/auth/"+token, function(tokenResult){
+                console.log("authentication token result ---> "+tokenResult);
+                tokenResult = JSON.parse(tokenResult);
+                console.log("authentication token result.result ---> "+tokenResult.result);
 
-        // 鉴权成功，则继续
-        next();
+                if (tokenResult.result === true) {
+                    next(); // 鉴权成功，则继续
+                } else {
+                    res.redirect("/login"); // 鉴权失败，重定向回登录界面
+                }
+            });
+        } else {
+            res.redirect("/login"); // 鉴权失败，重定向回登录界面
+        }
     });
 }
