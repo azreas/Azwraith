@@ -17,15 +17,9 @@
   <title>零云 - 服务</title>
 </head>
   <body>
-
     <% include header.ejs %>
-
-    <div class="part01">
     <% include pageContainer.ejs %>
-    </div>
-    <div class="part02" style="display: none">
-      <% include create.ejs %>
-    </div>
+
 
   <script>
     (function(){
@@ -56,42 +50,6 @@
         $('.global-notice').css('left','235px')
         $('.foldingpad').css('left','210px')
       }
-      //container切换
-      $('.create.pushContaienrs').click(function(){
-        $('.part01').hide();
-        $('.part02').show();
-      });
-      //创建容器
-      $('.list-item-description>.pull-deploy').click(function(){
-        $('.host_step1').hide();
-        $('.host_step2').show();
-        $('.radius_step').eq(1).addClass('action').siblings().removeClass('action');
-        $('.createPadding,.createPadding .go_backs01,.createPadding .two_step,.createPadding #createButton').removeClass('hide');
-      });
-      $('.createPadding .two_step').click(function(){
-        $('.host_step2').hide();
-        $('.host_step3').removeClass('hide');
-        $('.radius_step').eq(2).addClass('action').siblings().removeClass('action');
-        $('.createPadding .go_backs01').addClass('hide');
-        $('.createPadding .go_backs02').removeClass('hide');
-      });
-      $('.go_backs01').click(function(){
-        $('.host_step1').show();
-        $('.host_step2').hide();
-        $('.radius_step').eq(0).addClass('action').siblings().removeClass('action');
-        $('.createPadding,.createPadding .go_backs01,.createPadding .two_step,.createPadding #createButton').addClass('hide');
-      });
-      $('.go_backs02').click(function(){
-        $('.host_step2').show();
-        $('.host_step3').addClass('hide');
-        $('.radius_step').eq(1).addClass('action').siblings().removeClass('action');
-        $('.createPadding .go_backs02').addClass('hide');
-        $('.createPadding .go_backs01').removeClass('hide');
-      });
-
-
-
-
     })();
   </script>
   </body>

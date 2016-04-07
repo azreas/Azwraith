@@ -12,7 +12,8 @@
       <div id="iframe">
         <div class="caption dropdown">
           <a id="refreshDB"><i class="fa_refresh"></i></a>
-          <a class="btn create pushContaienrs"><i class="fa_btn_plus"></i><span>创建</span></a>
+          <a href="/containers/create?from=tenx_district2&amp;clusterName=tenx_district2" class="btn create pushContaienrs"><i class="fa_btn_plus"></i><span>创建</span>
+          </a>
           <a class="more" data-toggle="dropdown">更多操作<b class="caret margin"></b></a>
           <ul class="dropdown-menu drop-left">
             <li>
@@ -122,14 +123,368 @@
           <!--<div id="nodata" class="nodata" style="display: block;">提示：点击上方"+创建"按钮创建容器应用。</div>-->
           <!--<div class="mask" style="display: none;"><img src="/images/loading-little.gif"></div>-->
         </div>
+        <!--<script src="/lib/jquery/jquery.zclip.min.js?rev=0.1.0">-->
+        <!--</script>-->
       </div>
     </div>
+
+    <!--<div id="modalEditConfigure" tabindex="-1" role="dialog" data-backdrop="static" aria-hidden="true" class="modal fade">-->
+      <!--<div class="modal-dialog" style="width:680px">-->
+        <!--<div class="modal-content">-->
+          <!--<div class="modal-header">-->
+            <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>-->
+            <!--<h4 class="modal-title" id="myModalLabel">  修改配置</h4>-->
+          <!--</div>-->
+          <!--<div class="modal-body" style="padding:0px 15px;min-height: 200px;">-->
+            <!--<hr class="hrs">-->
+            <!--<div class="steps-edit" style="padding-top:25px;padding-bottom:30px;">-->
+              <!--<div class="step-inner-edit">-->
+                <!--<div class="host_edit">-->
+                  <!--<ul class="safeSet">-->
+                    <!--<li class="line-h-3">-->
+                      <!--<span class="edit-name-c">服务名称：</span>-->
+                      <!--<input type="text" class="in_style" id="contName" disabled="disabled" style="margin-top: 5px;">-->
+                    <!--</li>-->
+                    <!--<li class="line-h-3">-->
+                      <!--<span class="edit-name-c" style="margin-top: 10px;">内存配置：</span>-->
+                      <!--<br>-->
+                      <!--<section class="modefy_container" config="60m,256Mi,10GB">-->
+                        <!--<div class="up_style">1X</div>-->
+                        <!--<ul class="text-center parameter">-->
+                          <!--<li>256M 内存</li>-->
+                          <!--<span>10GB 硬盘</span>-->
+                        <!--</ul>-->
+                      <!--</section>-->
+                      <!--<section class="modefy_container" config="125m,512Mi,10GB">-->
+                        <!--<div class="up_style">2X</div>-->
+                        <!--<ul class="text-center parameter">-->
+                          <!--<li>512M 内存</li>-->
+                          <!--<span>10GB 硬盘</span>-->
+                        <!--</ul>-->
+                      <!--</section>-->
+                      <!--<section class="modefy_container" config="250m,1024Mi,10GB">-->
+                        <!--<div class="up_style">4X</div>-->
+                        <!--<ul class="text-center parameter">-->
+                          <!--<li>1024M 内存</li>-->
+                          <!--<span>10G 硬盘</span>-->
+                        <!--</ul>-->
+                      <!--</section>-->
+                      <!--<section class="modefy_container" config="500m,2048Mi,10GB">-->
+                        <!--<div class="up_style">8X</div>-->
+                        <!--<ul class="text-center parameter">-->
+                          <!--<li>2048M 内存</li>-->
+                          <!--<span>10GB 硬盘</span>-->
+                        <!--</ul>-->
+                      <!--</section>-->
+                      <!--<section class="modefy_container" config="1000m,4096Mi,10GB" style="margin-left: 100px;margin-top: 15px;">-->
+                        <!--<div class="up_style">16X</div>-->
+                        <!--<ul class="text-center parameter">-->
+                          <!--<li>4GB 内存</li>-->
+                          <!--<span>10GB 硬盘</span>-->
+                        <!--</ul>-->
+                      <!--</section>-->
+                      <!--<section class="modefy_container" config="2000m,8192Mi,10GB" style="margin-top:15px;">-->
+                        <!--<div class="up_style">32X</div>-->
+                        <!--<ul class="text-center parameter">-->
+                          <!--<li>8GB 内存</li>-->
+                          <!--<span>10GB 硬盘</span>-->
+                        <!--</ul>-->
+                      <!--</section>-->
+                    <!--</li>-->
+                    <!--<li style="clear:both">-->
+                      <!--<br>-->
+                      <!--<span class="edit-name-c" style="margin-top: 5px;"></span>-->
+                            <!--<span class="imageMsg" style="margin-left: 0px;">-->
+                              <!--* 配置更新后，服务会重新启动。-->
+                            <!--</span>-->
+                    <!--</li>-->
+                    <!--<li class="line-h-3" id="hostingConfigServicePublicIPs" style="top:12px">-->
+                      <!--<div class="param-set dropdown" style="height: 35px;">-->
+                        <!--<span class="edit-name-c" style="margin-top: 5px;line-height: normal;">服务地址：</span>-->
+                        <!--<div class="select-versions" data-toggle="dropdown">-->
+                          <!--<span id="servicePublicIp" class="pushText" style="width:70%;border:0;"></span>-->
+                          <!--<div class="sign">-->
+                            <!--<i class="fa fa-angle-right"></i>-->
+                          <!--</div>-->
+                        <!--</div>-->
+                        <!--<ul id="serviceIPList" class="dropdown-menu dropdown-position dropdown-roll" style="left:100px;">-->
+                        <!--</ul>-->
+                        <!--&lt;!&ndash; <span class="number-contor">-->
+                          <!--<span class="number-up"><i class="fa fa-caret-up fa-lg"></i></span>-->
+                          <!--<span class="number-down"><i class="fa fa-caret-down fa-lg"></i></span>-->
+                        <!--</span> &ndash;&gt;-->
+                      <!--</div>-->
+                      <!--<p style="margin-left: 100px;color:#999"><i class="fa fa-warning"></i> 更改服务地址后，服务会重新启动。</p>-->
+                    <!--</li>-->
+                  <!--</ul>-->
+                <!--</div>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
+          <!--<div class="modal-footer" style="padding:0px;border:0px;clear:both;">-->
+            <!--<hr class="hrs">-->
+            <!--<div class="wrap">-->
+              <!--<button class="btn btn-up pull_left" data-dismiss="modal">取消</button>-->
+              <!--<button id="modifyButton" class="btn btn-primary pull_confirm">保存</button>-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+    <!--<div id="scaleClusterDialog" tabindex="-1" role="dialog" data-backdrop="static" aria-hidden="true" class="modal fade">-->
+      <!--<div class="modal-dialog">-->
+        <!--<div class="modal-content">-->
+          <!--<div class="modal-header">-->
+            <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>-->
+            <!--<h4 class="modal-title" id="myModalLabel">  弹性伸缩</h4>-->
+          <!--</div>-->
+          <!--<div class="modal-body" style="padding:0px 15px;min-height: 150px;">-->
+            <!--<hr class="hrs">-->
+            <!--<div class="steps-edit" style="padding-top:25px;padding-bottom:30px;">-->
+              <!--<div class="step-inner-edit">-->
+                <!--<div class="host_edit">-->
+                  <!--<ul class="safeSet">-->
+                    <!--<li class="line-h-3">-->
+                      <!--<span class="edit-name-c">服务名称：</span>-->
+                      <!--<input type="text" class="in_style" id="serviceName" disabled="disabled" style="margin-top: 5px;">-->
+                    <!--</li>-->
+                    <!--<li class="line-h-3" id="instsizeChange">-->
+                      <!--<div class="param-set">-->
+                        <!--<span class="edit-name-c" style="margin-top: 5px;">实例数量：</span>-->
+                        <!--<input type="number" value="1" id="numberChange" class="in_style" min="1" style="margin-top: 10px;">-->
+                        <!--<span class="unit">个</span>-->
+                      <!--</div>-->
+                    <!--</li>-->
+                  <!--</ul>-->
+                <!--</div>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
+          <!--<div class="modal-footer" style="padding:0px 15px;border:0px;clear:both;">-->
+            <!--<hr class="hrs">-->
+            <!--<div class="wrap">-->
+              <!--<button class="btn btn-up pull_left" data-dismiss="modal">取消</button>-->
+              <!--<button id="scaleButton" class="btn btn-primary pull_confirm">保存</button>-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+    <!--<div id="upgradeClusterDialog" tabindex="-1" role="dialog" data-backdrop="static" aria-hidden="true" class="modal fade">-->
+      <!--<div class="modal-dialog">-->
+        <!--<div class="modal-content">-->
+          <!--<div class="modal-header">-->
+            <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>-->
+            <!--<h4 class="modal-title" id="myModalLabel">  灰度升级</h4>-->
+          <!--</div>-->
+          <!--<div class="modal-body" style="padding:0px 15px;min-height: 150px;">-->
+            <!--<hr class="hrs">-->
+            <!--<div class="steps-edit" style="padding-top:25px;padding-bottom:30px;width:85%;margin:0 auto;">-->
+              <!--<div class="step-inner-edit">-->
+                <!--<div class="host_edit">-->
+                  <!--<ul class="safeSet">-->
+                    <!--<li class="line-h-3">-->
+                      <!--<span class="edit-name-c">服务名称：</span>-->
+                      <!--<input type="text" class="in_style" id="upgradeServiceName" disabled="disabled" style="margin-top: 5px;">-->
+                    <!--</li>-->
+                    <!--<li class="line-h-3">-->
+                      <!--<span class="edit-name-c">目标版本：</span>-->
+                      <!--<div class="span7">-->
+                        <!--<div class="input-group" style="top:8px;">-->
+                          <!--<span id="upgradeTagSelect" class="pushText" name="padBranch"></span>-->
+                          <!--<div class="input-group-btn">-->
+                            <!--<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height:30px"><span class="caret" style="vertical-align: super;"></span></button>-->
+                            <!--<ul id="upgradeTagList" class="dropdown-menu dropdown-position dock-dropdow" style="left:-268px;width:270px;">-->
+                              <!--<li><i>载入中...</i></li>-->
+                            <!--</ul>-->
+                          <!--</div>-->
+                        <!--</div>-->
+                      <!--</div>-->
+                    <!--</li>-->
+                    <!--<li class="line-h-3">-->
+                      <!--<div class="param-set">-->
+                        <!--<span class="edit-name-c" style="margin-top: 5px;">更新间隔：</span>-->
+                        <!--<input type="number" placeholder="2 - 60" id="timeInterval" class="in_style" min="2" max="60" style="margin-top: 10px;">-->
+                        <!--<span class="unit">秒</span>-->
+                      <!--</div>-->
+                    <!--</li>-->
+                  <!--</ul>-->
+                <!--</div>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
+          <!--<div class="modal-footer" style="padding:0px 15px;border:0px;clear:both;">-->
+            <!--<hr class="hrs">-->
+            <!--<div class="wrap">-->
+              <!--<button class="btn btn-up pull_left" data-dismiss="modal">取消</button>-->
+              <!--<button id="upgradeButton" class="btn btn-primary pull_confirm">保存</button>-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+
+    <!--<div id="modalRedeploy" tabindex="-1" role="dialog" data-backdrop="static" aria-hidden="true" class="modal fade">-->
+      <!--<div class="modal-dialog" style="width:500px">-->
+        <!--<div class="modal-content">-->
+          <!--<div class="modal-header">-->
+            <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">-->
+            <!--</button>-->
+            <!--<h4 class="modal-title">重新部署</h4>-->
+          <!--</div>-->
+          <!--<hr class="hrs">-->
+          <!--<div class="modal-body">-->
+            <!--<div class="modal-center">-->
+              <!--<div class="span2"><span class="newversion">选择版本：</span></div>-->
+              <!--<div class="span8">-->
+                <!--<div class="input-group">-->
+                  <!--<span id="tagSelect" class="pushText" name="padBranch"></span>-->
+                  <!--<div class="input-group-btn">-->
+                    <!--<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height:30px"><span class="caret" style="vertical-align: super;"></span></button>-->
+                    <!--<ul id="tagList" class="dropdown-menu dropdown-position dock-dropdown" style="left:-230px;">-->
+                      <!--<li><i>载入中...</i></li>-->
+                    <!--</ul>-->
+                  <!--</div>-->
+                <!--</div>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
+          <!--<div class="modal-footer" style="clear:both">-->
+            <!--<div class="modal-center">-->
+              <!--<span class="btn btn-default" data-dismiss="modal">取消</span>-->
+              <!--<span class="btn btn-primary" id="deployContainerBtn">确定</span>-->
+            <!--</div>-->
+            <!--<br>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+
+    <!--<div id="modalCrealRoll" tabindex="-1" role="dialog" data-backdrop="static" aria-hidden="true" class="modal fade">-->
+      <!--<div class="modal-dialog">-->
+        <!--<div class="modal-content">-->
+          <!--<div class="modal-header">-->
+            <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">-->
+            <!--</button>-->
+            <!--<h4 class="modal-title">创建存储卷</h4>-->
+          <!--</div>-->
+          <!--<div class="modal-body" style="padding:0;">-->
+            <!--<hr class="hrs">-->
+            <!--<ul class="settingUi">-->
+              <!--<li>-->
+                <!--<span class="settingname">名称：</span>-->
+              <!--</li>-->
+              <!--<li>-->
+                <!--<input id="imageName" name="imageName" type="text" class="setinput" placeholder="3~15个字符，可由字母、数字及横线组成，且首字母不能为数字及横线">-->
+              <!--</li>-->
+              <!--<li>-->
+                <!--<span class="settingname">大小：</span>-->
+              <!--</li>-->
+              <!--<li id="sliderVolume" data-min-steps="200" data-max-steps="600" class="slider dropdown" style="height:30px;">-->
+                <!--&lt;!&ndash; <input id="blkSize" name="blkSize" type="number" class="setinput"> M &ndash;&gt;-->
+                <!--<div class="steplong" id="bj_steplong"></div>-->
+                <!--<div class="stepblock" id="slideblock"></div>-->
+                <!--<div class="slidebtn" id="slidebtn"></div>-->
+                <!--<div class="stepvalue">-->
+                  <!--<input type="text" class="sliderValue" id="stepvalue" value="200" style="width:50px">-->
+                  <!--<span class="unins">M</span>-->
+                <!--</div>-->
+              <!--</li>-->
+              <!--<li>-->
+                <!--<span class="settingname">格式：</span>-->
+              <!--</li>-->
+              <!--<li class="line-h-3">-->
+                <!--<div class="select-versions setinput" data-toggle="dropdown">-->
+                  <!--<span id="format" class="hostingText">ext4</span>-->
+                  <!--<div class="sign">-->
+                    <!--<i class="fa fa-angle-right"></i>-->
+                  <!--</div>-->
+                <!--</div>-->
+                <!--<ul class="dropdown-menu dropdown-position" style="left:0">-->
+                  <!--<li>ext4</li>-->
+                  <!--<li>xfs</li>-->
+                  <!--<li>reiserfs</li>-->
+                <!--</ul>-->
+              <!--</li>-->
+            <!--</ul>-->
+          <!--</div>-->
+          <!--<div class="modal-footer">-->
+            <!--<hr class="hrs">-->
+            <!--<div class="wrap">-->
+              <!--<button id="createBlk" type="button" class="btn btn-primary setinput">创建存储卷</button>-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+
+    <!--<div id="expandVolume" tabindex="-1" role="dialog" data-backdrop="static" aria-hidden="true" class="modal fade">-->
+      <!--<div class="modal-dialog">-->
+        <!--<div class="modal-content">-->
+          <!--<div class="modal-header">-->
+            <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">-->
+            <!--</button>-->
+            <!--<h4 class="modal-title">扩容</h4>-->
+          <!--</div>-->
+          <!--<div class="modal-body" style="padding:0;">-->
+            <!--<hr class="hrs">-->
+            <!--<ul class="settingUi">-->
+              <!--<li>-->
+                <!--<span class="settingname">名称：</span>-->
+              <!--</li>-->
+              <!--<li>-->
+                <!--<input id="volumeUid" type="hidden">-->
+                <!--<div class="select-versions" style="width:100%;" id="volumeName"></div>-->
+              <!--</li>-->
+              <!--<li>-->
+                <!--<span class="settingname">大小：</span>-->
+              <!--</li>-->
+              <!--<li id="sliderExpandVolume" data-min-steps="200" data-max-steps="600" class="slider dropdown" style="height:30px;">-->
+                <!--<div class="steplong" id="bj_Volume"></div>-->
+                <!--<div class="stepblock" id="volumeblock"></div>-->
+                <!--<div class="slidebtn" id="volumebtn"></div>-->
+                <!--<div class="stepvalue">-->
+                  <!--<input type="text" class="sliderValue" id="volumeSizeValue" value="200" style="width:50px">-->
+                  <!--<span class="unins">M</span>-->
+                <!--</div>-->
+              <!--</li>-->
+            <!--</ul>-->
+          <!--</div>-->
+          <!--<div class="modal-footer">-->
+            <!--<hr class="hrs">-->
+            <!--<div class="wrap">-->
+              <!--<button id="resizeBlk" type="button" class="btn btn-primary setinput">保存</button>-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+    <!--<div class="modal fade" id="console-code-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">-->
+      <!--<div class="modal-dialog">-->
+        <!--<div class="modal-content">-->
+          <!--<div class="modal-header">-->
+            <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">-->
+            <!--</button>-->
+            <!--<h4 class="modal-title">-->
+              <!--控制台-->
+            <!--</h4>-->
+          <!--</div>-->
+          <!--<div class="modal-body">-->
+            <!--<div class="wrap-up dropdown">-->
+              <!--<div class="ve_top">应用节点：</div>-->
+              <!--<div class="inline-wrap">-->
+                <!--<select id="podName" style="height:30px;min-width:200px;">-->
+                <!--</select>-->
+                <!--<div id="openTerminal" class="pull-right btn btn-success">查看控制台信息</div>-->
+              <!--</div>-->
+            <!--</div>-->
+            <!--<div class="wrap-up">-->
+              <!--<span id="consoleInfo"></span>-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+
   </article>
-
-  <!--创建新服务-->
-
-
-
-
-
 </div>
