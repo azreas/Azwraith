@@ -12,30 +12,30 @@ var docker = require("../../modules/docker");
  */
 exports.create = function (req, res){
     var opts = {
-        Image: req.body.image, // 镜像名称
-        Cmd: req.body.command, // 执行命令
-        name: req.body.name // 容器名称
+        Image: req.body.imageName, // 镜像名称
+        name: req.body.containerName, // 容器名称
+        Cmd: req.body.command // 执行命令
     }
     // 调用 docker api 实现创建容器
     docker.createContainer(opts, function (err, container) {
-        var result;
-        // 若 container 不为空，则创建成功
-        if (container) {
-            result = {
-                code : "200",
-                msg : "创建容器 "+container.id+" 成功"
+        try {
+            // 若 container 不为空，则创建成功，否则抛出 500 错误
+            if (container) {
+                // 根据 token 获取用户id
+                // 容器创建成功，绑定用户与容器的关系，传用户id 与 container.id 到后台服务实现绑定
+                //TODO
+                // 绑定成功，则返回服务界面，否则抛出 500 错误
+                //TODO
+            } else {
+                throw new Error(500);
             }
-        } else {
-            result = {
-                code : "500",
-                msg : "创建容器失败，未知错误"
-            }
+        } catch (e) {
+            res.status(e.status || 500);
+            res.render('error', {
+                message: e.message,
+                error: e
+            });
         }
-
-        // 容器创建成功，绑定用户与容器的关系，传用户id 与 容器id 到后台服务实现绑定
-        //TODO
-
-        res.render('index', { title: 'Express' });
     });
 }
 
@@ -45,6 +45,9 @@ exports.create = function (req, res){
  * @param res
  */
 exports.delete = function (req, res){
+    // 调用底层服务接口作删除容器前处理
+    //TODO
+
     // 调用 docker api 实现删除容器
     var container = docker.getContainer(req.params.id);
     container.remove(function (err, data) {
@@ -60,7 +63,7 @@ exports.delete = function (req, res){
                 msg : "删除容器失败,"+data
             }
         }
-        res.render('index', { title: 'Express' });
+        res.json(result);
     });
 }
 
@@ -125,39 +128,25 @@ exports.listAll = function (req, res){
 }
 
 /**
- * 根据用户id获取其所有容器信息
+ * 获取当前用户所属服务列表
  * @param req
  * @param res
  */
 exports.listByUid = function (req, res){
-    /*// 根据token获取用户id
-    httpUtil.get("/v1/auth/"+req.cookies.token, function(result){
-        try {
-            console.log("token result ---> "+result);
-            result = JSON.parse(result);
-            console.log("token result.result ---> "+result.result);
-
-            var uid = result.id;
-
-            // 调用后台服务接口 根据用户id获取其所有容器信息
-            //TODO
-
-        } catch (e) {
-            res.status(e.status || 500);
-            res.render('error', {
-                message: e.message,
-                error: e
-            });
-        }
-    });*/
-
     httpUtil.get("/.../"+req.params.uid, function(result){
         try {
             console.log("listByUid result ---> "+result);
             result = JSON.parse(result);
             console.log("listByUid result.result ---> "+result.result);
-            //TODO
-            res.json(result);
+
+            // 获取成功，则返回 json 数据
+            if (result.result === true) {
+                res.json(result);
+                //TODO
+            } else { //若失败，则返回包含错误提示的 json 数据
+                res.json(result);
+                //TODO
+            }
         } catch (e) {
             res.status(e.status || 500);
             res.render('error', {
@@ -169,12 +158,14 @@ exports.listByUid = function (req, res){
 }
 
 /**
- * 根据容器 id 获取指定容器
+ * 根据容器 id 获取指定容器信息
  * @param req
  * @param res
  */
 exports.get = function (req, res){
-    var container = docker.getContainer(req.params.id);
+    // 向底层服务接口发起获取容器基本信息请求
+    //TODO
+    /*var container = docker.getContainer(req.params.id);
     container.inspect(function (err, data) {
         var result;
         if (!err) {
@@ -190,7 +181,95 @@ exports.get = function (req, res){
             }
         }
         res.render('index', { title: 'Express' });
-    });
+    });*/
+}
+
+/**
+ * 根据容器id获取容器实例列表
+ * @param req
+ * @param res
+ */
+exports.listAllInstance = function (req, res){
+    // 向底层服务接口发起获取容器实例列表请求
+    //TODO
+
+}
+
+/**
+ * 根据容器实例id获取容器实例基本信息
+ * @param req
+ * @param res
+ */
+exports.getInstance = function (req, res){
+    // 向底层服务接口发起获取容器实例基本信息请求
+    //TODO
+
+}
+
+/**
+ * 根据容器实例id和日期（以天为单位）获取日志
+ * @param req
+ * @param res
+ */
+exports.listInstanceAllLog = function (req, res){
+    // 向底层服务接口发起获取容器实例日志请求
+    //TODO
+
+}
+
+/**
+ * 根据容器实例id获取事件列表
+ * @param req
+ * @param res
+ */
+exports.listInstanceAllEvent = function (req, res){
+    // 向底层服务接口发起获取容器实例事件请求
+    //TODO
+
+}
+
+/**
+ * 根据容器id获取绑定域名列表
+ * @param req
+ * @param res
+ */
+exports.listAllDomain = function (req, res){
+    // 向底层服务接口发起获取绑定域名列表请求
+    //TODO
+
+}
+
+/**
+ * 根据容器id获取端口列表
+ * @param req
+ * @param res
+ */
+exports.listAllPort = function (req, res){
+    // 向底层服务接口获取端口列表请求
+    //TODO
+
+}
+
+/**
+ * 根据容器id和日期（以天为单位）获取日志
+ * @param req
+ * @param res
+ */
+exports.listAllLog = function (req, res){
+    // 向底层服务接口获取日志请求
+    //TODO
+
+}
+
+/**
+ * 根据容器id获取事件列表
+ * @param req
+ * @param res
+ */
+exports.listAllEvent = function (req, res){
+    // 向底层服务接口获取事件列表请求
+    //TODO
+
 }
 
 /**
@@ -213,7 +292,7 @@ exports.start = function (req, res){
                 msg : "启动容器失败,"+data
             }
         }
-        res.render('index', { title: 'Express' });
+        res.json(result);
     });
 }
 
@@ -237,7 +316,7 @@ exports.stop = function (req, res){
                 msg : "关闭容器失败,"+data
             }
         }
-        res.render('index', { title: 'Express' });
+        res.json(result);
     });
 }
 
