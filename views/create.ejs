@@ -47,21 +47,10 @@
                   </li> -->
                   <li id="systemImages" class="list-wrapper">
                     <div class="image-item">
-                      <span class="img_icon span2">
-                        <img src="https://dn-tenxstore.qbox.me/tenxcloud_php.png?imageView2/2/h/50">
-                      </span>
-                      <span class="span6 type" type="runtime">
-                        <div class="list-item-description">
-                          <div class="name h4">
-                            tenxcloud/php
-                            <a title="点击查看镜像详情" target="_blank" href="https://hub.tenxcloud.com/repos/tenxcloud/php">
-                              <i class="fa fa-external-link-square"></i>
-                            </a>
-                          </div>
-                          <span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-                            PHP运行时环境，快速部署PHP应用，含示例代码，开放SSH
-                          </span>
-                        </div>
+                      <span class="img_icon span7" style="margin-left: 25px">
+                          <form class="search-group-inner">
+                            <input type="text" id="search-img" placeholder="镜像名称" style="width:225px;height:36px;">
+                          </form>
                       </span>
                       <span class="span2">
                         <div class="list-item-description">
@@ -79,28 +68,30 @@
           <div class="host_step2" style="display:none">
             <!--<i class="tips">载入容器配置中...</i>-->
             <ul class="safeSet">
-              <li class="line-h-3">
-                <span class="ve_top">镜像名称：</span>
-                <span class="imageName"></span>
-                <input type="hidden" id="imageType">
-                <input type="hidden" id="getImageName">
-              </li>
-              <li class="line-h-3">
-                <span class="ve_top">镜像版本：</span>
-                <div class="select-versions" data-toggle="dropdown">
-                  <span class="version-text">latest</span>
-                  <div class="sign">
-                    <i class="fa fa-angle-right"></i>
+              <!--提交镜像名，版本，服务名-->
+              <form method="post" action="">
+                <li class="line-h-3">
+                  <span class="ve_top">镜像名称：</span>
+                  <span class="imageName"></span>
+                </li>
+                <li class="line-h-3">
+                  <span class="ve_top">镜像版本：</span>
+                  <div class="select-versions" data-toggle="dropdown">
+                    <span class="version-text">latest</span>
+                    <div class="sign">
+                      <i class="fa fa-angle-right"></i>
+                    </div>
                   </div>
-                </div>
-                <ul id="imageTag" class="dropdown-menu dropdown-position">
-                  <li>latest</li>
-                </ul>
-              </li>
-              <li class="line-h-3">
-                <span class="ve_top">服务名称：</span>
-                <input type="text" value="" class="in_style" id="containerName">
-              </li>
+                  <ul id="imageTag" class="dropdown-menu dropdown-position">
+                    <li>latest</li>
+                  </ul>
+                </li>
+                <li class="line-h-3">
+                  <span class="ve_top">服务名称：</span>
+                  <input type="text" value="" class="in_style" id="containerName">
+                </li>
+              </form>
+
               <li class="line-h-3">
                 <span class="ve_top">选择区域：</span>
                 <div class="select-versions" data-toggle="dropdown">
@@ -357,7 +348,7 @@
         <button class="btn btn-default go_backs01 hide" style="margin-right:30px;">上一步</button>
         <button class="btn btn-default go_backs02 hide" style="margin-right:30px;">上一步</button>
         <button class="btn btn-success two_step hide">高级设置</button>
-        <button id="createButton" class="pull-right btn btn-primary pull_confirm hide" disabled="disabled">创建</button>
+        <button id="createButton" class="pull-right btn btn-primary pull_confirm hide">创建</button>
           <span class="pull-right">
             <span>消费预估：</span>
               <span id="consume" style="margin-right: 30px;"><span class="prospect-price">￥ <font id="consumptionEstimate">0.042</font> </span>元/小时</span>

@@ -36,10 +36,24 @@
     });
     //创建容器
     $('.list-item-description>.pull-deploy').click(function(){
-        $('.host_step1').hide();
-        $('.host_step2').show();
-        $('.radius_step').eq(1).addClass('action').siblings().removeClass('action');
-        $('.createPadding,.createPadding .go_backs01,.createPadding .two_step,.createPadding #createButton').removeClass('hide');
+        var name = $('#search-img').val();  //取镜像名
+        if( name === "" ){
+            alert("镜像名称不能为空！");
+        }else {
+            $('.host_step1').hide();
+            $('.host_step2').show();
+            $('.radius_step').eq(1).addClass('action').siblings().removeClass('action');
+            $('.createPadding,.createPadding .go_backs01,.createPadding .two_step,.createPadding #createButton').removeClass('hide');
+            //容器配置
+            $('.imageName').text(name);
+        }
+    });
+    //创建
+    $('#createButton').click(function(){
+        var containerName = $('#containerName').val();
+        if ( containerName === "") {
+            alert("服务名称不能为空！");
+        }
     });
     $('.createPadding .two_step').click(function(){
         $('.host_step2').hide();
@@ -81,9 +95,7 @@
         <td style="width:10%" class="tdTimeStrap"><input type="hidden" class="timeStrap" value=""><i class="fa_time"></i><span></span></td></tr></td></div></table></tr>');
 
             dbtr.appendTo($('#dbtable'));
-
         }
-
     });
 
 
