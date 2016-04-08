@@ -69,10 +69,11 @@
             <!--<i class="tips">载入容器配置中...</i>-->
             <ul class="safeSet">
               <!--提交镜像名，版本，服务名-->
-              <form method="post" action="">
+              <form method="post" action="/container/create">
                 <li class="line-h-3">
                   <span class="ve_top">镜像名称：</span>
                   <span class="imageName"></span>
+                  <input id="getImageName" type="hidden" name="image">
                 </li>
                 <li class="line-h-3">
                   <span class="ve_top">镜像版本：</span>
@@ -85,10 +86,11 @@
                   <ul id="imageTag" class="dropdown-menu dropdown-position">
                     <li>latest</li>
                   </ul>
+                  <input id="getVersion" type="hidden" name="imagetag">
                 </li>
                 <li class="line-h-3">
                   <span class="ve_top">服务名称：</span>
-                  <input type="text" value="" class="in_style" id="containerName">
+                  <input name="containerName" type="text" value="" class="in_style" id="containerName">
                 </li>
               </form>
 

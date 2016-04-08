@@ -46,6 +46,8 @@
             $('.createPadding,.createPadding .go_backs01,.createPadding .two_step,.createPadding #createButton').removeClass('hide');
             //容器配置
             $('.imageName').text(name);
+            $('#getImageName').val(name);
+            $('#getVersion').val($('.version-text').text());
         }
     });
     //创建
