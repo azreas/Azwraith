@@ -88,8 +88,39 @@
         $('.createPadding .go_backs02').addClass('hide');
         $('.createPadding .go_backs01').removeClass('hide');
       });
+      //添加已创建容器列表
+      $.ajax({
+        url: '/container/list/uid',
+        type: 'GET'
 
+      }).done(function(resp){
+        var servers = resp.servers;
+        for(var i in servers){
+          console.log(servers[i].name);
+          console.log(servers[i].image);
 
+          var dbtr=$('<tr class="show-tr"><td><div class="contents-table"><table class="table"><tr class="clusterId">\
+        <td style="width:5%;text-indent: 30px;"><input type="checkbox" name="chkItem" value="'+servers[i].name+'"/></td>\
+        <td style="width:20%;white-space:nowrap;"><b class="caret margin" style="-webkit-transform:rotate(-90deg);transform:rotate(-90deg);"></b><a href="" class="cluster_mirrer_name">' + servers[i].name + '</a></td>\
+        <td style="width:10%" id=""></td>\
+        <td style="width:20%;"><span class="cluster_mirrer">' + servers[i].image + '</span></td>\
+        <td style="width:34%" id=""><span class="urlStatus"></span></td>\
+        <td style="width:10%" class="tdTimeStrap"><input type="hidden" class="timeStrap" value=""><i class="fa_time"></i><span></span></td></tr></td></div></table></tr>');
+
+          dbtr.appendTo($('#dbtable'));
+
+        }
+
+      });
+
+//      var dbtr=$('<tr class="show-tr" memory="' + cluster.memory + '" id="inst_' + cluster.id + '"><td><div class="contents-table"><table class="table"><tr class="clusterId" id="' + cluster.id + '">\
+//        <td style="width:5%;text-indent: 30px;"><input type="checkbox" name="chkItem" value="' + cluster.id + '" status="' + cluster.status + '" imagename="' + imageName + '" imagetag="' + tagName + '"/></td>\
+//        <td style="width:20%;white-space:nowrap;"><b class="caret margin" style="-webkit-transform:rotate(-90deg);transform:rotate(-90deg);"></b><a href="/containers/'+master+'/cluster/'+ cluster.id + '" class="cluster_mirrer_name">' + cluster.id + '</a><span class="number-node hide">' + cluster.replicas + '</span><span class="margin cursor console-code-modal hide" data-id="#console-code-modal"><i class="fa fa-desktop" onclick="_showConsole(\'' + cluster.id + '\');"></i></span></td>\
+//        <td style="width:10%" id="'+cluster.id+'status">加载中 <img src="../images/loading4.gif" alt="status"></td>\
+//        <td style="width:20%;"><img src="'+ imageSrc +'?imageView2/2/h/20" style="max-height:20px;max-width:40px;"><span class="cluster_mirrer">' + imageStr + '</span></td>\
+//        <td style="width:34%" id="'+cluster.id+'url">' + url + '<span class="urlStatus">加载中 <img src="../images/loading4.gif" alt="url"></span></td>\
+//        <td style="width:10%" class="tdTimeStrap"><input type="hidden" class="timeStrap" value="' + cluster.creationTimestamp + '"><i class="fa_time"></i><span>' + cluster.create_time + '</span></td></tr></td></div></table></tr>');
+//      dbtr.appendTo($('#dbtable'));
 
 
     })();
