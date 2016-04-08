@@ -21,7 +21,7 @@ module.exports = function(app){
     router.get( '/list/all', container_impl.listAll);
 
     // 获取当前用户所属服务列表
-    router.get( '/list/:uid', container_impl.listByUid);
+    router.get( '/list', container_impl.listByUid);
 
     // 根据容器 id 获取指定容器信息
     router.get( '/get/:id', container_impl.get);
@@ -35,8 +35,8 @@ module.exports = function(app){
     // 根据容器id和日期（以天为单位）获取日志
     router.get( '/log/list/all', container_impl.listAllLog);
 
-    // 根据容器id获取事件列表
-    router.get( '/event/list/all', container_impl.listAllEvent);
+    // 根据服务id获取事件列表
+    router.get( '/app/event/list/:id', container_impl.listAppEventById);
 
     // 启动容器
     router.get( '/start/:id', container_impl.start);
@@ -55,7 +55,7 @@ module.exports = function(app){
     router.get( '/instance/log/list/all', container_impl.listInstanceAllLog);
 
     // 根据容器实例id获取事件列表
-    router.get( '/instance/event/list/all', container_impl.listInstanceAllEvent);
+    router.get( '/instance/event/list/:id', container_impl.listInstanceEventById);
 /********************************** 实例结束 *************************************/
 
     // router 命名空间

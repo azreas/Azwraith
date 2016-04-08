@@ -48,13 +48,13 @@ exports.logout = function (req, res){
             result = JSON.parse(result);
             console.log("logout result.result ---> "+result.result);
 
-            // 若成功，则重定向到首页
+            // 若成功，则重定向到登录页面
             if (result.result === true) {
                 // 删除 cookie 里的 token
                 var exp = new Date();
                 exp.setTime(exp.getTime() - 1);
                 res.setHeader("Set-Cookie", ['token=0;Expires='+exp.toGMTString()]);
-                res.redirect('/');
+                res.redirect('/login');
             } else {
                 // 失败，则抛出 500 错误
                 throw new Error(500);

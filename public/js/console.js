@@ -55,6 +55,8 @@
         var containerName = $('#containerName').val();
         if ( containerName === "") {
             alert("服务名称不能为空！");
+        } else {
+            $("#createContainerForm").submit();
         }
     });
     $('.createPadding .two_step').click(function(){
@@ -79,7 +81,7 @@
     });
     //添加已创建容器列表
     $.ajax({
-        url: '/container/list/<%= uid %>',
+        url: '/container/list',
         type: 'GET'
 
     }).done(function(resp){

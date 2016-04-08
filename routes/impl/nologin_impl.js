@@ -103,7 +103,7 @@ exports.login = function (req, res){
                     res.setHeader("Set-Cookie", ['token='+result.token]);
                     //TODO
                     // 进入重定向页面
-                    res.render('loginRedirect',{ title: '控制台', uid:uid});
+                    res.render('loginRedirect',{ title: '控制台'});
                 });
             } else {
                 // 登录失败，重定向回 登录页面 带着提示信息和回显信息

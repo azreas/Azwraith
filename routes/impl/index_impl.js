@@ -12,7 +12,7 @@ var httpUtil = require("../../modules/util/httpUtil");
  * @param res
  */
 exports.console = function(req, res) {
-    res.render('console', { title: '控制台',uid:req.params.uid });
+    res.render('console', { title: '控制台' });
 }
 
 /**
