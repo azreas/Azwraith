@@ -5,6 +5,8 @@
 
 var docker = require("../../modules/docker");
 
+var httpUtil = require("../../modules/util/httpUtil");
+
 /**
  * 获取所有镜像
  * @param req
@@ -25,7 +27,39 @@ exports.listAll = function (req, res){
                 msg : "获取所有镜像失败,"+err
             }
         }
-        res.render('index', { title: 'Express' });
+        res.render('test', { title: 'Express' });
+    });
+}
+
+/**
+ * 根据 label 和 kind 获取镜像信息
+ * @param req
+ * @param res
+ */
+exports.listByLabelAndKind = function (req, res){
+    /*var params = {
+        label : req.query.label,
+        kind : req.query.kind
+    }*/
+    var params = {
+        label : "normal",
+        kind : "dataorcache"
+    }
+    // 调用底层服务接口
+    httpUtil.get("/v1/image", params, function(result){
+        try {
+            console.log("listByLabelAndKind result ---> "+result);
+            result = JSON.parse(result);
+            console.log("listByLabelAndKind result.result ---> "+result.result);
+            //TODO
+            res.json(result);
+        } catch (e) {
+            res.status(e.status || 500);
+            res.render('error', {
+                message: e.message,
+                error: e
+            });
+        }
     });
 }
 

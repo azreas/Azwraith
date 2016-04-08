@@ -9,10 +9,13 @@ var router = express.Router();
 
 module.exports = function(app){
     // 获取所有镜像
-    app.get( '/list/all', image_impl.listAll);
+    router.get( '/list/all', image_impl.listAll);
+
+    // 根据 label 和 kind 获取镜像信息
+    router.get( '/list/label/kind', image_impl.listByLabelAndKind);
 
     // 根据镜像名称获取指定镜像
-    app.get( '/get/:name', image_impl.get);
+    router.get( '/get/:name', image_impl.get);
 
     // router 命名空间
     app.use('/image', router);

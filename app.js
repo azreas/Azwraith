@@ -15,7 +15,7 @@ require('./routes/nologin')(app);
 
 
 // 鉴权
-require('./modules/authentication')(app);
+//require('./modules/authentication')(app);
 
 
 /*************************** 需经过登录认证的请求开始 *******************************/

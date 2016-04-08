@@ -40,12 +40,20 @@ var dockerConfig = {
 
 /********************* request docker service start *********************/
 var userservice = {
-    //host : '192.168.1.253',
-    //port : 9000
+    /*host : '192.168.1.253',
+    port : 9000*/
     /*host : '192.168.1.236',
     port : 9000*/
     host : 'zerocloud.daoapp.io',
     port : 80
+}
+var dockerservice = {
+    host : '192.168.1.253',
+    port : 9000
+    /*host : '192.168.1.236',
+    port : 9000*/
+    /*host : 'zerocloud.daoapp.io',
+    port : 80*/
 }
 /********************* request docker service end *********************/
 
@@ -55,5 +63,6 @@ module.exports = {
     redis : redis,
     mongodb : mongodb,
     dockerConfig : dockerConfig,
-    userservice : userservice
+    userservice : userservice,
+    dockerservice : dockerservice
 }

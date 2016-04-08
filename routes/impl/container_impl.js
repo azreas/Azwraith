@@ -5,16 +5,21 @@
 
 var docker = require("../../modules/docker");
 
+var httpUtil = require("../../modules/util/httpUtil");
+
+var dockerservice = require("../../settings").dockerservice;
+
 /**
  * 创建容器
  * @param req
  * @param res
  */
 exports.create = function (req, res){
+    // 先创建容器
     var opts = {
-        Image: req.body.imageName, // 镜像名称
-        name: req.body.containerName, // 容器名称
-        Cmd: req.body.command // 执行命令
+        Image: req.body.imageName, // 镜像名称（image+imagetag）
+        name: req.body.containerName/*, // 容器名称
+        Cmd: req.body.command // 执行命令*/
     }
     // 调用 docker api 实现创建容器
     docker.createContainer(opts, function (err, container) {
@@ -22,10 +27,56 @@ exports.create = function (req, res){
             // 若 container 不为空，则创建成功，否则抛出 500 错误
             if (container) {
                 // 根据 token 获取用户id
-                // 容器创建成功，绑定用户与容器的关系，传用户id 与 container.id 到后台服务实现绑定
-                //TODO
-                // 绑定成功，则返回服务界面，否则抛出 500 错误
-                //TODO
+                httpUtil.get("/v1/auth/"+req.cookies.token, function(tokenResult){
+                    console.log("token result ---> "+tokenResult);
+                    tokenResult = JSON.parse(tokenResult);
+                    console.log("token result.result ---> "+tokenResult.result);
+
+                    if (tokenResult.result === true) {
+                        // 容器创建成功，保存配置信息
+                        var uid = tokenResult.id;
+                        var image_imagetag = req.body.imageName.split(":");
+                        var image = image_imagetag[0];
+                        var imagetag = image_imagetag[1];
+                        var params = {
+                            "owner": uid,
+                            "name": req.body.containerName,
+                            "image": image,
+                            "imagetag": imagetag,
+                            "conflevel": "4x",
+                            "instance": 1,
+                            "port": [
+                                {
+                                    "schema": "http",
+                                    "in": "8080",
+                                    "out": "80"
+                                }
+                            ],
+                            "container": [
+                                {
+                                    "id": container.id,
+                                    "name": req.body.containerName,
+                                    "address": "172.16.22.424:8289",
+                                    "createtime": ""
+                                }
+                            ]
+                        }
+                        httpUtil.post({host:dockerservice.host, port:dockerservice.port, path:"/v1/app"}, params, function(appResult){
+                            console.log("app result ---> "+appResult);
+                            appResult = JSON.parse(appResult);
+                            console.log("app result.result ---> "+appResult.result);
+
+                            // 绑定成功，则返回服务界面，否则抛出 500 错误
+                            if (appResult.result === true) {
+                                res.redirect("/console/"+uid);
+                            } else {
+                                throw new Error(500);
+                            }
+                        });
+                    } else {
+                        throw new Error(500);
+                    }
+                });
             } else {
                 throw new Error(500);
             }
@@ -133,7 +184,9 @@ exports.listAll = function (req, res){
  * @param res
  */
 exports.listByUid = function (req, res){
-    httpUtil.get("/.../"+req.params.uid, function(result){
+    // 调用底层服务获取服务列表信息
+    //httpUtil.get("/v1/server/"+req.params.uid, function(result){
+    httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/server/df355374-c8d2-4815-8c70-aa96ae51f6e7"}, function(result){
         try {
             console.log("listByUid result ---> "+result);
             result = JSON.parse(result);
@@ -319,9 +372,6 @@ exports.stop = function (req, res){
         res.json(result);
     });
 }
-
-
-
 
 
 
