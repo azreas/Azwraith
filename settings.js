@@ -31,9 +31,9 @@ var mongodb = {
 
 /********************* docker start *********************/
 var dockerConfig = {
-    host : 'http://192.168.1.215',
+    host : 'http://192.168.1.236',
     port : 2375,
-    timeout: 3000
+    timeout: 6000
 }
 /********************* docker end *********************/
 

@@ -17,7 +17,7 @@ var dockerservice = require("../../settings").dockerservice;
 exports.create = function (req, res){
     // 先创建容器
     var opts = {
-        Image: req.body.imageName, // 镜像名称（image+imagetag）
+        Image: req.body.image+":"+req.body.imagetag, // 镜像名称（image+imagetag）
         name: req.body.containerName/*, // 容器名称
         Cmd: req.body.command // 执行命令*/
     }
@@ -35,14 +35,11 @@ exports.create = function (req, res){
                     if (tokenResult.result === true) {
                         // 容器创建成功，保存配置信息
                         var uid = tokenResult.id;
-                        var image_imagetag = req.body.imageName.split(":");
-                        var image = image_imagetag[0];
-                        var imagetag = image_imagetag[1];
                         var params = {
                             "owner": uid,
                             "name": req.body.containerName,
-                            "image": image,
-                            "imagetag": imagetag,
+                            "image": req.body.image,
+                            "imagetag": req.body.imagetag,
                             "conflevel": "4x",
                             "instance": 1,
                             "port": [

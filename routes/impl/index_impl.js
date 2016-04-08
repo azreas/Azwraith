@@ -6,6 +6,20 @@
 var mongoPool = require("../../modules/db/mongodb").mongoPool;
 var httpUtil = require("../../modules/util/httpUtil");
 
+/**
+ * 进入控制台（服务界面）
+ * @param req
+ * @param res
+ */
 exports.console = function(req, res) {
     res.render('console', { title: '控制台',uid:req.params.uid });
+}
+
+/**
+ * 测试界面
+ * @param req
+ * @param res
+ */
+exports.test = function(req, res) {
+    res.render('test', { title: '测试' });
 }
