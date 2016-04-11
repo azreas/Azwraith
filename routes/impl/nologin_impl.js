@@ -5,6 +5,8 @@
 
 var httpUtil = require("../../modules/util/httpUtil");
 
+var cookieUtil = require("../../modules/util/cookieUtil");
+
 /**
  * 进入首页
  * @param req
@@ -100,7 +102,8 @@ exports.login = function (req, res){
                     console.log("token result.result ---> "+tokenResult.result);
 
                     var uid = tokenResult.id;
-                    res.setHeader("Set-Cookie", ['token='+result.token]);
+                    // 设置 cookie token
+                    cookieUtil.set(res, "token", result.token);
                     //TODO
                     // 进入重定向页面
                     res.render('loginRedirect',{ title: '控制台'});

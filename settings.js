@@ -42,16 +42,14 @@ var dockerConfig = {
 var userservice = {
     /*host : '192.168.1.253',
     port : 9000*/
-    /*host : '192.168.1.236',
-    port : 9000*/
-    host : 'zerocloud.daoapp.io',
-    port : 80
+    host : '192.168.1.236',
+    port : 9000
 }
 var dockerservice = {
-    host : '192.168.1.253',
-    port : 9000
-    /*host : '192.168.1.236',
+    /*host : '192.168.1.253',
     port : 9000*/
+    host : '192.168.1.236',
+    port : 9001
     /*host : 'zerocloud.daoapp.io',
     port : 80*/
 }

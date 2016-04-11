@@ -11,108 +11,74 @@ var dockerservice = require("../../settings").dockerservice;
 
 var stringUtil = require("../../modules/util/stringUtil");
 
-var dateUtil = require("../../modules/util/dateUtil");
-
 var uuid = require('node-uuid');
 
 /**
- * 创建容器
- * @param req
- * @param res
+ * 记录服务事件
+ * @param serverEventConfig 服务事件信息
  */
-exports.create = function (req, res){
-    // 先创建容器
-    var opts = {
-        Image: req.body.image+":"+req.body.imagetag, // 镜像名称（image+imagetag）
-        name: req.body.containerName/*, // 容器名称
-        Cmd: req.body.command // 执行命令*/
-    }
-    // 调用 docker api 实现创建容器
-    docker.createContainer(opts, function (err, container) {
+var saveServerEvent = function(serverEventConfig) {
+    httpUtil.post({host:dockerservice.host, port:dockerservice.port, path:"/v1/appevent"}, serverEventConfig, function(eventResult){
         try {
-            // 若 container 不为空，则创建成功，否则抛出 500 错误
-            if (container) {
-                var appid = uuid.v4();
+            console.log("server event result ---> "+eventResult);
+            eventResult = JSON.parse(eventResult);
+            console.log("server event result.result ---> "+eventResult.result);
 
-                // 容器创建成功，记录服务事件（异步）
-                var eventParams = {
-                    appid:appid,
-                    event:"创建成功",
-                    titme:new Date().getTime(),
-                    script:"Created container:"+container.id
-                }
-                httpUtil.post({host:dockerservice.host, port:dockerservice.port, path:"/v1/appevent"}, eventParams, function(eventResult){
-                    console.log("event result ---> "+eventResult);
-                    eventResult = JSON.parse(eventResult);
-                    console.log("event result.result ---> "+eventResult.result);
+            if (eventResult.result !== true) {
+                throw new Error(500);
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    });
+}
 
-                    if (eventResult.result !== true) {
-                        throw new Error(500);
-                    }
-                });
+/**
+ * 记录实例事件
+ * @param containerEventConfig 实例事件信息
+ */
+var saveContainerEvent = function(containerEventConfig) {
+    httpUtil.post({host:dockerservice.host, port:dockerservice.port, path:"/v1/containerevent"}, containerEventConfig, function(containerEventResult){
+        try {
+            console.log("containerEvent result ---> "+containerEventResult);
+            containerEventResult = JSON.parse(containerEventResult);
+            console.log("containerEvent result.result ---> "+containerEventResult.result);
 
-                // 容器创建成功，记录容器事件（异步）
-                var containerEventParams = {
-                    containerid:container.id,
-                    title:"创建成功",
-                    titme:new Date().getTime(),
-                    script:"Created container:"+container.id
-                }
-                httpUtil.post({host:dockerservice.host, port:dockerservice.port, path:"/v1/containerevent"}, containerEventParams, function(containerEventResult){
-                    console.log("containerEvent result ---> "+containerEventResult);
-                    containerEventResult = JSON.parse(containerEventResult);
-                    console.log("containerEvent result.result ---> "+containerEventResult.result);
+            if (containerEventResult.result !== true) {
+                throw new Error(500);
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    });
+}
 
-                    if (containerEventResult.result !== true) {
-                        throw new Error(500);
-                    }
-                });
+/**
+ * 保存容器配置信息
+ * @param req 请求对象
+ * @param res 响应对象
+ * @param containersConfig 容器配置信息
+ */
+var saveContainers = function(req, res, containersConfig) {
+    // 根据 token 获取用户id
+    httpUtil.get("/v1/auth/"+req.cookies.token, function(tokenResult){
+        try {
+            console.log("token result ---> "+tokenResult);
+            tokenResult = JSON.parse(tokenResult);
+            console.log("token result.result ---> "+tokenResult.result);
 
-                // 根据 token 获取用户id
-                httpUtil.get("/v1/auth/"+req.cookies.token, function(tokenResult){
-                    console.log("token result ---> "+tokenResult);
-                    tokenResult = JSON.parse(tokenResult);
-                    console.log("token result.result ---> "+tokenResult.result);
+            // 容器创建成功，保存配置信息
+            if (tokenResult.result === true) {
+                var uid = tokenResult.id; // 用户id
+                containersConfig.owner = uid;
+                httpUtil.post({host:dockerservice.host, port:dockerservice.port, path:"/v1/app"}, containersConfig, function(appResult){
+                    console.log("app result ---> "+appResult);
+                    appResult = JSON.parse(appResult);
+                    console.log("app result.result ---> "+appResult.result);
 
-                    if (tokenResult.result === true) {
-                        // 容器创建成功，保存配置信息
-                        var uid = tokenResult.id;
-                        var params = {
-                            id : appid,
-                            "owner": uid,
-                            "name": req.body.containerName,
-                            "image": req.body.image,
-                            "imagetag": req.body.imagetag,
-                            "conflevel": "4x",
-                            "instance": 1,
-                            "port": [
-                                {
-                                    "schema": "http",
-                                    "in": "8080",
-                                    "out": "80"
-                                }
-                            ],
-                            "container": [
-                                {
-                                    "id": container.id,
-                                    "name": req.body.containerName+"-"+stringUtil.randomString(4),
-                                    "address": "172.16.22.424:8289",
-                                    "createtime": ""
-                                }
-                            ]
-                        }
-                        httpUtil.post({host:dockerservice.host, port:dockerservice.port, path:"/v1/app"}, params, function(appResult){
-                            console.log("app result ---> "+appResult);
-                            appResult = JSON.parse(appResult);
-                            console.log("app result.result ---> "+appResult.result);
-
-                            // 绑定成功，则返回服务界面，否则抛出 500 错误
-                            if (appResult.result === true) {
-                                res.redirect("/console");
-                            } else {
-                                throw new Error(500);
-                            }
-                        });
+                    // 绑定成功，则返回服务界面，否则抛出 500 错误
+                    if (appResult.result === true) {
+                        res.redirect("/console");
                     } else {
                         throw new Error(500);
                     }
@@ -128,6 +94,75 @@ exports.create = function (req, res){
             });
         }
     });
+}
+
+/**
+ * 创建容器
+ * @param req
+ * @param res
+ */
+exports.create = function (req, res){
+    // 容器配置
+    var containersConfig = {
+        id:uuid.v4(),
+        owner:"",
+        name: req.body.containerName,
+        image: req.body.image,
+        imagetag: req.body.imagetag,
+        conflevel: "4x",
+        instance:parseInt(req.body.instance,10),
+        port: [
+            {
+                "schema": "http",
+                "in": "8080",
+                "out": "80"
+            }
+        ],
+        container: []
+    }
+    var optsArray = []; // 存放创建容器参数
+    var count = 0; // 创建容器计数器
+    for (var i=0; i<containersConfig.instance; i++) {
+        optsArray[i] = {
+            Image: req.body.image+":"+req.body.imagetag,
+            name: req.body.containerName+"-"+stringUtil.randomString(5)
+        }
+        docker.createContainer(optsArray[i], function (err, container) {
+            if (err) {
+                throw new Error(err);
+            } else {
+                // 保存服务事件（异步）
+                saveServerEvent({
+                    appid:containersConfig.id,
+                    event:"创建成功",
+                    titme:new Date().getTime(),
+                    script:"Created container:"+container.id
+                });
+
+                // 保存实例事件（异步）
+                saveContainerEvent({
+                    containerid:container.id,
+                    title:"创建成功",
+                    titme:new Date().getTime(),
+                    script:"Created container:"+container.id
+                });
+
+                containersConfig.container.push({
+                    id:container.id,
+                    name:optsArray[count].name,
+                    address:"",
+                    createtime:new Date().getTime()
+                });
+                count ++;
+                if (count===containersConfig.instance) { // 实例创建完成
+                    console.log("containersConfig.container.length ---> "+containersConfig.container.length);
+                    console.log("containersConfig ---> "+JSON.stringify(containersConfig));
+                    // 保存配置
+                    saveContainers(req, res, containersConfig);
+                }
+            }
+        });
+    }
 }
 
 /**
