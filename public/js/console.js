@@ -86,13 +86,12 @@
 
     }).done(function(resp){
         var servers = resp.servers;
+        console.log(servers);
         for(var i in servers){
-            console.log(servers[i].name);
-            console.log(servers[i].image);
 
             var dbtr=$('<tr class="show-tr"><td><div class="contents-table"><table class="table"><tr class="clusterId">\
         <td style="width:5%;text-indent: 30px;"><input type="checkbox" name="chkItem" value="'+servers[i].name+'"/></td>\
-        <td style="width:20%;white-space:nowrap;"><b class="caret margin" style="-webkit-transform:rotate(-90deg);transform:rotate(-90deg);"></b><a href="" class="cluster_mirrer_name">' + servers[i].name + '</a></td>\
+        <td style="width:20%;white-space:nowrap;"><b class="caret margin" style="-webkit-transform:rotate(-90deg);transform:rotate(-90deg);"></b><a href="/container/get/'+servers[i].id+'" class="cluster_mirrer_name">' + servers[i].name + '</a></td>\
         <td style="width:10%" id=""></td>\
         <td style="width:20%;"><span class="cluster_mirrer">' + servers[i].image + '</span></td>\
         <td style="width:34%" id=""><span class="urlStatus"></span></td>\

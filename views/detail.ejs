@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta charset="UTF-8">
+  <meta name="renderer" content="webkit">
+  <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css?rev=0.1.0">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+  <!--浏览器窗口图标-->
+  <!--<link rel="icon" type="image/x-icon" href="/images/favicon.ico">-->
+  <link rel="stylesheet" href="/stylesheets/container/dashboard.css?rev=0.1.0">
+  <script src="/jquery/dist/jquery.min.js"></script>
+  <meta content="_csrf" name="csrf-param">
+  <meta content="FDs3VXHK-FKQuYYYVhnwDOafqB-hqLoTq2bQ" name="csrf-token">
+  <link type="text/css" rel="stylesheet" href="/stylesheets/detail.css">
+  <link type="text/css" rel="stylesheet" href="https://console.tenxcloud.com/lib/layer/need/laydate.css">
+  <link type="text/css" rel="stylesheet" href="https://console.tenxcloud.com/lib/layer/skins/default/laydate.css">
+  <link rel="stylesheet" href="/stylesheets/container/layer.css">
+  <title>零云 - 容器详情</title>
+  <style type="text/css">
+    .btn-toogle {
+      line-height: 30px;
+      border-radius: 2px;
+      border: 1px solid #4280CB;
+      display: inline-block;
+      font-size: 12px;
+    }
+    .btn-toogle .btn-t {
+      width: 50px;
+      text-align: center;
+      height: 30px;
+      display: inline-block;
+      cursor: pointer;
+      color: #4280CB;
+    }
+    .btn-toogle .toogle-on {
+      background: #4280CB;
+      color: #fff;
+      cursor: auto;
+    }
+  </style>
+</head>
+<body>
+
+<% include header.ejs %>
+
+<div class="page-container" style="margin-left: 200px">
+  <div class="container-right">
+    <div class="contentTitle">
+      <div class="dbserver">
+        <i class="fa_home"></i>
+        <a class="go" href="">控制台</a>
+        <i class="fa fa-angle-right fa_r"></i>
+        <a class="go" href="/console">容器服务</a>
+      </div>
+    </div>
+
+
+    <section class="detail-succeed">
+      <div class="icon-img"><div class="type-icon">
+          <img src="https://dn-tenxstore.qbox.me/tenxcloud_nodejs.png" height="100%">
+        </div></div>
+      <ul class="succeed-content pull-left">
+        <li>运行状态：已停止</li>
+        <li>服务地址：<a href="http://test-gnahceh.hz.tenxapp.com:42969" target="_blank">test-gnahceh.hz.tenxapp.com:42969</a></li>
+        <li>创建时间：2016-04-01 09:43:16 </li>
+        <li>更新时间：2016-04-01 09:43:16 </li>
+      </ul>
+      <!--<div class="applocation">-->
+        <!--<span class="btn btn-primary console-code-modal" data-id="#console-code-modal" style="vertical-align: top;padding: 0px;height:46px; font-size: 16px;line-height: 46px; width: 150px;" onclick="_showConsole('test');"><i class="fa fa-desktop"></i>&nbsp; 打开控制台</span>-->
+        <!--&nbsp;<a href="http://test-gnahceh.hz.tenxapp.com:42969" target="_blank" class="open" style="font-size:16px;"><i class="fa fa-toggle-on"></i>&nbsp; 打开应用</a>-->
+      <!--</div>-->
+    </section>
+
+    <div class="baseInfo center-style">
+      <a class="BASE btn-prim">基本信息</a>
+      <a class="INSTANCES">容器实例</a>
+      <a class="DOMAIN">绑定域名</a>
+      <a class="PORTS">端口</a>
+      <a class="MONITOR">监控</a>
+      <a class="LOG">日志</a>
+      <a class="EVENT">事件</a>
+    </div>
+    <div id="detail-content-box">
+      <div class="containerInfo" style="display: block;">
+        <table class="table w50">
+          <thead>
+          <tr><th> 基本信息</th>
+            <th> &nbsp;</th>
+          </tr></thead>
+          <tbody class="BORDER">
+          <tr>
+            <td> 名称：<%= name %></td>
+            <td> 运行状态：已停止</td>
+          </tr>
+          <tr>
+            <td> 镜像名称：<%= image %></td>
+            <td> 创建时间：2016-04-01 09:43:16</td>
+          </tr>
+          </tbody>
+        </table>
+        <table class="table basicInfo w50">
+          <thead>
+          <tr>
+            <th>配置信息</th>
+            <th>&nbsp;</th>
+          </tr>
+          </thead>
+          <tbody class="BORDER">
+          <tr>
+            <td> 带宽：10 MB（公有网络）</td>
+            <td> 系统盘：10GB</td>
+          </tr>
+          <tr>
+            <td> CPU：60m</td>
+            <td> 内存：256MB</td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table id="envList" class="table basicInfo w50">
+          <thead>
+          <tr>
+            <th>环境变量 <a href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="" id="editEnvBtn" data-original-title="编辑环境变量"><i class="fa fa-pencil-square-o"></i>编辑</a></th>
+            <th>&nbsp;</th>
+          </tr>
+          </thead>
+          <tbody class="BORDER">
+          <tr>
+            <td> 变量名</td>
+            <td> 变量值</td>
+          </tr>
+
+          </tbody>
+        </table>
+      </div>
+      <!-- the end of  containerInfo-->
+
+      <div class="containerInstances" style="min-height: 300px; display: none;">
+        <table class="table">
+          <thead>
+          <tr style="white-space: nowrap;">
+            <th>名称</th>
+            <th>运行状态</th>
+            <th>镜像</th>
+            <th>内网地址</th>
+            <th>外网地址</th>
+            <th>创建时间</th>
+          </tr>
+          </thead>
+          <tbody class="BORDER-TR">
+          <tr>
+            <td><a href="/containers/tenx_district3/instances/mongodb1-uhpk8">mongodb1-uhpk8</a></td>
+            <td>Pending</td>
+            <td>tenxcloud/mongodb:latest</td>
+            <td>-</td>
+            <td><a href="http://mongodb1-gnahceh.hz.tenxapp.com:56331" target="_blank">mongodb1-gnahceh.hz.tenxapp.com:56331</a></td>
+            <td>1 分钟前</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- the end of  containerInstances-->
+
+      <div class="bindDomain" style="min-height: 500px; display: none;">
+        <section class="paddingrow">
+          <div class="orgmain">
+            <aside class="after-info">
+              ZeroCloud 只允许备案过的域名绑定。为了完成域名绑定，你还需要在您的域名服务商处，将指定域名的CNAME指向我们为您生成的域名绑定专用地址。
+            </aside>
+            <aside class="infoclose"></aside>
+          </div>
+
+          <table class="table table-normal">
+            <thead style="background:#F5F6F6;">
+            <tr style="height:40px;">
+              <th class="w15">服务端口</th>
+              <th class="w30">域名</th>
+              <th class="w35">CNAME地址</th>
+              <th class="w20">审核状态</th>
+            </tr>
+            </thead>
+
+            <tbody id="addorg">
+
+            <tr>
+              <td class="w15">
+                      <span id="selectedPort">
+                      <select id="bindingPort">
+
+                        <option value="22">22</option>
+
+                        <option value="3000">3000</option>
+
+                      </select>
+                      </span>
+              </td>
+              <td class="first-td w30">
+                <!-- <input id="domainname" type="text" placeholder='输入域名'> -->
+                <div class="input-group">
+                  <input type="text" class="form-control" id="domainname" placeholder="输入域名">
+                  <span class="input-group-addon" id="basic-addon"><i class="fa_btn_plus_gray pushOrg"></i></span>
+                </div>
+              </td>
+              <td class="w35"><span id="cname">提示：添加域名后，CNAME地址会出现在这里</span></td>
+              <td class="w20"><span id="reviewStatus">无</span></td>
+            </tr>
+
+            </tbody>
+          </table>
+          <div class="bind-status">添加成功！</div>
+        </section>
+      </div>
+      <!-- the end of  bindDomain-->
+
+      <div class="portMapping" style="min-height: 500px; display: none;">
+        <section class="paddingrow">
+          <span class="btn btn-primary" id="editPortBtn">编辑端口</span>
+          <br><br>
+          <table id="portsList" class="table table-normal" style="border:1px solid #eee;">
+            <thead style="background:#F5F6F6;">
+            <tr style="height:40px;">
+              <td>名称</td>
+              <td>容器端口</td>
+              <td>协议</td>
+              <td>映射端口</td>
+              <td>服务地址</td>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr>
+              <td> test</td>
+              <td class="port"> 22</td>
+              <td class="protocol"> TCP</td>
+              <td> 42969</td>
+              <td><a href="http://test-gnahceh.hz.tenxapp.com:42969" target="_blank">test-gnahceh.hz.tenxapp.com:42969</a> </td>
+            </tr>
+
+            <tr>
+              <td> test-1</td>
+              <td class="port"> 3000</td>
+              <td class="protocol"> TCP</td>
+              <td> 37411</td>
+              <td><a href="http://test-gnahceh.hz.tenxapp.com:37411" target="_blank">test-gnahceh.hz.tenxapp.com:37411</a> </td>
+            </tr>
+
+            </tbody>
+          </table>
+          <div id="editPorts" class="hide">
+            <table class="table table-normal" style="border:1px solid #eee;">
+              <thead style="background:#F5F6F6;">
+              <tr style="height:40px;">
+                <td style="width: 45%">容器端口</td>
+                <td style="width: 45%">协议</td>
+                <td style="width: 10%">操作</td>
+              </tr>
+              </thead>
+              <tbody class="editborder">
+              </tbody>
+            </table>
+            <div class="createEnv pull-right">
+              <input id="cancelPortEdit" class="btn btn-default" type="button" value="取消">&nbsp;&nbsp;
+              <input id="savePort" class="btn btn-primary" type="button" value="保存">
+            </div>
+          </div>
+        </section>
+      </div>
+      <!-- the end of  portMapping-->
+
+      <div class="monitorInfo" style="display: none;">
+        <div class="data-analysis">
+          <div class="data-btn">
+            <span id="serviceNames" value="test"></span>
+            <button class="btn monitor btn-prim 6h" onclick="update('tenx_district3','test','all', '1h', '1459474996000');">1小时</button>
+            <button class="btn monitor 6h" onclick="update('tenx_district3','test','all', '6h', '1459474996000');">6小时</button>
+            <button class="btn monitor 1d" onclick="update( 'tenx_district3','test','all', '1d', '1459474996000');">1天</button>
+            <button class="btn monitor 1d" onclick="update('tenx_district3','test','all', '1w', '1459474996000');">1周</button>
+            <button class="btn monitor 1d" onclick="update('tenx_district3','test','all', '30d', '1459474996000');">1月</button>
+          </div>
+          <div class="charterTitle">处理器
+            <div class="symbol"> (
+              <span class="cpuColor"></span>
+              <h>处理器使用情况 %)</h>
+            </div>
+          </div>
+          <div class="data-table charterHoderCpu" data-highcharts-chart="0"><div class="highcharts-container" id="highcharts-0" style="position: relative; overflow: hidden; width: 100%; height: 350px; text-align: left; line-height: normal; z-index: 0; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><svg version="1.1" style="font-family:&quot;Lucida Grande&quot;, &quot;Lucida Sans Unicode&quot;, Arial, Helvetica, sans-serif;font-size:12px;" xmlns="http://www.w3.org/2000/svg" width="1719" height="350"><desc>Created with Highcharts 4.0.3</desc><defs><clipPath id="highcharts-1"><rect x="0" y="0" width="1699" height="276"></rect></clipPath></defs><rect x="0" y="0" width="1719" height="350" strokeWidth="0" fill="#FFFFFF" class=" highcharts-background"></rect><g class="highcharts-grid" zIndex="1"></g><g class="highcharts-grid" zIndex="1"></g><g class="highcharts-axis" zIndex="2"><path fill="none" d="M 10 286.5 L 1709 286.5" stroke="#C0D0E0" stroke-width="1" zIndex="7" visibility="visible"></path></g><g class="highcharts-axis" zIndex="2"></g><g class="highcharts-series-group" zIndex="3"><g class="highcharts-series" visibility="visible" zIndex="0.1" transform="translate(10,10) scale(1 1)" clip-path="url(#highcharts-1)"><path fill="none" d="M 0 0" stroke-linejoin="round" visibility="visible" stroke="rgba(192,192,192,0.0001)" stroke-width="22" zIndex="2" class=" highcharts-tracker" style=""></path></g><g class="highcharts-markers highcharts-tracker" visibility="visible" zIndex="0.1" transform="translate(10,10) scale(1 1)" clip-path="none" style=""></g></g><g class="highcharts-legend" zIndex="7" transform="translate(792,306)"><rect x="0.5" y="0.5" width="133" height="28" strokeWidth="1" stroke="#909090" stroke-width="1" fill="none" visibility="visible"></rect><g zIndex="1"><g><g class="highcharts-legend-item" zIndex="1" transform="translate(8,3)"><path fill="none" d="M 0 11 L 16 11" stroke="#3BBFEA" stroke-width="2"></path><text x="21" style="color:#333333;font-size:12px;font-weight:bold;cursor:pointer;fill:#333333;" text-anchor="start" zIndex="2" y="15"><tspan>处理器 (点击隐藏)</tspan></text></g></g></g></g><g class="highcharts-axis-labels highcharts-xaxis-labels" zIndex="7"></g><g class="highcharts-axis-labels highcharts-yaxis-labels" zIndex="7"></g><g class="highcharts-tooltip" zIndex="8" style="cursor:default;padding:0;white-space:nowrap;" transform="translate(0,-9999)"><path fill="none" d="M 3 0 L 13 0 C 16 0 16 0 16 3 L 16 13 C 16 16 16 16 13 16 L 3 16 C 0 16 0 16 0 13 L 0 3 C 0 0 0 0 3 0" isShadow="true" stroke="black" stroke-opacity="0.049999999999999996" stroke-width="5" transform="translate(1, 1)"></path><path fill="none" d="M 3 0 L 13 0 C 16 0 16 0 16 3 L 16 13 C 16 16 16 16 13 16 L 3 16 C 0 16 0 16 0 13 L 0 3 C 0 0 0 0 3 0" isShadow="true" stroke="black" stroke-opacity="0.09999999999999999" stroke-width="3" transform="translate(1, 1)"></path><path fill="none" d="M 3 0 L 13 0 C 16 0 16 0 16 3 L 16 13 C 16 16 16 16 13 16 L 3 16 C 0 16 0 16 0 13 L 0 3 C 0 0 0 0 3 0" isShadow="true" stroke="black" stroke-opacity="0.15" stroke-width="1" transform="translate(1, 1)"></path><path fill="rgba(249, 249, 249, .85)" d="M 3 0 L 13 0 C 16 0 16 0 16 3 L 16 13 C 16 16 16 16 13 16 L 3 16 C 0 16 0 16 0 13 L 0 3 C 0 0 0 0 3 0"></path><text x="8" zIndex="1" style="font-size:12px;color:#333333;fill:#333333;" y="21"></text></g></svg></div></div>
+          <div class="charterTitle">内存
+            <div class="symbol"> (
+              <span class="Memory"></span>
+              内存使用情况 M)
+            </div>
+          </div>
+          <div class="data-table charterHoderMemory" data-highcharts-chart="1"><div class="highcharts-container" id="highcharts-4" style="position: relative; overflow: hidden; width: 100%; height: 350px; text-align: left; line-height: normal; z-index: 0; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><svg version="1.1" style="font-family:&quot;Lucida Grande&quot;, &quot;Lucida Sans Unicode&quot;, Arial, Helvetica, sans-serif;font-size:12px;" xmlns="http://www.w3.org/2000/svg" width="1719" height="350"><desc>Created with Highcharts 4.0.3</desc><defs><clipPath id="highcharts-5"><rect x="0" y="0" width="1699" height="276"></rect></clipPath></defs><rect x="0" y="0" width="1719" height="350" strokeWidth="0" fill="#FFFFFF" class=" highcharts-background"></rect><g class="highcharts-grid" zIndex="1"></g><g class="highcharts-grid" zIndex="1"></g><g class="highcharts-axis" zIndex="2"><path fill="none" d="M 10 286.5 L 1709 286.5" stroke="#C0D0E0" stroke-width="1" zIndex="7" visibility="visible"></path></g><g class="highcharts-axis" zIndex="2"></g><g class="highcharts-series-group" zIndex="3"><g class="highcharts-series" visibility="visible" zIndex="0.1" transform="translate(10,10) scale(1 1)" clip-path="url(#highcharts-5)"><path fill="none" d="M 0 0" stroke-linejoin="round" visibility="visible" stroke="rgba(192,192,192,0.0001)" stroke-width="22" zIndex="2" class=" highcharts-tracker" style=""></path></g><g class="highcharts-markers highcharts-tracker" visibility="visible" zIndex="0.1" transform="translate(10,10) scale(1 1)" clip-path="none" style=""></g></g><g class="highcharts-legend" zIndex="7" transform="translate(798,306)"><rect x="0.5" y="0.5" width="121" height="28" strokeWidth="1" stroke="#909090" stroke-width="1" fill="none" visibility="visible"></rect><g zIndex="1"><g><g class="highcharts-legend-item" zIndex="1" transform="translate(8,3)"><path fill="none" d="M 0 11 L 16 11" stroke="#587CA0" stroke-width="2"></path><text x="21" style="color:#333333;font-size:12px;font-weight:bold;cursor:pointer;fill:#333333;" text-anchor="start" zIndex="2" y="15"><tspan>内存 (点击隐藏)</tspan></text></g></g></g></g><g class="highcharts-axis-labels highcharts-xaxis-labels" zIndex="7"></g><g class="highcharts-axis-labels highcharts-yaxis-labels" zIndex="7"></g><g class="highcharts-tooltip" zIndex="8" style="cursor:default;padding:0;white-space:nowrap;" transform="translate(0,-9999)"><path fill="none" d="M 3 0 L 13 0 C 16 0 16 0 16 3 L 16 13 C 16 16 16 16 13 16 L 3 16 C 0 16 0 16 0 13 L 0 3 C 0 0 0 0 3 0" isShadow="true" stroke="black" stroke-opacity="0.049999999999999996" stroke-width="5" transform="translate(1, 1)"></path><path fill="none" d="M 3 0 L 13 0 C 16 0 16 0 16 3 L 16 13 C 16 16 16 16 13 16 L 3 16 C 0 16 0 16 0 13 L 0 3 C 0 0 0 0 3 0" isShadow="true" stroke="black" stroke-opacity="0.09999999999999999" stroke-width="3" transform="translate(1, 1)"></path><path fill="none" d="M 3 0 L 13 0 C 16 0 16 0 16 3 L 16 13 C 16 16 16 16 13 16 L 3 16 C 0 16 0 16 0 13 L 0 3 C 0 0 0 0 3 0" isShadow="true" stroke="black" stroke-opacity="0.15" stroke-width="1" transform="translate(1, 1)"></path><path fill="rgba(249, 249, 249, .85)" d="M 3 0 L 13 0 C 16 0 16 0 16 3 L 16 13 C 16 16 16 16 13 16 L 3 16 C 0 16 0 16 0 13 L 0 3 C 0 0 0 0 3 0"></path><text x="8" zIndex="1" style="font-size:12px;color:#333333;fill:#333333;" y="21"></text></g></svg></div></div>
+          <div class="charterTitle">网络监控
+            <div class="symbol"> (
+              <span class="NetworkIn"></span>
+              网络流入使用情况 字节/秒)
+            </div>
+          </div>
+          <div class="data-table charterHoderNetworkIn" data-highcharts-chart="2"><div class="highcharts-container" id="highcharts-8" style="position: relative; overflow: hidden; width: 100%; height: 350px; text-align: left; line-height: normal; z-index: 0; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><svg version="1.1" style="font-family:&quot;Lucida Grande&quot;, &quot;Lucida Sans Unicode&quot;, Arial, Helvetica, sans-serif;font-size:12px;" xmlns="http://www.w3.org/2000/svg" width="1719" height="350"><desc>Created with Highcharts 4.0.3</desc><defs><clipPath id="highcharts-9"><rect x="0" y="0" width="1689" height="276"></rect></clipPath><linearGradient x1="0" y1="0" x2="0" y2="1" id="highcharts-12"><stop offset="0" stop-color="#7cb5ec" stop-opacity="1"></stop><stop offset="1" stop-color="rgb(124,181,236)" stop-opacity="0"></stop></linearGradient></defs><rect x="0" y="0" width="1719" height="350" strokeWidth="0" fill="#FFFFFF" class=" highcharts-background"></rect><g class="highcharts-grid" zIndex="1"></g><g class="highcharts-grid" zIndex="1"></g><g class="highcharts-axis" zIndex="2"><path fill="none" d="M 10 286.5 L 1699 286.5" stroke="#C0D0E0" stroke-width="1" zIndex="7" visibility="visible"></path></g><g class="highcharts-axis" zIndex="2"></g><g class="highcharts-series-group" zIndex="3"><g class="highcharts-series" visibility="visible" zIndex="0.1" transform="translate(10,10) scale(1 1)" clip-path="url(#highcharts-9)"><path fill="url(#highcharts-12)" d="M 0 0" zIndex="0"></path><path fill="none" d="M 0 0" stroke-linejoin="round" visibility="visible" stroke="rgba(192,192,192,0.0001)" stroke-width="21" zIndex="2" class=" highcharts-tracker" style=""></path></g><g class="highcharts-markers highcharts-tracker" visibility="visible" zIndex="0.1" transform="translate(10,10) scale(1 1)" clip-path="none" style=""></g><g class="highcharts-series" visibility="visible" zIndex="0.1" transform="translate(10,10) scale(1 1)" clip-path="url(#highcharts-9)"><path fill="url(#highcharts-12)" d="M 0 0" zIndex="0"></path><path fill="none" d="M 0 0" stroke-linejoin="round" visibility="visible" stroke="rgba(192,192,192,0.0001)" stroke-width="21" zIndex="2" class=" highcharts-tracker" style=""></path></g><g class="highcharts-markers highcharts-tracker" visibility="visible" zIndex="0.1" transform="translate(10,10) scale(1 1)" clip-path="none" style=""></g></g><g class="highcharts-legend" zIndex="7" transform="translate(706,306)"><rect x="0.5" y="0.5" width="296" height="28" strokeWidth="1" stroke="#909090" stroke-width="1" fill="none" visibility="visible"></rect><g zIndex="1"><g><g class="highcharts-legend-item" zIndex="1" transform="translate(8,3)"><text x="21" style="color:#333333;font-size:12px;font-weight:bold;cursor:pointer;fill:#333333;" text-anchor="start" zIndex="2" y="15"><tspan>输入流量 (点击隐藏)</tspan></text><rect x="0" y="4" width="16" height="12" zIndex="3" fill="#F7A400"></rect></g><g class="highcharts-legend-item" zIndex="1" transform="translate(158.953125,3)"><text x="21" y="15" style="color:#333333;font-size:12px;font-weight:bold;cursor:pointer;fill:#333333;" text-anchor="start" zIndex="2"><tspan>输出流量 (点击隐藏)</tspan></text><rect x="0" y="4" width="16" height="12" zIndex="3" fill="#42C043"></rect></g></g></g></g><g class="highcharts-axis-labels highcharts-xaxis-labels" zIndex="7"></g><g class="highcharts-axis-labels highcharts-yaxis-labels" zIndex="7"></g><g class="highcharts-tooltip" zIndex="8" style="cursor:default;padding:0;white-space:nowrap;" transform="translate(0,-9999)"><path fill="none" d="M 3 0 L 13 0 C 16 0 16 0 16 3 L 16 13 C 16 16 16 16 13 16 L 3 16 C 0 16 0 16 0 13 L 0 3 C 0 0 0 0 3 0" isShadow="true" stroke="black" stroke-opacity="0.049999999999999996" stroke-width="5" transform="translate(1, 1)"></path><path fill="none" d="M 3 0 L 13 0 C 16 0 16 0 16 3 L 16 13 C 16 16 16 16 13 16 L 3 16 C 0 16 0 16 0 13 L 0 3 C 0 0 0 0 3 0" isShadow="true" stroke="black" stroke-opacity="0.09999999999999999" stroke-width="3" transform="translate(1, 1)"></path><path fill="none" d="M 3 0 L 13 0 C 16 0 16 0 16 3 L 16 13 C 16 16 16 16 13 16 L 3 16 C 0 16 0 16 0 13 L 0 3 C 0 0 0 0 3 0" isShadow="true" stroke="black" stroke-opacity="0.15" stroke-width="1" transform="translate(1, 1)"></path><path fill="rgba(249, 249, 249, .85)" d="M 3 0 L 13 0 C 16 0 16 0 16 3 L 16 13 C 16 16 16 16 13 16 L 3 16 C 0 16 0 16 0 13 L 0 3 C 0 0 0 0 3 0"></path><text x="8" zIndex="1" style="font-size:12px;color:#333333;fill:#333333;" y="21"></text></g></svg></div></div>
+          <div class="charterTitle">网络监控
+
+            <div class="symbol"> (
+              <span class="NetworkOut"></span>
+              网络流出使用情况 字节/秒)
+            </div>
+
+          </div>
+          <div class="data-table charterHoderNetworkOut" data-highcharts-chart="3"><div class="highcharts-container" id="highcharts-13" style="position: relative; overflow: hidden; width: 100%; height: 350px; text-align: left; line-height: normal; z-index: 0; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><svg version="1.1" style="font-family:&quot;Lucida Grande&quot;, &quot;Lucida Sans Unicode&quot;, Arial, Helvetica, sans-serif;font-size:12px;" xmlns="http://www.w3.org/2000/svg" width="1719" height="350"><desc>Created with Highcharts 4.0.3</desc><defs><clipPath id="highcharts-14"><rect x="0" y="0" width="1689" height="276"></rect></clipPath><linearGradient x1="0" y1="0" x2="0" y2="1" id="highcharts-17"><stop offset="0" stop-color="#7cb5ec" stop-opacity="1"></stop><stop offset="1" stop-color="rgb(124,181,236)" stop-opacity="0"></stop></linearGradient></defs><rect x="0" y="0" width="1719" height="350" strokeWidth="0" fill="#FFFFFF" class=" highcharts-background"></rect><g class="highcharts-grid" zIndex="1"></g><g class="highcharts-grid" zIndex="1"></g><g class="highcharts-axis" zIndex="2"><path fill="none" d="M 10 286.5 L 1699 286.5" stroke="#C0D0E0" stroke-width="1" zIndex="7" visibility="visible"></path></g><g class="highcharts-axis" zIndex="2"></g><g class="highcharts-series-group" zIndex="3"><g class="highcharts-series" visibility="visible" zIndex="0.1" transform="translate(10,10) scale(1 1)" clip-path="url(#highcharts-14)"><path fill="url(#highcharts-17)" d="M 0 0" zIndex="0"></path><path fill="none" d="M 0 0" stroke-linejoin="round" visibility="visible" stroke="rgba(192,192,192,0.0001)" stroke-width="21" zIndex="2" class=" highcharts-tracker" style=""></path></g><g class="highcharts-markers highcharts-tracker" visibility="visible" zIndex="0.1" transform="translate(10,10) scale(1 1)" clip-path="none" style=""></g><g class="highcharts-series" visibility="visible" zIndex="0.1" transform="translate(10,10) scale(1 1)" clip-path="url(#highcharts-14)"><path fill="url(#highcharts-17)" d="M 0 0" zIndex="0"></path><path fill="none" d="M 0 0" stroke-linejoin="round" visibility="visible" stroke="rgba(192,192,192,0.0001)" stroke-width="21" zIndex="2" class=" highcharts-tracker" style=""></path></g><g class="highcharts-markers highcharts-tracker" visibility="visible" zIndex="0.1" transform="translate(10,10) scale(1 1)" clip-path="none" style=""></g></g><g class="highcharts-legend" zIndex="7" transform="translate(706,306)"><rect x="0.5" y="0.5" width="296" height="28" strokeWidth="1" stroke="#909090" stroke-width="1" fill="none" visibility="visible"></rect><g zIndex="1"><g><g class="highcharts-legend-item" zIndex="1" transform="translate(8,3)"><text x="21" style="color:#333333;font-size:12px;font-weight:bold;cursor:pointer;fill:#333333;" text-anchor="start" zIndex="2" y="15"><tspan>输入流量 (点击隐藏)</tspan></text><rect x="0" y="4" width="16" height="12" zIndex="3" fill="#F7A400"></rect></g><g class="highcharts-legend-item" zIndex="1" transform="translate(158.953125,3)"><text x="21" y="15" style="color:#333333;font-size:12px;font-weight:bold;cursor:pointer;fill:#333333;" text-anchor="start" zIndex="2"><tspan>输出流量 (点击隐藏)</tspan></text><rect x="0" y="4" width="16" height="12" zIndex="3" fill="#42C043"></rect></g></g></g></g><g class="highcharts-axis-labels highcharts-xaxis-labels" zIndex="7"></g><g class="highcharts-axis-labels highcharts-yaxis-labels" zIndex="7"></g><g class="highcharts-tooltip" zIndex="8" style="cursor:default;padding:0;white-space:nowrap;" transform="translate(0,-9999)"><path fill="none" d="M 3 0 L 13 0 C 16 0 16 0 16 3 L 16 13 C 16 16 16 16 13 16 L 3 16 C 0 16 0 16 0 13 L 0 3 C 0 0 0 0 3 0" isShadow="true" stroke="black" stroke-opacity="0.049999999999999996" stroke-width="5" transform="translate(1, 1)"></path><path fill="none" d="M 3 0 L 13 0 C 16 0 16 0 16 3 L 16 13 C 16 16 16 16 13 16 L 3 16 C 0 16 0 16 0 13 L 0 3 C 0 0 0 0 3 0" isShadow="true" stroke="black" stroke-opacity="0.09999999999999999" stroke-width="3" transform="translate(1, 1)"></path><path fill="none" d="M 3 0 L 13 0 C 16 0 16 0 16 3 L 16 13 C 16 16 16 16 13 16 L 3 16 C 0 16 0 16 0 13 L 0 3 C 0 0 0 0 3 0" isShadow="true" stroke="black" stroke-opacity="0.15" stroke-width="1" transform="translate(1, 1)"></path><path fill="rgba(249, 249, 249, .85)" d="M 3 0 L 13 0 C 16 0 16 0 16 3 L 16 13 C 16 16 16 16 13 16 L 3 16 C 0 16 0 16 0 13 L 0 3 C 0 0 0 0 3 0"></path><text x="8" zIndex="1" style="font-size:12px;color:#333333;fill:#333333;" y="21"></text></g></svg></div></div>
+          <!-- div.data-table.charterHoderNetworkOut -->
+        </div>
+      </div>
+      <!-- the end of  monitorInfo-->
+
+      <div class="containerLog" style="display: none;">
+
+        <div class="weblogtitle">
+
+          <div class="pull_left"><span class="circle red"></span><span class="circle blue"></span><span class="circle green"></span></div><div class="pull_right"><input id="date_log" type="text" value="历史记录">
+            <i id="datePicker" class="fa fa-calendar margin cursor" data-toggle="tooltip" data-placement="top" title="" data-original-title="选择日期"></i>
+            <i id="refreshLog" class="fa fa-refresh margin cursor" data-toggle="tooltip" data-placement="top" title="" data-original-title="刷新日志"></i>
+            <i id="fullScreen" class="fa fa-expand margin cursor" title="满屏"></i>
+          </div></div>
+        <div class="weblog">
+          <pre id="serviceLogs" style="background:none repeat scroll 0 0 black;color: #37fc34; border:0; font-size: 12px;">
+            <div style="margin-bottom:5px" align="center">
+              <span class="badge">今天的日志加载完毕</span>
+            </div>
+            <div style="color: rgba(55, 252, 52, 0.58);"><font style="color: rgba(255, 255, 0, 0.58)">[历史记录]</font>&nbsp;<font>[mongodb1-uhpk8]</font>&nbsp;/set_mongodb_password.sh: line 8: vim: command not found</div><div style="color: rgba(55, 252, 52, 0.58);"><font style="color: rgba(255, 255, 0, 0.58)">[历史记录]</font>&nbsp;<font>[mongodb1-uhpk8]</font>&nbsp;/set_mongodb_password.sh: line 8: vim: command not found</div>
+            <div id="logPage3" style="color:white">Page 3 ↑</div>
+          </pre>
+          <input id="serviceInstances" type="hidden" value="">
+          <input id="creationTime" type="hidden" value="2016-04-11 14:08:02">
+        </div>
+      </div>
+      <!-- the end of  containerLog-->
+
+      <div class="containerEvent" style="min-height: 500px; display: none;">
+        <div class="event">
+          <div class="event-line">
+            <div class="event-status success">
+              <i class="fa fa-check note"></i>
+            </div>
+            <div class="time-line-content">
+              <div class="time-line-reason event-title">
+                <div class="title-name success">创建成功</div>
+                <div class="time-line-time">
+                  <div class="event-sign">
+                    <i class="fa fa-angle-right fa_caret"></i>
+                  </div>
+                  <div class="datetimes">2016-04-01 09:43:17</div>
+                </div>
+                <div class="time-line-message" style="display: none;">
+                  <p class="list-times">时间：2016-04-01 09:43:17</p>
+                  <p class="list-conent">信息：Created container: test-hgm9l</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- the end of  containerEvent-->
+
+      <div class="containerStorage" uid="1ade788a-f7ab-11e5-a1d7-00163e01040c" style="display: none;">
+        <table class="table hide">
+          <thead style="background: #e4eaec;border: 1px solid #e4eaec">
+          <tr><th>名称</th>
+            <!--th>存储卷</th-->
+            <th>容器挂载点</th>
+            <!--th>挂载方式</th>
+            <th>大小</th>
+            <th>格式</th>
+            <th>功能</th-->
+          </tr></thead>
+          <tbody class="BORDER-TR">
+
+          </tbody>
+        </table>
+        <div class="volumeLoad" align="center">载入中...</div>
+      </div>
+
+
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</div>
+
+<script src="/js/detail.js"></script>
+</body>
+</html>

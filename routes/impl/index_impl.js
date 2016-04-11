@@ -13,7 +13,7 @@ var httpUtil = require("../../modules/util/httpUtil");
  */
 exports.console = function(req, res) {
     res.render('console', { title: '控制台' });
-}
+};
 
 /**
  * 测试界面
@@ -22,4 +22,13 @@ exports.console = function(req, res) {
  */
 exports.test = function(req, res) {
     res.render('test', { title: '测试' });
-}
+};
+
+/**
+ * 服务详情界面
+ * @param req
+ * @param res
+ */
+exports.detail = function(req,res) {
+    res.render('detail',{})
+};

@@ -304,7 +304,7 @@ exports.listByUid = function (req, res){
 exports.get = function (req, res){
     // 向底层服务接口发起获取容器基本信息请求
     //httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/app/"+req.params.id}, function(result){
-    httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/app/cda9459b-702d-4a24-a715-048b4c03c897"}, function(result){
+    httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/app/"+req.params.id}, function(result){
         try {
             console.log("get result ---> "+result);
             result = JSON.parse(result);
@@ -312,8 +312,11 @@ exports.get = function (req, res){
 
             // 获取成功，则返回 json 数据
             if (result.result === true) {
-                res.json(result);
-                //TODO
+                res.render('detail',{
+                    name: result.apps[0].name,
+                    image: result.apps[0].image
+
+                });
             } else { //若失败，则返回包含错误提示的 json 数据
                 res.json(result);
                 //TODO

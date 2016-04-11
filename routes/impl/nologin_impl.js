@@ -13,7 +13,7 @@ var cookieUtil = require("../../modules/util/cookieUtil");
  * @param res
  */
 exports.home = function(req, res) {
-    res.render('index', { title: 'Express' });
+    res.render('index', { title: '零云 - 新一代云平台' });
 }
 
 /**
@@ -22,7 +22,7 @@ exports.home = function(req, res) {
  * @param res
  */
 exports.enterRegist = function (req, res){
-    res.render('regist', { title: '注册'});
+    res.render('regist', { title: '零云 - 注册'});
 }
 
 /**
@@ -70,7 +70,7 @@ exports.regist = function (req, res){
  * @param res
  */
 exports.enterLogin = function (req, res){
-    res.render('login', { title: '登录'});
+    res.render('login', { title: '零云 - 登录'});
 }
 
 /**
@@ -106,7 +106,7 @@ exports.login = function (req, res){
                     cookieUtil.set(res, "token", result.token);
                     //TODO
                     // 进入重定向页面
-                    res.render('loginRedirect',{ title: '控制台'});
+                    res.render('loginRedirect',{ title: '零云 - 控制台'});
                 });
             } else {
                 // 登录失败，重定向回 登录页面 带着提示信息和回显信息
