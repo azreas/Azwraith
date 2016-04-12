@@ -404,8 +404,8 @@ exports.get = function (req, res){
             if (result.result === true) {
                 res.render('detail',{
                     name: result.apps[0].name,
-                    image: result.apps[0].image
-
+                    image: result.apps[0].image,
+                    id: result.apps[0].id
                 });
             } else { //若失败，则返回包含错误提示的 json 数据
                 res.json(result);

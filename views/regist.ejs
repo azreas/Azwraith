@@ -14,11 +14,11 @@
       <div class="form-group">
         <p class="signup-title">注册</p>
       </div>
-      <div class="form-group">
-        <div class="username-input">
-          <input id="username" type="text" name="username" placeholder="用户名">
-        </div>
-      </div>
+      <!--<div class="form-group">-->
+        <!--<div class="username-input">-->
+          <!--<input id="username" type="text" name="username" placeholder="用户名">-->
+        <!--</div>-->
+      <!--</div>-->
       <div class="form-group">
         <div class="passwd-input">
           <input id="email" type="email" name="email" placeholder="邮箱">
@@ -49,24 +49,28 @@
 
 <script>
   (function(){
-//    $("#submit").on("click",function(){
-//      var email = $("#email").val();
-//      var passwd = $("#passwd").val();
-//      console.log(email+passwd);
-//      $.ajax({
-//        url: '/regist',
-//        type: 'post',
-//        data:{
-//              email: email,
-//              password: passwd
-//        },
-//        success: function(data){
-//          console.log(data);
-//        }
-//      });
-//    });
-  })();
+    // 邮箱验证
+    $('#email').blur(function (event) {
+      var email = $(this).val();
+      if (!email || email.trim() === '') {
+        alert('邮箱不能为空');
+        return;
+      }
+      email = email.trim();
+      if (email.search(/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/) !== -1) {
+        if (email.length > 50) {
+          // $(this).siblings('span.m').html('邮箱长度不能大于50');
+          alert('邮箱长度不能大于50');
+        }
+        return;
+      }
+      alert('请输入合法的邮箱');
+    });
 
+
+
+
+  })();
 </script>
 </body>
 </html>

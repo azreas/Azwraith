@@ -7,7 +7,7 @@
         <i class="fa_home"></i>
         <a href="/" class="go" data-permalink=""><span>控制台</span></a>
         <i class="fa fa-angle-right fa_r"></i>
-        <a class="go" href="/containers" data-permalink="" onclick="_permalink(this);">容器服务</a>
+        <a class="go" href="/console" data-permalink="" onclick="_permalink(this);">容器服务</a>
         <i class="fa fa-angle-right fa_r"></i>
         <a class="goback">创建服务<!--（<span class="clusterText" data="tenx_district3">杭州区</span>）--></a>
       </div>
@@ -75,40 +75,25 @@
                   <span class="imageName"></span>
                   <input id="getImageName" type="hidden" name="image">
                 </li>
-                <li class="line-h-3">
-                  <span class="ve_top">镜像版本：</span>
-                  <div class="select-versions" data-toggle="dropdown">
-                    <span class="version-text">latest</span>
-                    <div class="sign">
-                      <i class="fa fa-angle-right"></i>
-                    </div>
-                  </div>
-                  <ul id="imageTag" class="dropdown-menu dropdown-position">
-                    <li>latest</li>
-                  </ul>
-                  <input id="getVersion" type="hidden" name="imagetag">
-                </li>
+                <!--<li class="line-h-3">-->
+                  <!--<span class="ve_top">镜像版本：</span>-->
+                  <!--<div class="select-versions" data-toggle="dropdown">-->
+                    <!--<span class="version-text">latest</span>-->
+                    <!--<div class="sign">-->
+                      <!--<i class="fa fa-angle-right"></i>-->
+                    <!--</div>-->
+                  <!--</div>-->
+                  <!--<ul id="imageTag" class="dropdown-menu dropdown-position">-->
+                    <!--<li>latest</li>-->
+                  <!--</ul>-->
+                  <!--<input id="getVersion" type="hidden" name="imagetag">-->
+                <!--</li>-->
                 <li class="line-h-3">
                   <span class="ve_top">服务名称：</span>
                   <input name="containerName" type="text" value="" class="in_style" id="containerName">
                 </li>
-
-
-              <li class="line-h-3">
-                <span class="ve_top">选择区域：</span>
-                <div class="select-versions" data-toggle="dropdown">
-                  <span class="clusterText" data="tenx_district3">杭州区</span>
-                  <div class="sign">
-                    <i class="fa fa-angle-right"></i>
-                  </div>
-                </div>
-                <ul id="clusterList" class="dropdown-menu dropdown-position">
-                  <li data="default">北京1区</li>
-                  <li data="tenx_district2">北京2区</li>
-                  <li data="tenx_district3">杭州区</li>
-                </ul>
-              </li>
               <li class="line-h-3" style="min-height:109px;padding-top: 10px;">
+                <input name="conflevel" id="typeX" type="hidden" value="">
                 <span class="ve_top display-block">容器配置：</span>
                 <section class="set_container" config="60m,256Mi,10GB">
                   <div class="up_style">1X</div>

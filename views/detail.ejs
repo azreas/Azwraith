@@ -66,10 +66,10 @@
             </div>
             <ul class="succeed-content pull-left">
                 <li>运行状态：已停止</li>
-                <li>服务地址：<a href="http://test-gnahceh.hz.tenxapp.com:42969" target="_blank">test-gnahceh.hz.tenxapp.com:42969</a>
-                </li>
-                <li>创建时间：2016-04-01 09:43:16</li>
-                <li>更新时间：2016-04-01 09:43:16</li>
+                <li>服务地址：<a href="http://test-gnahceh.hz.tenxapp.com:42969" target="_blank">test-gnahceh.hz.tenxapp.com:42969</a></li>
+                <li>创建时间：<span></span></li>
+                <!--<li>更新时间：2016-04-01 09:43:16</li>-->
+                <input id="containerId" type="hidden" value="<%= id %>">
             </ul>
             <!--<div class="applocation">-->
             <!--<span class="btn btn-primary console-code-modal" data-id="#console-code-modal" style="vertical-align: top;padding: 0px;height:46px; font-size: 16px;line-height: 46px; width: 150px;" onclick="_showConsole('test');"><i class="fa fa-desktop"></i>&nbsp; 打开控制台</span>-->
@@ -104,7 +104,7 @@
                     </tr>
                     <tr>
                         <td> 镜像名称：<%= image %></td>
-                        <td> 创建时间：2016-04-01 09:43:16</td>
+                        <td> 创建时间：<span></span></td>
                     </tr>
                     </tbody>
                 </table>
@@ -704,50 +704,28 @@
             <!-- the end of  containerLog-->
 
             <div class="containerEvent" style="min-height: 500px; display: none;">
-                <div class="event">
-                    <div class="event-line">
-                        <div class="event-status success">
-                            <i class="fa fa-check note"></i>
-                        </div>
-                        <div class="time-line-content">
-                            <div class="time-line-reason event-title">
-                                <div class="title-name success">创建成功</div>
-                                <div class="time-line-time">
-                                    <div class="event-sign">
-                                        <i class="fa fa-angle-right fa_caret"></i>
-                                    </div>
-                                    <div class="datetimes">2016-04-01 09:43:17</div>
-                                </div>
-                                <div class="time-line-message" style="display: none;">
-                                    <p class="list-times">时间：2016-04-01 09:43:17</p>
-                                    <p class="list-conent">信息：Created container: test-hgm9l</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="event">
-                    <div class="event-line">
-                        <div class="event-status success">
-                            <i class="fa fa-check note"></i>
-                        </div>
-                        <div class="time-line-content">
-                            <div class="time-line-reason event-title">
-                                <div class="title-name success">创建成功</div>
-                                <div class="time-line-time">
-                                    <div class="event-sign">
-                                        <i class="fa fa-angle-right fa_caret"></i>
-                                    </div>
-                                    <div class="datetimes">2016-04-01 09:43:17</div>
-                                </div>
-                                <div class="time-line-message" style="display: none;">
-                                    <p class="list-times">时间：2016-04-01 09:43:17</p>
-                                    <p class="list-conent">信息：Created container: test-hgm9l</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <!--<div class="event">-->
+                    <!--<div class="event-line">-->
+                        <!--<div class="event-status success">-->
+                            <!--<i class="fa fa-check note"></i>-->
+                        <!--</div>-->
+                        <!--<div class="time-line-content">-->
+                            <!--<div class="time-line-reason event-title">-->
+                                <!--<div class="title-name success">创建成功</div>-->
+                                <!--<div class="time-line-time">-->
+                                    <!--<div class="event-sign">-->
+                                        <!--<i class="fa fa-angle-right fa_caret"></i>-->
+                                    <!--</div>-->
+                                    <!--<div class="datetimes">2016-04-01 09:43:17</div>-->
+                                <!--</div>-->
+                                <!--<div class="time-line-message" style="display: none;">-->
+                                    <!--<p class="list-times">时间：2016-04-01 09:43:17</p>-->
+                                    <!--<p class="list-conent">信息：Created container: test-hgm9l</p>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
             </div>
             <!-- the end of  containerEvent-->
 

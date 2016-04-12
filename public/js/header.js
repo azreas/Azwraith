@@ -1,7 +1,7 @@
 /**
  * Created by HC on 2016/4/12.
  */
-$(function(){
+(function(){
     $('.nav-li').click(function() {
         var self = this;
         $(self).siblings('li').removeClass('item-click').find('.nav-item-list').hide();

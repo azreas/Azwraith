@@ -30,6 +30,8 @@
         if ( containerName === "") {
             alert("服务名称不能为空！");
         } else {
+            var typeX = $('#createContainerForm>li').eq(2).find('.active>.up_style').text().toLowerCase();
+            $('#typeX').val(typeX);
             $("#createContainerForm").submit();
         }
     });
@@ -60,7 +62,7 @@
 
     }).done(function(resp){
         var servers = resp.servers;
-        console.log(servers);
+        //console.log(servers);
         for(var i in servers){
 
             var dbtr=$('<tr class="show-tr"><td><div class="contents-table"><table class="table"><tr class="clusterId">\
@@ -75,6 +77,9 @@
         }
     });
 
+    $('#createContainerForm>li>section').click(function(){
+        $(this).addClass('active').siblings().removeClass('active');
+    });
 
 
 })();
