@@ -2,33 +2,7 @@
  * Created by HC on 2016/4/8.
  */
 (function(){
-    $('.foldingpad').click(function(){
-        if ($(this).hasClass('rotate')) {
-            _unfold(); //展开
-        } else {
-            _shrink();
-        }
-    });
-    // left nav shrink 收缩
-    function _shrink(){
-        $('.nav-li').addClass('live-hover');
-        $('.foldingpad').addClass('rotate');
-        $('.page-container').css('margin-left','55px');
-        $('.foldingpad').css('left','65px')
-        $('.page-sidebar').css('margin-left','-200px');
-        $('.page-small-sidebar').css('margin-left','0px');
-        $('.global-notice').css('left','90px')
-    }
-    // left nav unfold 展开
-    function _unfold(){
-        $('.nav-li').removeClass('live-hover');
-        $('.foldingpad').removeClass('rotate');
-        $('.page-container').css('margin-left','200px');
-        $('.page-sidebar').css('margin-left','0px');
-        $('.page-small-sidebar').css('margin-left','-55px');
-        $('.global-notice').css('left','235px')
-        $('.foldingpad').css('left','210px')
-    }
+
     //container切换
     $('.create.pushContaienrs').click(function(){
         $('.part01').hide();

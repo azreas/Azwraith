@@ -30,5 +30,8 @@ exports.test = function(req, res) {
  * @param res
  */
 exports.detail = function(req,res) {
-    res.render('detail',{})
+    res.render('detail',{
+        name: 'hello',
+        image: 'asdf'
+    })
 };
