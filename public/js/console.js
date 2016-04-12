@@ -30,8 +30,9 @@
         if ( containerName === "") {
             alert("服务名称不能为空！");
         } else {
-            var typeX = $('#createContainerForm>li').eq(2).find('.active>.up_style').text().toLowerCase();
+            var typeX = $('#createContainerForm>li').eq(3).find('.active>.up_style').text().toLowerCase();
             $('#typeX').val(typeX);
+            //alert($('#typeX').val());
             $("#createContainerForm").submit();
         }
     });
