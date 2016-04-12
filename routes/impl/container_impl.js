@@ -125,7 +125,10 @@ exports.create = function (req, res){
     for (var i=0; i<containersConfig.instance; i++) {
         optsArray[i] = {
             Image: req.body.image+":"+req.body.imagetag,
-            name: req.body.containerName+"-"+stringUtil.randomString(5)
+            name: req.body.containerName+"-"+stringUtil.randomString(5),
+            HostConfig: {
+                "PublishAllPorts": true,
+            }
         }
         docker.createContainer(optsArray[i], function (err, container) {
             if (err) {
