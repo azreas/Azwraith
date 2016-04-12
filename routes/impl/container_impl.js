@@ -111,105 +111,143 @@ exports.create = function (req, res){
         name: req.body.containerName,
         image: req.body.image,
         imagetag: req.body.imagetag,
-        conflevel: "4x",
+        conflevel: req.body.conflevel,
         instance:parseInt(req.body.instance,10),
-        port: [
-            {
-                "schema": "http",
-                "in": "8080",
-                "out": "80"
-            }
-        ],
+        address:"",
+        createtime:"",
+        status:"运行中",// 运行状态
         container: []
     }
     var opts = null;
     var count = 0; // 创建容器计数器
     for (var i=0; i<containersConfig.instance; i++) {
-        opts = {
-            Image: req.body.image+":"+req.body.imagetag,
-            HostConfig: {
-                "PublishAllPorts": true,
-            }
-        }
-        docker.createContainer(opts, function (err, container) {
-            if (err) {
-                throw new Error(err);
-            } else { // 创建成功
-                // 启动实例
-                container.start(function (err, data) {
-                    if (err) {
-                        console.log("start container "+container.id+" error :" + err);
-                    } else {
-                        console.log("container.id ---> "+container.id+"  data ---> "+data);
-                    }
-                });
+        // 根据配置级别 conflevel 获取配置，然后根据配置创建容器实例
+        httpUtil.get({host:"192.168.1.253", port:9000, path:"/v1/setmeal/"+containersConfig.conflevel}, function(levelResult){
+            try {
+                console.log("level result ---> "+levelResult);
+                levelResult = JSON.parse(levelResult);
+                console.log("level result.result ---> "+levelResult.result);
 
-                // 保存服务事件（异步）
-                saveServerEvent({
-                    appid:containersConfig.id,
-                    event:"创建成功",
-                    titme:new Date().getTime(),
-                    script:"Created container:"+container.id
-                });
-
-                // 保存实例事件（异步）
-                saveContainerEvent({
-                    containerid:container.id,
-                    title:"创建成功",
-                    titme:new Date().getTime(),
-                    script:"Created container:"+container.id
-                });
-
-                // 获取实例信息，存到容器配置对象
-                container.inspect(function (err, data) {
-                    try {
-                        if (err) {
-                            console.log("inspect container "+container.id+" error :" + err);
-                            throw new Error(err);
-                        } else {
-                            var instanceProtocol; // 实例协议
-                            var instancePort; // 实例端口
-                            var serverHost = dockerConfig.host; // 服务ip
-                            var serverPort; // 服务端口
-                            var ports = data.NetworkSettings.Ports;
-                            for(var p in ports){
-                                serverPort = ports[p][0].HostPort;
-                                instancePort = p.split("/")[0];
-                                instanceProtocol = p.split("/")[1];
-                                break;
-                            }
-                            var serverAdress = serverHost+":"+serverPort; // 服务地址
-                            console.log("serverAdress ---> "+serverAdress);
-
-                            var instanceHost = data.NetworkSettings.IPAddress; // 实例ip
-                            var instanceAdress = instanceHost+":"+instancePort; // 实例地址
-                            console.log("instanceAdress ---> "+instanceAdress);
-
-                            console.log("instanceProtocol ---> "+instanceProtocol);
-
-                            containersConfig.container.push({
-                                id:container.id,
-                                name:req.body.containerName+"-"+stringUtil.randomString(5),
-                                address:instanceAdress,
-                                createtime:new Date(data.Created).getTime(),
-                                status:"运行中",// 运行状态
-
-                            });
-                            count ++;
-                            if (count===containersConfig.instance) { // 实例创建并记录配置完成
-                                console.log("containersConfig.container.length ---> "+containersConfig.container.length);
-                                console.log("containersConfig ---> "+JSON.stringify(containersConfig));
-                                // 保存配置
-                                saveContainers(req, res, containersConfig);
-                            }
+                if (levelResult.result === true) {
+                    // 获取配置级别参数成功，创建容器实例
+                    opts = {
+                        Image: req.body.image+":"+req.body.imagetag,
+                        HostConfig: {
+                            "PublishAllPorts": true,
+                            Memory: levelResult.memory*1024*1024,
+                            CpuShares: levelResult.cpu*512
                         }
-                    } catch (e) {
-                        res.status(e.status || 500);
-                        res.render('error', {
-                            message: e.message,
-                            error: e
-                        });
                     }
+                    docker.createContainer(opts, function (err, container) {
+                        if (err) {
+                            throw new Error(err);
+                        } else { // 创建成功
+                            // 启动实例
+                            container.start(function (err, data) {
+                                if (err) {
+                                    console.log("start container "+container.id+" error :" + err);
+                                } else {
+                                    console.log("container.id ---> "+container.id+"  data ---> "+data);
+
+                                    // 获取实例信息，存到容器配置对象
+                                    container.inspect(function (err, data) {
+                                        try {
+                                            if (err) {
+                                                console.log("inspect container "+container.id+" error :" + err);
+                                                throw new Error(err);
+                                            } else {
+                                                // 保存实例事件（异步）
+                                                saveContainerEvent({
+                                                    containerid:container.id,
+                                                    title:"运行成功",
+                                                    titme:new Date().getTime(),
+                                                    script:"started container:"+container.id
+                                                });
+
+                                                var instanceProtocol; // 实例协议
+                                                var instancePort; // 实例端口
+                                                var serverHost = dockerConfig.host; // 服务ip
+                                                var serverPort; // 服务端口
+                                                var ports = data.NetworkSettings.Ports;
+                                                for(var p in ports){
+                                                    serverPort = ports[p][0].HostPort;
+                                                    instancePort = p.split("/")[0];
+                                                    instanceProtocol = p.split("/")[1];
+                                                    break;
+                                                }
+                                                console.log("serverAddress ---> "+serverHost+":"+serverPort);
+
+                                                var instanceHost = data.NetworkSettings.IPAddress; // 实例ip
+                                                console.log("instanceAddress ---> "+instanceHost+":"+instancePort);
+
+                                                console.log("instanceProtocol ---> "+instanceProtocol);
+
+                                                containersConfig.container.push({
+                                                    id:container.id,
+                                                    outaddress:{
+                                                        schema: instanceProtocol,
+                                                        ip: serverHost,
+                                                        port: serverPort
+                                                    },
+                                                    inaddress:{
+                                                        schema: instanceProtocol,
+                                                        ip: instanceHost,
+                                                        port: instancePort
+                                                    },
+                                                    name:req.body.containerName+"-"+stringUtil.randomString(5),
+                                                    status:"运行中",// 运行状态
+                                                    createtime:new Date(data.Created).getTime(),
+                                                });
+                                                count ++;
+                                                if (count===containersConfig.instance) { // 实例创建并记录配置完成
+                                                    console.log("containersConfig.container.length ---> "+containersConfig.container.length);
+                                                    console.log("containersConfig ---> "+JSON.stringify(containersConfig));
+                                                    // 保存配置
+                                                    containersConfig.address = {
+                                                        schema: instanceProtocol,
+                                                        ip: serverHost,
+                                                        port: serverPort
+                                                    }; // app 地址（外网地址）
+                                                    containersConfig.createtime = new Date().getTime(); // app 创建时间
+                                                    saveContainers(req, res, containersConfig);
+                                                }
+                                            }
+                                        } catch (e) {
+                                            res.status(e.status || 500);
+                                            res.render('error', {
+                                                message: e.message,
+                                                error: e
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+
+                            // 保存服务事件（异步）
+                            saveServerEvent({
+                                appid:containersConfig.id,
+                                event:"创建成功",
+                                titme:new Date().getTime(),
+                                script:"Created container:"+container.id
+                            });
+
+                            // 保存实例事件（异步）
+                            saveContainerEvent({
+                                containerid:container.id,
+                                title:"创建成功",
+                                titme:new Date().getTime(),
+                                script:"Created container:"+container.id
+                            });
+                        }
+                    });
+                } else {
+                    throw new Error(500);
+                }
+            } catch (e) {
+                res.status(e.status || 500);
+                res.render('error', {
+                    message: e.message,
+                    error: e
                 });
             }
         });
