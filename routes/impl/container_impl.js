@@ -104,6 +104,7 @@ var saveContainers = function(req, res, containersConfig) {
  * @param res
  */
 exports.create = function (req, res){
+    console.log("req.body.conflevel ---> "+req.body.conflevel);
     // 容器配置
     var containersConfig = {
         id:uuid.v4(),
@@ -589,5 +590,26 @@ exports.stop = function (req, res){
     });
 }
 
+/**
+ * 根据服务配置级别 conflevel 获取配置
+ * @param req
+ * @param res
+ */
+exports.conflevel = function(req, res) {
+    // 根据配置级别 conflevel 获取配置，然后根据配置创建容器实例
+    httpUtil.get({host:"192.168.1.253", port:9000, path:"/v1/setmeal/"+req.params.conflevel}, function(levelResult){
+        try {
+            console.log("level result ---> "+levelResult);
+            levelResult = JSON.parse(levelResult);
+            console.log("level result.result ---> "+levelResult.result);
 
-
+            if (levelResult.result === true) {
+                res.json(levelResult);
+            } else {
+                throw new Error(500);
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    });
+}

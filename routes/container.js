@@ -25,6 +25,9 @@ module.exports = function(app){
     // 根据服务id获取事件列表
     router.get( '/app/event/list/:id', container_impl.listAppEventById);
 
+    // 根据服务配置级别 conflevel 获取配置
+    router.get( '/setmeal/:conflevel', container_impl.conflevel);
+
 /********************************** 异步请求路由结束 *************************************/
 
     // 根据容器 id 删除容器
