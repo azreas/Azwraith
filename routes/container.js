@@ -8,8 +8,24 @@ var express = require('express')
 var router = express.Router();
 
 module.exports = function(app){
+
+/********************************** 同步请求路由开始 *************************************/
     // 根据镜像创建容器（先创建，后保存信息到数据库）
     router.post( '/create', container_impl.create);
+
+    // 获取当前用户所属服务列表
+    router.get( '/list', container_impl.listByUid);
+/********************************** 同步请求路由结束 *************************************/
+
+
+/********************************** 异步请求路由开始 *************************************/
+    // 根据容器 id 获取指定容器信息
+    router.get( '/get/:id', container_impl.get);
+
+    // 根据服务id获取事件列表
+    router.get( '/app/event/list/:id', container_impl.listAppEventById);
+
+/********************************** 异步请求路由结束 *************************************/
 
     // 根据容器 id 删除容器
     router.get( '/delete/:id', container_impl.delete);
@@ -20,12 +36,6 @@ module.exports = function(app){
     // 获取所有容器
     router.get( '/list/all', container_impl.listAll);
 
-    // 获取当前用户所属服务列表
-    router.get( '/list', container_impl.listByUid);
-
-    // 根据容器 id 获取指定容器信息
-    router.get( '/get/:id', container_impl.get);
-
     // 根据容器id获取绑定域名列表
     router.get( '/domain/list/all', container_impl.listAllDomain);
 
@@ -34,9 +44,6 @@ module.exports = function(app){
 
     // 根据容器id和日期（以天为单位）获取日志
     router.get( '/log/list/all', container_impl.listAllLog);
-
-    // 根据服务id获取事件列表
-    router.get( '/app/event/list/:id', container_impl.listAppEventById);
 
     // 启动容器
     router.get( '/start/:id', container_impl.start);

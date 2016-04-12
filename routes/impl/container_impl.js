@@ -130,7 +130,16 @@ exports.create = function (req, res){
         docker.createContainer(optsArray[i], function (err, container) {
             if (err) {
                 throw new Error(err);
-            } else {
+            } else { // 创建成功
+                // 启动实例
+                container.start(function (err, data) {
+                    if (err) {
+                        console.log("start container "+container.id+" error :" + err);
+                    } else {
+                        console.log("container.id ---> "+container.id+"  data ---> "+data);
+                    }
+                });
+
                 // 保存服务事件（异步）
                 saveServerEvent({
                     appid:containersConfig.id,
@@ -147,19 +156,35 @@ exports.create = function (req, res){
                     script:"Created container:"+container.id
                 });
 
-                containersConfig.container.push({
-                    id:container.id,
-                    name:optsArray[count].name,
-                    address:"",
-                    createtime:new Date().getTime()
+                // 获取实例信息，存到容器配置对象
+                container.inspect(function (err, data) {
+                    try {
+                        if (err) {
+                            console.log("inspect container "+container.id+" error :" + err);
+                            throw new Error(err);
+                        } else {
+                            containersConfig.container.push({
+                                id:container.id,
+                                name:optsArray[count].name,
+                                address:data.NetworkSettings.IPAddress,
+                                createtime:new Date(data.Created).getTime()
+                            });
+                            count ++;
+                            if (count===containersConfig.instance) { // 实例创建并记录配置完成
+                                console.log("containersConfig.container.length ---> "+containersConfig.container.length);
+                                console.log("containersConfig ---> "+JSON.stringify(containersConfig));
+                                // 保存配置
+                                saveContainers(req, res, containersConfig);
+                            }
+                        }
+                    } catch (e) {
+                        res.status(e.status || 500);
+                        res.render('error', {
+                            message: e.message,
+                            error: e
+                        });
+                    }
                 });
-                count ++;
-                if (count===containersConfig.instance) { // 实例创建完成
-                    console.log("containersConfig.container.length ---> "+containersConfig.container.length);
-                    console.log("containersConfig ---> "+JSON.stringify(containersConfig));
-                    // 保存配置
-                    saveContainers(req, res, containersConfig);
-                }
             }
         });
     }
@@ -268,30 +293,31 @@ exports.listByUid = function (req, res){
 
             if (tokenResult.result === true) {
                 var uid = tokenResult.id;
+                console.log("uid ---> "+uid);
                 // 调用底层服务获取服务列表信息
                 httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/server/"+uid}, function(result){
-                    console.log("listByUid result ---> "+result);
-                    result = JSON.parse(result);
-                    console.log("listByUid result.result ---> "+result.result);
+                    try {
+                        console.log("listByUid result ---> "+result);
+                        result = JSON.parse(result);
+                        console.log("listByUid result.result ---> "+result.result);
 
-                    // 获取成功，则返回 json 数据
-                    if (result.result === true) {
-                        res.json(result);
-                        //TODO
-                    } else { //若失败，则返回包含错误提示的 json 数据
-                        res.json(result);
-                        //TODO
+                        // 获取成功，则返回 json 数据
+                        if (result.result === true) {
+                            res.json(result);
+                            //TODO
+                        } else { //若失败，则返回包含错误提示的 json 数据
+                            res.json(result);
+                            //TODO
+                        }
+                    } catch (e) {
+                        console.log(e);
                     }
                 });
             } else {
                 throw new Error(500);
             }
         } catch (e) {
-            res.status(e.status || 500);
-            res.render('error', {
-                message: e.message,
-                error: e
-            });
+            console.log(e);
         }
     });
 }
@@ -304,7 +330,7 @@ exports.listByUid = function (req, res){
 exports.get = function (req, res){
     // 向底层服务接口发起获取容器基本信息请求
     //httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/app/"+req.params.id}, function(result){
-    httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/app/"+req.params.id}, function(result){
+    httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/app/cda9459b-702d-4a24-a715-048b4c03c897"}, function(result){
         try {
             console.log("get result ---> "+result);
             result = JSON.parse(result);
@@ -312,21 +338,16 @@ exports.get = function (req, res){
 
             // 获取成功，则返回 json 数据
             if (result.result === true) {
-                res.render('detail',{
-                    name: result.apps[0].name,
-                    image: result.apps[0].image
-
-                });
+                res.json(result);
+                //TODO
             } else { //若失败，则返回包含错误提示的 json 数据
                 res.json(result);
                 //TODO
             }
         } catch (e) {
-            res.status(e.status || 500);
-            res.render('error', {
-                message: e.message,
-                error: e
-            });
+            console.log(e);
+            //TODO
+            // 这里应该返回 json 格式的提示
         }
     });
 }
@@ -444,11 +465,9 @@ exports.listAppEventById = function (req, res){
                 res.json(appEventResult);
             }
         } catch (e) {
-            res.status(e.status || 500);
-            res.render('error', {
-                message: e.message,
-                error: e
-            });
+            console.log(e);
+            //TODO
+            // 这里应该返回 json 格式的提示
         }
     });
 }
