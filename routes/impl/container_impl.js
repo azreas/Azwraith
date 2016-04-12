@@ -9,6 +9,8 @@ var httpUtil = require("../../modules/util/httpUtil");
 
 var dockerservice = require("../../settings").dockerservice;
 
+var dockerConfig = require("../../settings").dockerConfig;
+
 var stringUtil = require("../../modules/util/stringUtil");
 
 var uuid = require('node-uuid');
@@ -120,17 +122,16 @@ exports.create = function (req, res){
         ],
         container: []
     }
-    var optsArray = []; // 存放创建容器参数
+    var opts = null;
     var count = 0; // 创建容器计数器
     for (var i=0; i<containersConfig.instance; i++) {
-        optsArray[i] = {
+        opts = {
             Image: req.body.image+":"+req.body.imagetag,
-            name: req.body.containerName+"-"+stringUtil.randomString(5),
             HostConfig: {
                 "PublishAllPorts": true,
             }
         }
-        docker.createContainer(optsArray[i], function (err, container) {
+        docker.createContainer(opts, function (err, container) {
             if (err) {
                 throw new Error(err);
             } else { // 创建成功
@@ -166,11 +167,33 @@ exports.create = function (req, res){
                             console.log("inspect container "+container.id+" error :" + err);
                             throw new Error(err);
                         } else {
+                            var instanceProtocol; // 实例协议
+                            var instancePort; // 实例端口
+                            var serverHost = dockerConfig.host; // 服务ip
+                            var serverPort; // 服务端口
+                            var ports = data.NetworkSettings.Ports;
+                            for(var p in ports){
+                                serverPort = ports[p][0].HostPort;
+                                instancePort = p.split("/")[0];
+                                instanceProtocol = p.split("/")[1];
+                                break;
+                            }
+                            var serverAdress = serverHost+":"+serverPort; // 服务地址
+                            console.log("serverAdress ---> "+serverAdress);
+
+                            var instanceHost = data.NetworkSettings.IPAddress; // 实例ip
+                            var instanceAdress = instanceHost+":"+instancePort; // 实例地址
+                            console.log("instanceAdress ---> "+instanceAdress);
+
+                            console.log("instanceProtocol ---> "+instanceProtocol);
+
                             containersConfig.container.push({
                                 id:container.id,
-                                name:optsArray[count].name,
-                                address:data.NetworkSettings.IPAddress,
-                                createtime:new Date(data.Created).getTime()
+                                name:req.body.containerName+"-"+stringUtil.randomString(5),
+                                address:instanceAdress,
+                                createtime:new Date(data.Created).getTime(),
+                                status:"运行中",// 运行状态
+
                             });
                             count ++;
                             if (count===containersConfig.instance) { // 实例创建并记录配置完成
@@ -333,7 +356,7 @@ exports.listByUid = function (req, res){
 exports.get = function (req, res){
     // 向底层服务接口发起获取容器基本信息请求
     //httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/app/"+req.params.id}, function(result){
-    httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/app/"+req.params.id}, function(result){
+    httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/app/cda9459b-702d-4a24-a715-048b4c03c897"}, function(result){
         try {
             console.log("get result ---> "+result);
             result = JSON.parse(result);
@@ -341,21 +364,16 @@ exports.get = function (req, res){
 
             // 获取成功，则返回 json 数据
             if (result.result === true) {
-                res.render('detail',{
-                    name: result.apps[0].name,
-                    image: result.apps[0].image
-
-                });
+                res.json(result);
+                //TODO
             } else { //若失败，则返回包含错误提示的 json 数据
                 res.json(result);
                 //TODO
             }
         } catch (e) {
-            res.status(e.status || 500);
-            res.render('error', {
-                message: e.message,
-                error: e
-            });
+            console.log(e);
+            //TODO
+            // 这里应该返回 json 格式的提示
         }
     });
 }
