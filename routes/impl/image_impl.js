@@ -5,6 +5,8 @@
 
 var docker = require("../../modules/docker");
 
+var dockerservice = require("../../settings").dockerservice;
+
 var httpUtil = require("../../modules/util/httpUtil");
 
 /**
@@ -46,18 +48,25 @@ exports.listByLabelAndKind = function (req, res){
         kind : "dataorcache"
     }
     // 调用底层服务接口
-    httpUtil.get("/v1/image", params, function(result){
+    httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/image"}, params, function(result){
         try {
             console.log("listByLabelAndKind result ---> "+result);
             result = JSON.parse(result);
             console.log("listByLabelAndKind result.result ---> "+result.result);
-            //TODO
-            res.json(result);
+
+            if (result.result === true) {
+                res.json(result);
+            } else {
+                throw new Error(500);
+            }
         } catch (e) {
-            res.status(e.status || 500);
-            res.render('error', {
-                message: e.message,
-                error: e
+            console.log(e);
+            res.json({
+                result: false,
+                info: {
+                    code: "00000",
+                    script: "获取镜像失败"
+                }
             });
         }
     });
