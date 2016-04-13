@@ -256,13 +256,72 @@ exports.create = function (req, res){
 }
 
 /**
- * 删除容器
+ * 根据服务 id 删除服务
  * @param req
  * @param res
  */
 exports.delete = function (req, res){
     // 调用底层服务接口作删除容器前处理
     //TODO
+
+    // 调用 docker api 实现删除容器
+    var container = docker.getContainer(req.params.id);
+    container.remove(function (err, data) {
+        var result;
+        if (!err && !data) {
+            result = {
+                code : "200",
+                msg : "删除容器成功"
+            }
+        } else {
+            result = {
+                code : "500",
+                msg : "删除容器失败,"+data
+            }
+        }
+        res.json(result);
+    });
+}
+
+/**
+ * 根据服务 id 将服务放入回收站（逻辑删除）
+ * @param req
+ * @param res
+ */
+exports.recycle = function (req, res){
+    httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/app/"+req.params.id}, function(result){
+        try {
+            console.log("get result ---> "+result);
+            result = JSON.parse(result);
+            console.log("get result.result ---> "+result.result);
+
+            // 获取成功，则更新删除标识，若服务开着，先进行关闭操作
+            if (result.result === true) {
+                var app = result.apps[0];
+                var containers = app.container;
+                var count = 0; // 容器实例计数器
+                for (var i=0; i<containers.length; i++) {
+                    var container = docker.getContainer(containers[i].id);
+                    container.inspect(function (err, data) {
+                        // 检查容器实例是否关闭，若还没关闭，则进行关闭操作，否则就跳过这操作
+                    });
+                }
+                // 调用底层服务接口作回收容器处理
+                //TODO
+            } else {
+                throw new Error(500);
+            }
+        } catch (e) {
+            console.log(e);
+            res.json({
+                result: false,
+                info: {
+                    code: "00000",
+                    script: "将服务放入回收站失败"
+                }
+            });
+        }
+    });
 
     // 调用 docker api 实现删除容器
     var container = docker.getContainer(req.params.id);
@@ -403,10 +462,31 @@ exports.get = function (req, res){
 
             // 获取成功，则返回 json 数据
             if (result.result === true) {
-                res.render('detail',{
-                    name: result.apps[0].name,
-                    image: result.apps[0].image,
-                    id: result.apps[0].id
+                // 根据配置级别 conflevel 获取配置，然后根据配置创建容器实例
+                httpUtil.get({host:"192.168.1.253", port:9000, path:"/v1/setmeal/"+result.conflevel}, function(levelResult){
+                    try {
+                        console.log("level result ---> "+levelResult);
+                        levelResult = JSON.parse(levelResult);
+                        console.log("level result.result ---> "+levelResult.result);
+
+                        if (levelResult.result === true) {
+                            res.render('detail',{
+                                memory: levelResult.memory*1024*1024+"m",
+                                cpu: levelResult.cpu*512+"MB",
+                                name: result.apps[0].name,
+                                image: result.apps[0].image,
+                                id: result.apps[0].id
+                            });
+                        } else {
+                            throw new Error(500);
+                        }
+                    } catch (e) {
+                        res.status(e.status || 500);
+                        res.render('error', {
+                            message: e.message,
+                            error: e
+                        });
+                    }
                 });
             } else { //若失败，则返回包含错误提示的 json 数据
                 res.json(result);
@@ -439,9 +519,75 @@ exports.listAllInstance = function (req, res){
  * @param res
  */
 exports.getInstance = function (req, res){
-    // 向底层服务接口发起获取容器实例基本信息请求
-    //TODO
+    httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/app/"+req.params.appid}, function(result){
+        try {
+            console.log("get app result ---> "+result);
+            result = JSON.parse(result);
+            console.log("get app result.result ---> "+result.result);
 
+            // 获取成功，则根据实例id获取实例基本信息
+            if (result.result === true) {
+                var app = result.apps[0];
+                var containers = app.container;
+                var container = null; // 实例
+                console.log("实例参数id ---> "+req.params.instanceid);
+                for (var i=0; i<containers.length; i++) { // 循环获取实例
+                    console.log("实例 "+(i+1)+" id ---> "+containers[i].id);
+                    // 若找到实例，则退出
+                    if (req.params.instanceid === containers[i].id) {
+                        container = containers[i];
+                        break;
+                    }
+                }
+                // 若没有找到，则返回提示信息
+                if (container === null) {
+                    throw new Error(500);
+                }
+                console.log("app conflevel ---> "+app.conflevel);
+                // 根据配置级别 conflevel 获取配置，然后根据配置创建容器实例
+                httpUtil.get({host:"192.168.1.253", port:9000, path:"/v1/setmeal/"+app.conflevel}, function(levelResult){
+                    try {
+                        console.log("level result ---> "+levelResult);
+                        levelResult = JSON.parse(levelResult);
+                        console.log("level result.result ---> "+levelResult.result);
+
+                        if (levelResult.result === true) {
+                            // 返回 json 数据
+                            res.json({
+                                container:container,
+                                memory:levelResult.memory+"MB",
+                                cpu:levelResult.cpu,
+                                image:app.image,
+                                imagetag:app.imagetag
+                            });
+                        } else {
+                            throw new Error(result.info.script);
+                        }
+                    } catch (e) {
+                        console.log("获取容器实例 "+req.params.instanceid+" 失败："+e);
+                        res.json({
+                            result: false,
+                            info: {
+                                code: "00000",
+                                script: "获取容器实例 "+req.params.instanceid+" 失败"
+                            }
+                        });
+                    }
+                });
+            } else {
+                throw new Error(500);
+            }
+        } catch (e) {
+            console.log("获取容器实例 "+req.params.instanceid+" 失败："+e);
+            res.json({
+                result: false,
+                info: {
+                    code: "00000",
+                    script: "获取容器实例 "+req.params.instanceid+" 失败"
+                }
+            });
+        }
+    });
 }
 
 /**
@@ -462,22 +608,25 @@ exports.listInstanceAllLog = function (req, res){
  */
 exports.listInstanceEventById = function (req, res){
     // 向底层服务接口发起获取容器实例事件请求
-    httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/appevent/"+req.params.id}, function(appEventResult){
+    httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/containerevent/"+req.params.id}, function(containerEventResult){
         try {
-            console.log("appEvent result ---> "+appEventResult);
-            appEventResult = JSON.parse(appEventResult);
-            console.log("appEvent result.result ---> "+appEventResult.result);
+            console.log("containerEvent result ---> "+containerEventResult);
+            containerEventResult = JSON.parse(containerEventResult);
+            console.log("containerEvent result.result ---> "+containerEventResult.result);
 
-            if (appEventResult.result === true) {
-                res.json(appEventResult);
+            if (containerEventResult.result === true) {
+                res.json(containerEventResult);
             } else {
-                res.json(appEventResult);
+                throw new Error(500);
             }
         } catch (e) {
-            res.status(e.status || 500);
-            res.render('error', {
-                message: e.message,
-                error: e
+            console.log("获取容器实例事件失败："+e);
+            res.json({
+                result: true,
+                info: {
+                    code: "00000",
+                    script: "获取容器实例事件失败"
+                }
             });
         }
     });
@@ -543,73 +692,125 @@ exports.listAppEventById = function (req, res){
 }
 
 /**
- * 启动容器
+ * 根据服务id启动服务
  * @param req
  * @param res
  */
 exports.start = function (req, res){
-    var container = docker.getContainer(req.params.id);
-    container.start(function (err, data) {
-        var result;
-        if (!err && !data) {
-            result = {
-                code : "200",
-                msg : "启动容器成功"
-            }
-        } else {
-            result = {
-                code : "500",
-                msg : "启动容器失败,"+data
-            }
-        }
-        res.json(result);
-    });
-}
-
-/**
- * 关闭容器
- * @param req
- * @param res
- */
-exports.stop = function (req, res){
-    var container = docker.getContainer(req.params.id);
-    container.stop(function (err, data) {
-        var result;
-        if (!err && !data) {
-            result = {
-                code : "200",
-                msg : "关闭容器成功"
-            }
-        } else {
-            result = {
-                code : "500",
-                msg : "关闭容器失败,"+data
-            }
-        }
-        res.json(result);
-    });
-}
-
-/**
- * 根据服务配置级别 conflevel 获取配置
- * @param req
- * @param res
- */
-exports.conflevel = function(req, res) {
-    // 根据配置级别 conflevel 获取配置，然后根据配置创建容器实例
-    httpUtil.get({host:"192.168.1.253", port:9000, path:"/v1/setmeal/"+req.params.conflevel}, function(levelResult){
+    // 根据服务id，获取容器实例信息，根据容器实例id启动实例
+    httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/app/"+req.params.id}, function(result){
         try {
-            console.log("level result ---> "+levelResult);
-            levelResult = JSON.parse(levelResult);
-            console.log("level result.result ---> "+levelResult.result);
+            console.log("get result ---> "+result);
+            result = JSON.parse(result);
+            console.log("get result.result ---> "+result.result);
 
-            if (levelResult.result === true) {
-                res.json(levelResult);
+            // 获取成功
+            if (result.result === true) {
+                var serverResult = null; // 返回页面 json
+                var count = 0; // 启动容器实例计数器
+                var containers = result.apps[0].container;
+                for (var i=0; i<containers.length; i++) {
+                    var container = docker.getContainer(containers[i].id);
+                    container.start(function (err, data) {
+                        if (err) {
+                            console.log("启动容器实例失败："+err);
+                            serverResult = {
+                                result: false,
+                                info: {
+                                    code: "00000",
+                                    script: "启动失败"
+                                }
+                            }
+                        }
+                        count ++;
+                        if (count === containers.length) { // 若容器实例启动完毕，则返回 json
+                            if (!(serverResult && !serverResult.result)) { // 若没有实例启动失败，则返回成功提示，否则直接返回
+                                serverResult = {
+                                    result: true,
+                                    info: {
+                                        code: "10000",
+                                        script: "启动成功"
+                                    }
+                                }
+                            }
+                            res.json(serverResult);
+                        }
+                    });
+                }
             } else {
                 throw new Error(500);
             }
         } catch (e) {
-            console.log(e);
+            console.log("启动服务失败："+e);
+            res.json({
+                result: false,
+                info: {
+                    code: "00000",
+                    script: "启动失败"
+                }
+            });
+        }
+    });
+}
+
+/**
+ * 根据服务id关闭服务
+ * @param req
+ * @param res
+ */
+exports.stop = function (req, res){
+    // 根据服务id，获取容器实例信息，根据容器实例id停止实例
+    httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/app/"+req.params.id}, function(result){
+        try {
+            console.log("get result ---> "+result);
+            result = JSON.parse(result);
+            console.log("get result.result ---> "+result.result);
+
+            // 获取成功
+            if (result.result === true) {
+                var serverResult = null; // 返回页面 json
+                var count = 0; // 启动容器实例计数器
+                var containers = result.apps[0].container;
+                for (var i=0; i<containers.length; i++) {
+                    var container = docker.getContainer(containers[i].id);
+                    container.stop(function (err, data) {
+                        if (err) {
+                            console.log("停止容器实例失败："+err);
+                            serverResult = {
+                                result: false,
+                                info: {
+                                    code: "00000",
+                                    script: "停止失败"
+                                }
+                            }
+                        }
+                        count ++;
+                        if (count === containers.length) { // 若容器实例启动完毕，则返回 json
+                            if (!(serverResult && !serverResult.result)) { // 若没有实例启动失败，则返回成功提示，否则直接返回
+                                serverResult = {
+                                    result: true,
+                                    info: {
+                                        code: "10000",
+                                        script: "停止成功"
+                                    }
+                                }
+                            }
+                            res.json(serverResult);
+                        }
+                    });
+                }
+            } else {
+                throw new Error(500);
+            }
+        } catch (e) {
+            console.log("停止服务失败："+e);
+            res.json({
+                result: false,
+                info: {
+                    code: "00000",
+                    script: "停止失败"
+                }
+            });
         }
     });
 }

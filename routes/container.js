@@ -25,13 +25,19 @@ module.exports = function(app){
     // 根据服务id获取事件列表
     router.get( '/app/event/list/:id', container_impl.listAppEventById);
 
-    // 根据服务配置级别 conflevel 获取配置
-    router.get( '/setmeal/:conflevel', container_impl.conflevel);
+    // 根据服务id启动服务
+    router.get( '/start/:id', container_impl.start);
+
+    // 根据服务id关闭服务
+    router.get( '/stop/:id', container_impl.stop);
+
+    // 根据服务 id 删除服务
+    router.get( '/delete/:id', container_impl.delete);
+
+    // 根据服务 id 将服务放入回收站（逻辑删除）
+    router.post( '/recycle/:id', container_impl.recycle);
 
 /********************************** 异步请求路由结束 *************************************/
-
-    // 根据容器 id 删除容器
-    router.get( '/delete/:id', container_impl.delete);
 
     // 根据容器 id 更改容器配置
     router.post( '/update', container_impl.update);
@@ -48,18 +54,12 @@ module.exports = function(app){
     // 根据容器id和日期（以天为单位）获取日志
     router.get( '/log/list/all', container_impl.listAllLog);
 
-    // 启动容器
-    router.get( '/start/:id', container_impl.start);
-
-    // 关闭容器
-    router.get( '/stop/:id', container_impl.stop);
-
 /********************************** 实例开始 *************************************/
     // 根据容器id获取容器实例列表
     router.get( '/instance/list/all', container_impl.listAllInstance);
 
-    // 根据容器实例id获取容器实例基本信息
-    router.get( '/instance/get/:id', container_impl.getInstance);
+    // 根据服务id和容器实例id获取容器实例基本信息
+    router.get( '/instance/:appid/:instanceid', container_impl.getInstance);
 
     // 根据容器实例id和日期（以天为单位）获取日志
     router.get( '/instance/log/list/all', container_impl.listInstanceAllLog);
