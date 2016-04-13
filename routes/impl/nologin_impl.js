@@ -70,7 +70,10 @@ exports.regist = function (req, res){
  * @param res
  */
 exports.enterLogin = function (req, res){
-    res.render('login', { title: '零云 - 登录'});
+    res.render('login', {
+        title: '零云 - 登录',
+        status: ''
+    });
 }
 
 /**
@@ -110,7 +113,10 @@ exports.login = function (req, res){
                 });
             } else {
                 // 登录失败，重定向回 登录页面 带着提示信息和回显信息
-                res.redirect("login");
+                res.render("login",{
+                    title: '零云 - 登录',
+                    status: result.info.script
+                });
             }
         } catch (e) {
             res.status(e.status || 500);

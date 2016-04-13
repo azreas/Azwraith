@@ -65,8 +65,8 @@
                 </div>
             </div>
             <ul class="succeed-content pull-left">
-                <li>运行状态：已停止</li>
-                <li>服务地址：<a href="http://test-gnahceh.hz.tenxapp.com:42969" target="_blank">test-gnahceh.hz.tenxapp.com:42969</a></li>
+                <li>运行状态：<%= status %></li>
+                <li>服务地址：<a href="<%= http %>" target="_blank"><%= http %></a></li>
                 <li>创建时间：<span></span></li>
                 <!--<li>更新时间：2016-04-01 09:43:16</li>-->
                 <input id="containerId" type="hidden" value="<%= id %>">
@@ -100,7 +100,7 @@
                     <tbody class="BORDER">
                     <tr>
                         <td> 名称：<%= name %></td>
-                        <td> 运行状态：已停止</td>
+                        <td> 运行状态：<%= status %></td>
                     </tr>
                     <tr>
                         <td> 镜像名称：<%= image %></td>
@@ -121,8 +121,8 @@
                         <td> 系统盘：10GB</td>
                     </tr>
                     <tr>
-                        <td> CPU：60m</td>
-                        <td> 内存：256MB</td>
+                        <td> CPU：<%= cpu %></td>
+                        <td> 内存：<%= memory %></td>
                     </tr>
                     </tbody>
                 </table>
@@ -160,15 +160,17 @@
                     </tr>
                     </thead>
                     <tbody class="BORDER-TR">
+                    <% for(var i=0;i<container.length;i++) {%>
                     <tr>
-                        <td><a href="/containers/tenx_district3/instances/mongodb1-uhpk8">mongodb1-uhpk8</a></td>
-                        <td>Pending</td>
-                        <td>tenxcloud/mongodb:latest</td>
-                        <td>-</td>
-                        <td><a href="http://mongodb1-gnahceh.hz.tenxapp.com:56331" target="_blank">mongodb1-gnahceh.hz.tenxapp.com:56331</a>
+                        <td><a href="/container/instance/<%= id %>/<%= container[i].id %>"><%= container[i].name %></a></td>
+                        <td><%= container[i].status %></td>
+                        <td><%= image %>:latest</td>
+                        <td><%= container[i].inaddress.ip %>:<%= container[i].inaddress.port%></td>
+                        <td><a href="http://<%= container[i].outaddress.ip %>:<%= container[i].outaddress.port%>" target="_blank"><%= container[i].outaddress.ip %>:<%= container[i].outaddress.port%></a>
                         </td>
-                        <td>1 分钟前</td>
+                        <td></td>
                     </tr>
+                    <% } %>
                     </tbody>
                 </table>
             </div>

@@ -463,19 +463,21 @@ exports.get = function (req, res){
             // 获取成功，则返回 json 数据
             if (result.result === true) {
                 // 根据配置级别 conflevel 获取配置，然后根据配置创建容器实例
-                httpUtil.get({host:"192.168.1.253", port:9000, path:"/v1/setmeal/"+result.conflevel}, function(levelResult){
+                httpUtil.get({host:"192.168.1.253", port:9000, path:"/v1/setmeal/"+result.apps[0].conflevel}, function(levelResult){
                     try {
                         console.log("level result ---> "+levelResult);
                         levelResult = JSON.parse(levelResult);
                         console.log("level result.result ---> "+levelResult.result);
-
                         if (levelResult.result === true) {
                             res.render('detail',{
-                                memory: levelResult.memory*1024*1024+"m",
-                                cpu: levelResult.cpu*512+"MB",
+                                memory: levelResult.setneal.memory+"MB",
+                                cpu: levelResult.setneal.cpu+"个",
                                 name: result.apps[0].name,
                                 image: result.apps[0].image,
-                                id: result.apps[0].id
+                                id: result.apps[0].id,
+                                status: result.apps[0].status,
+                                http: 'http://'+result.apps[0].address.ip+':'+result.apps[0].address.port,
+                                container: result.apps[0].container
                             });
                         } else {
                             throw new Error(500);
@@ -551,18 +553,38 @@ exports.getInstance = function (req, res){
                         levelResult = JSON.parse(levelResult);
                         console.log("level result.result ---> "+levelResult.result);
 
+                        var time = new Date(container.createtime);
+                        var date = formatDate(time);
+
                         if (levelResult.result === true) {
                             // 返回 json 数据
-                            res.json({
+                            res.render('instanceDetail',{
                                 container:container,
-                                memory:levelResult.memory+"MB",
-                                cpu:levelResult.cpu,
+                                memory:levelResult.setneal.memory+"MB",
+                                cpu:levelResult.setneal.cpu,
                                 image:app.image,
-                                imagetag:app.imagetag
+                                imagetag:app.imagetag,
+                                date:date,
+                                name: container.name,
+                                id: result.apps[0].id,
+                                status: container.status,
+                                httpout: 'http://'+container.outaddress.ip+':'+container.outaddress.port,
+                                httpin: 'http://'+container.inaddress.ip+':'+container.inaddress.port
                             });
                         } else {
                             throw new Error(result.info.script);
                         }
+
+                        function formatDate(now) {
+                            var year=now.getFullYear();
+                            var month=now.getMonth()+1;
+                            var date=now.getDate();
+                            var hour=now.getHours();
+                            var minute=now.getMinutes();
+                            var second=now.getSeconds();
+                            return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
+                        }
+
                     } catch (e) {
                         console.log("获取容器实例 "+req.params.instanceid+" 失败："+e);
                         res.json({
