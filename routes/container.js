@@ -25,17 +25,18 @@ module.exports = function(app){
     // 根据服务id获取事件列表
     router.get( '/app/event/list/:id', container_impl.listAppEventById);
 
+
     // 根据服务id启动服务
     router.get( '/start/:id', container_impl.start);
 
     // 根据服务id关闭服务
     router.get( '/stop/:id', container_impl.stop);
 
-    // 根据服务 id 删除服务
+    // 根据服务 id 删除服务（删除 docker 里的信息）
     router.get( '/delete/:id', container_impl.delete);
 
     // 根据服务 id 将服务放入回收站（逻辑删除）
-    router.post( '/recycle/:id', container_impl.recycle);
+    router.get( '/recycle/:id', container_impl.recycle);
 
 /********************************** 异步请求路由结束 *************************************/
 
