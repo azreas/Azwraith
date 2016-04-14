@@ -789,6 +789,38 @@ exports.listAppEventById = function (req, res){
 }
 
 /**
+ * 启动服务后更新服务信息
+ * @param req 请求对象
+ * @param res 响应对象
+ * @param app 服务对象
+ * @param jsonResult 返回的json对象
+ */
+var startAfterupdateApp = function(req, res, app, jsonResult) {
+    // 发起更新 app 请求
+    httpUtil.put({host:"192.168.1.253", port:9000, path:"/v1/app"}, app, function(updateAppResult){
+        try {
+            console.log("update app result ---> "+updateAppResult);
+            updateAppResult = JSON.parse(updateAppResult);
+
+            if (updateAppResult.result === true) {
+                res.json(jsonResult);
+            } else {
+                throw new Error("将服务 "+app.name+" 状态保存失败");
+            }
+        } catch (e) {
+            console.log(e);
+            res.json({
+                result: false,
+                info: {
+                    code: "00000",
+                    script: "服务 "+app.name+" 启动失败："+ e.message
+                }
+            });
+        }
+    });
+}
+
+/**
  * 根据服务id启动服务
  * @param req
  * @param res
@@ -797,41 +829,107 @@ exports.start = function (req, res){
     // 根据服务id，获取容器实例信息，根据容器实例id启动实例
     httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/app/"+req.params.id}, function(result){
         try {
-            console.log("get result ---> "+result);
+            console.log("get app result ---> "+result);
             result = JSON.parse(result);
-            console.log("get result.result ---> "+result.result);
 
             // 获取成功
             if (result.result === true) {
-                var serverResult = null; // 返回页面 json
+                var app = result.apps[0]; // 服务对象
+                delete app._id; // 删除 _id 属性
                 var count = 0; // 启动容器实例计数器
-                var containers = result.apps[0].container;
+                var containers = app.container; // 容器实例数组
+                var script = ""; // 异常记录
+                var startContainerFlag = true; // 启动容器实例成功标记
                 for (var i=0; i<containers.length; i++) {
                     var container = docker.getContainer(containers[i].id);
                     container.start(function (err, data) {
                         if (err) {
-                            console.log("启动容器实例失败："+err);
-                            serverResult = {
-                                result: false,
-                                info: {
-                                    code: "00000",
-                                    script: "启动失败"
-                                }
-                            }
+                            startContainerFlag = false;
+                            console.log("启动容器实例 "+containers[count].id+" 失败："+err);
+                            // 记录异常
+                            script += "启动容器实例 "+containers[count].id+" 失败";
+                            // 更新容器实例的状态
+                            app.container[count].status = "启动失败";
                         }
-                        count ++;
-                        if (count === containers.length) { // 若容器实例启动完毕，则返回 json
-                            if (!(serverResult && !serverResult.result)) { // 若没有实例启动失败，则返回成功提示，否则直接返回
-                                serverResult = {
-                                    result: true,
-                                    info: {
-                                        code: "10000",
-                                        script: "启动成功"
+                        // 更新容器实例的状态
+                        app.container[count].status = "已启动";
+
+                        // 获取容器实例端口，更新数据库信息
+                        container.inspect(function (err, data) {
+                            if (err) {
+                                startContainerFlag = false;
+                                console.log("获取容器实例 "+containers[count].id+" 失败："+err);
+                                // 记录异常
+                                script += "获取容器实例 "+containers[count].id+" 失败";
+                            }
+
+                            // 更改服务配置
+                            var instanceProtocol; // 实例协议
+                            var instancePort; // 实例端口
+                            var serverHost = dockerConfig.host; // 服务ip
+                            var serverPort; // 服务端口
+                            var ports = data.NetworkSettings.Ports;
+                            for(var p in ports){
+                                serverPort = ports[p][0].HostPort;
+                                instancePort = p.split("/")[0];
+                                instanceProtocol = p.split("/")[1];
+                                break;
+                            }
+                            console.log("serverAddress ---> "+serverHost+":"+serverPort);
+
+                            var instanceHost = data.NetworkSettings.IPAddress; // 实例ip
+                            console.log("instanceAddress ---> "+instanceHost+":"+instancePort);
+
+                            console.log("instanceProtocol ---> "+instanceProtocol);
+
+                            // 更新容器实例配置
+                            app.container[count].outaddress = {
+                                schema: instanceProtocol,
+                                ip: serverHost,
+                                port: serverPort
+                            }
+                            app.container[count].inaddress = {
+                                schema: instanceProtocol,
+                                ip: instanceHost,
+                                port: instancePort
+                            }
+
+                            count ++;
+                            if (count === containers.length) { // 若容器实例启动完毕，则返回 json
+                                app.address = {
+                                    schema: instanceProtocol,
+                                    ip: serverHost,
+                                    port: serverPort
+                                };
+
+                                var jsonResult = null; // 返回信息
+                                if (startContainerFlag) { // 若没有启动关闭失败，则返回成功提示
+                                    // 更新服务的状态
+                                    app.status = "已启动";
+                                    jsonResult = {
+                                        result: true,
+                                        info: {
+                                            code: "10000",
+                                            script: "启动服务 "+req.params.id+" 成功"
+                                        },
+                                        app : app
+                                    }
+                                } else {
+                                    // 更新服务的状态
+                                    app.status = "启动失败";
+                                    jsonResult = {
+                                        result: false,
+                                        info: {
+                                            code: "00000",
+                                            script: "启动服务 "+req.params.id+" 失败："+script
+                                        },
+                                        app : app
                                     }
                                 }
+                                // 更新 服务 和 容器实例 的状态
+                                startAfterupdateApp(req, res, app, jsonResult);
                             }
-                            res.json(serverResult);
-                        }
+                        });
                     });
                 }
             } else {
