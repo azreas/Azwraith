@@ -15,6 +15,23 @@ var stringUtil = require("../../modules/util/stringUtil");
 
 var uuid = require('node-uuid');
 
+
+/**
+ * 根据 容器实例id 更新信息
+ * @param app 服务对象
+ * @param containerId 容器id
+ * @param pname 属性名
+ * @param pvalue 属性值
+ */
+var updateAppContainer = function(app, containerId, pname, pvalue) {
+    for (var i=0; i<app.container.length; i++) {
+        if (app.container[i].id === containerId) {
+            app.container[i][pname] = pvalue;
+            break;
+        }
+    }
+}
+
 /**
  * 记录服务事件
  * @param serverEventConfig 服务事件信息
@@ -337,7 +354,8 @@ var updateApp = function(req, res, app) {
                     info: {
                         code: "10000",
                         script: "将服务 "+app.name+" 放入回收站成功"
-                    }
+                    },
+                    app : app
                 });
             } else {
                 throw new Error("将服务 "+app.name+" 放入回收站失败");
@@ -349,7 +367,8 @@ var updateApp = function(req, res, app) {
                 info: {
                     code: "00000",
                     script: "将服务放入回收站失败："+ e.message
-                }
+                },
+                app : app
             });
         }
     });
@@ -365,42 +384,70 @@ exports.recycle = function (req, res){
         try {
             console.log("get app result ---> "+result);
             result = JSON.parse(result);
-            console.log("get app result.result ---> "+result.result);
 
             // 获取成功，则更新删除标识，若服务开着，先进行关闭操作
             if (result.result === true) {
                 var app = result.apps[0];
                 var containers = app.container;
                 var count = 0; // 容器实例计数器
+                var deleteAppFlag = true; // 删除失败标记
+                var script = ""; // 异常记录
                 for (var i=0; i<containers.length; i++) {
-                    var container = docker.getContainer(containers[i].id);
-                    container.inspect(function (err, data) {
+                    docker.getContainer(containers[i].id).inspect(function (err, data) {
+                        var container_id = data.Id;
+                        console.log("container_id ---> "+container_id);
                         if (err) {
-                            console.log("获取容器 "+container.id+" 实例信息失败");
+                            console.log("获取容器实例 "+container_id+" 信息失败");
+                            script += "获取容器实例 "+container_id+" 信息失败；";
                         } else {
                             // 检查容器实例是否关闭，若还没关闭，则进行关闭操作，否则就跳过这操作
-
                             if (data.State.Running === true) { // 容器实例在跑着，应先关闭实例
-                                container.stop(function (err, data) {
-                                    if (err) {
-                                        console.log("关闭容器 "+container.id+" 实例失败");
-                                    }
-                                    count ++;
-                                    if (count === containers.length) { // 检查到最后一个实例，则进行回收服务
-                                        delete app._id; // 删除 _id 属性
-                                        app.deleteflag = 1; // 删除标记（0：正常；1：删除；2：审核；3：彻底删除）
-                                        updateApp(req, res, app); // 更新服务信息
+                                docker.getContainer(container_id).stop(function (err, data) {
+                                    try {
+                                        if (err) {
+                                            deleteAppFlag = false;
+                                            console.log("关闭容器实例 "+container_id+" 失败");
+                                            script += "关闭容器实例 "+container_id+" 失败；";
+                                        }
+                                        // 更改容器实例状态
+                                        updateAppContainer(app, container_id, "status", "已停止");
+                                        count ++;
+                                        if (count === containers.length) { // 检查到最后一个实例，则进行回收服务
+                                            if (deleteAppFlag) { // 若删除成功
+                                                delete app._id; // 删除 _id 属性
+                                                app.deleteflag = 1; // 删除标记（0：正常；1：删除；2：审核；3：彻底删除）
+                                                app.status = "已停止";
+                                                updateApp(req, res, app); // 更新服务信息
+                                            } else {
+                                                throw new Error(500);
+                                            }
+                                        }
+                                    } catch (e) {
+                                        console.log(e);
+                                        res.json({
+                                            result: false,
+                                            info: {
+                                                code: "00000",
+                                                script: "将服务 "+req.params.id+" 放入回收站失败："+ e.message
+                                            }
+                                        });
                                     }
                                 });
                             } else {
+                                // 更改容器实例状态
+                                updateAppContainer(app, container_id, "status", "已停止");
                                 count ++;
                                 if (count === containers.length) { // 检查到最后一个实例，则进行回收服务
-                                    delete app._id; // 删除 _id 属性
-                                    app.deleteflag = 1; // 删除标记（0：正常；1：删除；2：审核；）
-                                    updateApp(req, res, app); // 更新服务信息
+                                    if (deleteAppFlag) { // 若删除成功
+                                        delete app._id; // 删除 _id 属性
+                                        app.deleteflag = 1; // 删除标记（0：正常；1：删除；2：审核；3：彻底删除）
+                                        app.status = "已停止";
+                                        updateApp(req, res, app); // 更新服务信息
+                                    } else {
+                                        throw new Error(500);
+                                    }
                                 }
                             }
-
                         }
                     });
                 }
@@ -413,7 +460,7 @@ exports.recycle = function (req, res){
                 result: false,
                 info: {
                     code: "00000",
-                    script: "将服务放入回收站失败："+ e.message
+                    script: "将服务 "+req.params.id+" 放入回收站失败："+ e.message
                 }
             });
         }
@@ -844,26 +891,27 @@ exports.start = function (req, res){
                 var script = ""; // 异常记录
                 var startContainerFlag = true; // 启动容器实例成功标记
                 for (var i=0; i<containers.length; i++) {
-                    var container = docker.getContainer(containers[i].id);
-                    container.start(function (err, data) {
+                    // 注：传containerId参数启动容器，意在在回调函数里使用
+                    docker.getContainer(containers[i].id).start({containerId:containers[i].id},function (err, data) {
+                        var container_id = this.opts.containerId;
                         if (err) {
                             startContainerFlag = false;
-                            console.log("启动容器实例 "+containers[count].id+" 失败："+err);
+                            console.log("启动容器实例 "+container_id+" 失败："+err);
                             // 记录异常
-                            script += "启动容器实例 "+containers[count].id+" 失败";
+                            script += "启动容器实例 "+container_id+" 失败";
                             // 更新容器实例的状态
-                            app.container[count].status = "启动失败";
+                            updateAppContainer(app, container_id, "status", "启动失败");
                         }
                         // 更新容器实例的状态
-                        app.container[count].status = "运行中";
+                        updateAppContainer(app, container_id, "status", "运行中");
 
                         // 获取容器实例端口，更新数据库信息
-                        container.inspect(function (err, data) {
+                        docker.getContainer(container_id).inspect(function (err, data) {
                             if (err) {
                                 startContainerFlag = false;
-                                console.log("获取容器实例 "+containers[count].id+" 失败："+err);
+                                console.log("获取容器实例 "+container_id+" 失败："+err);
                                 // 记录异常
-                                script += "获取容器实例 "+containers[count].id+" 失败";
+                                script += "获取容器实例 "+container_id+" 失败";
                             }
 
                             // 更改服务配置
@@ -886,16 +934,16 @@ exports.start = function (req, res){
                             console.log("instanceProtocol ---> "+instanceProtocol);
 
                             // 更新容器实例配置
-                            app.container[count].outaddress = {
+                            updateAppContainer(app, container_id, "outaddress", {
                                 schema: instanceProtocol,
                                 ip: serverHost,
                                 port: serverPort
-                            }
-                            app.container[count].inaddress = {
+                            });
+                            updateAppContainer(app, container_id, "inaddress", {
                                 schema: instanceProtocol,
                                 ip: instanceHost,
                                 port: instancePort
-                            }
+                            });
 
                             count ++;
                             if (count === containers.length) { // 若容器实例启动完毕，则返回 json
@@ -1004,18 +1052,19 @@ exports.stop = function (req, res){
                 var script = ""; // 异常记录
                 var stopContainerFlag = true; // 关闭容器实例成功标记
                 for (var i=0; i<containers.length; i++) {
-                    var container = docker.getContainer(containers[i].id);
-                    container.stop(function (err, data) {
+                    // 注：传containerId参数启动容器，意在在回调函数里使用
+                    docker.getContainer(containers[i].id).stop({containerId:containers[i].id},function (err, data) {
+                        var container_id = this.opts.containerId;
                         if (err) {
                             stopContainerFlag = false;
-                            console.log("停止容器实例 "+containers[count].id+" 失败："+err);
+                            console.log("停止容器实例 "+container_id+" 失败："+err);
                             // 记录异常
-                            script += "停止容器实例 "+containers[count].id+" 失败";
+                            script += "停止容器实例 "+container_id+" 失败";
                             // 更新容器实例的状态
-                            app.container[count].status = "停止失败";
+                            updateAppContainer(app, container_id, "status", "停止失败");
                         }
                         // 更新容器实例的状态
-                        app.container[count].status = "已停止";
+                        updateAppContainer(app, container_id, "status", "已停止");
                         count ++;
                         if (count === containers.length) { // 若容器实例启动完毕，则返回 json
                             var jsonResult = null; // 返回信息
