@@ -552,7 +552,10 @@ exports.get = function (req, res){
                                 cpu: levelResult.setneal.cpu+"个",
                                 name: result.apps[0].name,
                                 image: result.apps[0].image,
-                                id: result.apps[0].id
+                                id: result.apps[0].id,
+                                status: result.apps[0].status,
+                                http: 'http://'+result.apps[0].address.ip+':'+result.apps[0].address.port,
+                                container: result.apps[0].container
                             });
                         } else {
                             throw new Error(500);

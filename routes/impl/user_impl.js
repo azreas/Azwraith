@@ -108,9 +108,9 @@ exports.update = function (req, res){
 exports.get = function (req, res){
     httpUtil.get("/v1/user/"+req.params.id, function(result){
         try {
-            console.log("get result ---> "+result);
+            console.log("get user result ---> "+result);
             result = JSON.parse(result);
-            console.log("get result.result ---> "+result.result);
+            console.log("get user result.result ---> "+result.result);
             //TODO
             res.json(result);
         } catch (e) {

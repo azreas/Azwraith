@@ -13,28 +13,25 @@
         <div class="caption dropdown">
           <a id="refreshDB"><i class="fa_refresh"></i></a>
           <a class="btn create pushContaienrs"><i class="fa_btn_plus"></i><span>创建</span></a>
-          <a class="more" data-toggle="dropdown">更多操作<b class="caret margin"></b></a>
+          <a class="more" data-toggle="dropdown" aria-expanded="false">更多操作<b class="caret margin"></b></a>
           <ul class="dropdown-menu drop-left">
             <li>
-              <a id="startContainer" class="cursor-drop" href=""><i class="fa fa-play"></i><span class="m_left">启动</span></a>
+              <a id="startContainer" class="cursor-drop" href="javascript:void(0)"><i class="fa fa-play"></i><span class="m_left">启动</span></a>
             </li>
             <li>
-              <a id="stopContainer" class="cursor-drop" href=""><i class="fa fa-power-off"></i><span class="m_left">停止</span></a>
+              <a id="stopContainer" class="cursor-drop" href="javascript:void(0)"><i class="fa fa-power-off"></i><span class="m_left">停止</span></a>
             </li>
             <li>
-              <a id="scaleCluster" class="cursor-drop" href=""><i class="fa fa-arrows"></i><span class="m_left">弹性伸缩</span></a>
+              <a id="scaleCluster" class="cursor-drop" href="javascript:void(0)"><i class="fa fa-arrows"></i><span class="m_left">弹性伸缩</span></a>
             </li>
             <li>
-              <a id="upgradeCluster" class="cursor-drop" href=""><i class="fa fa-arrow-up"></i><span class="m_left">灰度升级</span></a>
+              <a id="redeployContainer" class="cursor-drop" href="javascript:void(0)"><i class="fa fa-rotate-left"></i><span class="m_left">重新部署</span></a>
             </li>
+            <!--<li>-->
+              <!--<a id="changeConfiguration" class="cursor-drop"><i class="fa fa-gear"></i><span class="m_left">更改配置</span></a>-->
+            <!--</li>-->
             <li>
-              <a id="redeployContainer" class="cursor-drop" href=""><i class="fa fa-rotate-left"></i><span class="m_left">重新部署</span></a>
-            </li>
-            <li>
-              <a id="changeConfiguration" class="cursor-drop"><i class="fa fa-gear"></i><span class="m_left">更改配置</span></a>
-            </li>
-            <li>
-              <a id="deleteButton" class="cursor-drop" href=""><i class="fa fa-trash-o"></i><span class="m_left">删除</span></a>
+              <a id="deleteButton" class="cursor-drop" href="javascript:void(0)"><i class="fa fa-trash-o"></i><span class="m_left">删除</span></a>
             </li>
           </ul>
           <!--<a href="http://doc.tenxcloud.com/doc/v1/faq/deploycode.html" target="_blank"><i class="fa fa-question-circle"></i> 如何部署代码</a>-->
@@ -54,7 +51,7 @@
                 <div class="table-heade">
                   <table class="table">
                     <thead style="background: #F5F6F6;">
-                    <tr><th style="width:5%;text-indent: 30px;"><input id="btnCheckAll" type="checkbox"></th>
+                    <tr><th style="width:5%;text-indent: 30px;"><input id="btnCheckAll" type="checkbox" aria-expanded="false"></th>
                       <th style="width:20%;padding-left: 5px;">名 称</th>
                       <th style="width:10%;text-indent: 8px;">运行状态</th>
                       <th style="width:20%;">镜 像</th>

@@ -40,4 +40,14 @@
         $('.global-notice').css('left','235px')
         $('.foldingpad').css('left','210px')
     }
+
+    //用户信息
+    var userId = $('#userId').val();
+    $.ajax({
+        url: '/user/'+userId
+    }).done(function(resp){
+        var userName = resp.account.user.name;
+        $('.namespace').html(userName);
+    });
+
 })();

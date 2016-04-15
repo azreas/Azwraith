@@ -109,7 +109,9 @@ exports.login = function (req, res){
                     cookieUtil.set(res, "token", result.token);
                     //TODO
                     // 进入重定向页面
-                    res.render('loginRedirect',{ title: '零云 - 控制台'});
+                    res.render('console',{
+                        userId: uid
+                    });
                 });
             } else {
                 // 登录失败，重定向回 登录页面 带着提示信息和回显信息
