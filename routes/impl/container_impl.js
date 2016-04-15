@@ -15,6 +15,7 @@ var stringUtil = require("../../modules/util/stringUtil");
 
 var uuid = require('node-uuid');
 
+var http = require('http');
 
 /**
  * 根据 容器实例id 更新信息
@@ -1111,4 +1112,58 @@ exports.stop = function (req, res){
         }
     });
 }
+
+/**
+ * 根据容器实例 id 获取日志
+ * @param req
+ * @param res
+ */
+exports.getInstanceLog = function (req, res){
+    console.log("instanceid ---> "+req.params.instanceid);
+    /*httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/containers/"+req.params.instanceid+"/logs"}, function(result){
+        console.log(result);
+        res.json({
+            result: true,
+            info: {
+                code: "10000",
+                script: "获取日志成功"
+            },
+            data : result.toString()
+        });
+    });*/
+    var logData = "";
+    var headers = {
+        'Content-Type' : 'application/plain; charset=UTF-8'
+    };
+    var options = {
+        host : dockerConfig.host,
+        port : dockerConfig.port,
+        path : '/containers/'+req.params.instanceid+'/logs?stderr=1&stdout=1',
+        method : 'GET',
+        headers : headers
+    }
+    var reqGet = http.request(options, function(resGet) {
+        resGet.on("data", function(data){
+            console.log(data.toString());
+            logData += data;
+        });
+        resGet.on("end", function(){
+            console.log("logData ---> "+logData);
+            res.json({
+                result: true,
+                info: {
+                    code: "10000",
+                    script: "获取日志成功"
+                },
+                data : logData.toString()
+            });
+        });
+    });
+
+    reqGet.end();
+    reqGet.on('error', function(e) {
+        console.error(e);
+    });
+}
+
 

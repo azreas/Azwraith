@@ -25,7 +25,6 @@ module.exports = function(app){
     // 根据服务id获取事件列表
     router.get( '/app/event/list/:id', container_impl.listAppEventById);
 
-
     // 根据服务id启动服务
     router.get( '/start/:id', container_impl.start);
 
@@ -67,6 +66,10 @@ module.exports = function(app){
 
     // 根据容器实例id获取事件列表
     router.get( '/instance/event/list/:id', container_impl.listInstanceEventById);
+
+    // 根据容器实例 id 获取日志
+    router.get( '/inst/log/:instanceid', container_impl.getInstanceLog);
+
 /********************************** 实例结束 *************************************/
 
     // router 命名空间
