@@ -852,7 +852,7 @@ exports.start = function (req, res){
                             app.container[count].status = "启动失败";
                         }
                         // 更新容器实例的状态
-                        app.container[count].status = "已启动";
+                        app.container[count].status = "运行中";
 
                         // 获取容器实例端口，更新数据库信息
                         container.inspect(function (err, data) {
@@ -905,7 +905,7 @@ exports.start = function (req, res){
                                 var jsonResult = null; // 返回信息
                                 if (startContainerFlag) { // 若没有启动关闭失败，则返回成功提示
                                     // 更新服务的状态
-                                    app.status = "已启动";
+                                    app.status = "运行中";
                                     jsonResult = {
                                         result: true,
                                         info: {
