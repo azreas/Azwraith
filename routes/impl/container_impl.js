@@ -1131,7 +1131,7 @@ exports.getInstanceLog = function (req, res){
             data : result.toString()
         });
     });*/
-    var logData = "";
+    var logData = [];
     var headers = {
         'Content-Type' : 'application/plain; charset=UTF-8'
     };
@@ -1145,7 +1145,7 @@ exports.getInstanceLog = function (req, res){
     var reqGet = http.request(options, function(resGet) {
         resGet.on("data", function(data){
             console.log(data.toString());
-            logData += data;
+            logData.push(data.toString());
         });
         resGet.on("end", function(){
             console.log("logData ---> "+logData);
@@ -1155,7 +1155,7 @@ exports.getInstanceLog = function (req, res){
                     code: "10000",
                     script: "获取日志成功"
                 },
-                data : logData.toString()
+                data : logData
             });
         });
     });
