@@ -5,6 +5,7 @@
 
 var http = require('http');
 var uuid = require('node-uuid');
+var dockerConfig = require("../../settings").dockerConfig;
 
 // docker 连接响应对象 map
 var logDockerRes = {};
@@ -23,8 +24,8 @@ exports.createLogSocket = function(server) {
                 'Content-Type' : 'application/plain; charset=utf-8'
             };
             var options = {
-                host : "192.168.1.215",
-                port : 2375,
+                host : dockerConfig.host,
+                port : dockerConfig.port,
                 path : '/containers/'+instanceId+'/logs?stderr=1&stdout=1&follow=1',
                 method : 'GET',
                 headers : headers
