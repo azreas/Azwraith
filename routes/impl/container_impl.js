@@ -58,7 +58,7 @@ var saveServerEvent = function(serverEventConfig) {
  * @param containerEventConfig 实例事件信息
  */
 var saveContainerEvent = function(containerEventConfig) {
-    httpUtil.post({host:dockerservice.host, port:dockerservice.port, path:"/v1/containerevent"}, containerEventConfig, function(containerEventResult){
+    httpUtil.post({host:dockerservice.host, port:dockerservice.port, path:"/v1/appevent"}, containerEventConfig, function(containerEventResult){
         try {
             console.log("containerEvent result ---> "+containerEventResult);
             containerEventResult = JSON.parse(containerEventResult);
@@ -141,7 +141,7 @@ exports.create = function (req, res){
     var count = 0; // 创建容器计数器
     for (var i=0; i<containersConfig.instance; i++) {
         // 根据配置级别 conflevel 获取配置，然后根据配置创建容器实例
-        httpUtil.get({host:"192.168.1.253", port:9000, path:"/v1/setmeal/"+containersConfig.conflevel}, function(levelResult){
+        httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/setmeal/"+containersConfig.conflevel}, function(levelResult){
             try {
                 console.log("level result ---> "+levelResult);
                 levelResult = JSON.parse(levelResult);
@@ -344,7 +344,7 @@ exports.delete = function (req, res){
  */
 var updateApp = function(req, res, app) {
     // 发起更新 app 请求
-    httpUtil.put({host:"192.168.1.253", port:9000, path:"/v1/app"}, app, function(updateAppResult){
+    httpUtil.put({host:dockerservice.host, port:dockerservice.port, path:"/v1/app"}, app, function(updateAppResult){
         try {
             console.log("update app result ---> "+updateAppResult);
             updateAppResult = JSON.parse(updateAppResult);
@@ -589,7 +589,7 @@ exports.get = function (req, res){
             // 获取成功，则返回 json 数据
             if (result.result === true) {
                 // 根据配置级别 conflevel 获取配置，然后根据配置创建容器实例
-                httpUtil.get({host:"192.168.1.253", port:9000, path:"/v1/setmeal/"+result.apps[0].conflevel}, function(levelResult){
+                httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/setmeal/"+result.apps[0].conflevel}, function(levelResult){
                     try {
                         console.log("level result ---> "+levelResult);
                         levelResult = JSON.parse(levelResult);
@@ -673,7 +673,7 @@ exports.getInstance = function (req, res){
                 }
                 console.log("app conflevel ---> "+app.conflevel);
                 // 根据配置级别 conflevel 获取配置，然后根据配置创建容器实例
-                httpUtil.get({host:"192.168.1.253", port:9000, path:"/v1/setmeal/"+app.conflevel}, function(levelResult){
+                httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/setmeal/"+app.conflevel}, function(levelResult){
                     try {
                         console.log("level result ---> "+levelResult);
                         levelResult = JSON.parse(levelResult);
@@ -692,7 +692,8 @@ exports.getInstance = function (req, res){
                                 imagetag:app.imagetag,
                                 date:date,
                                 name: container.name,
-                                id: result.apps[0].id,
+                                id: app.id,
+                                containerId: req.params.instanceid,
                                 status: container.status,
                                 httpout: 'http://'+container.outaddress.ip+':'+container.outaddress.port,
                                 httpin: 'http://'+container.inaddress.ip+':'+container.inaddress.port
@@ -756,7 +757,7 @@ exports.listInstanceAllLog = function (req, res){
  */
 exports.listInstanceEventById = function (req, res){
     // 向底层服务接口发起获取容器实例事件请求
-    httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/containerevent/"+req.params.id}, function(containerEventResult){
+    httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/appevent/"+req.params.id}, function(containerEventResult){
         try {
             console.log("containerEvent result ---> "+containerEventResult);
             containerEventResult = JSON.parse(containerEventResult);
@@ -848,7 +849,7 @@ exports.listAppEventById = function (req, res){
  */
 var startAfterupdateApp = function(req, res, app, jsonResult) {
     // 发起更新 app 请求
-    httpUtil.put({host:"192.168.1.253", port:9000, path:"/v1/app"}, app, function(updateAppResult){
+    httpUtil.put({host:dockerservice.host, port:dockerservice.port, path:"/v1/app"}, app, function(updateAppResult){
         try {
             console.log("update app result ---> "+updateAppResult);
             updateAppResult = JSON.parse(updateAppResult);
@@ -1009,7 +1010,7 @@ exports.start = function (req, res){
  */
 var stopAfterupdateApp = function(req, res, app, jsonResult) {
     // 发起更新 app 请求
-    httpUtil.put({host:"192.168.1.253", port:9000, path:"/v1/app"}, app, function(updateAppResult){
+    httpUtil.put({host:dockerservice.host, port:dockerservice.port, path:"/v1/app"}, app, function(updateAppResult){
         try {
             console.log("update app result ---> "+updateAppResult);
             updateAppResult = JSON.parse(updateAppResult);
@@ -1144,7 +1145,6 @@ exports.getInstanceLog = function (req, res){
     }
     var reqGet = http.request(options, function(resGet) {
         resGet.on("data", function(data){
-            console.log(data.toString());
             logData.push(data.toString());
         });
         resGet.on("end", function(){

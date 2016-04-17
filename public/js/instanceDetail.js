@@ -28,5 +28,28 @@
             $(this).find('.time-line-message').slideUp('fast');
         }
         return false;
-    })
+    });
+
+    //添加实例事件内容
+    var containerid = $("#containerID").val();
+
+    console.log(containerid);
+    //连接websocket后端服务器
+    var socket = io.connect('ws://'+window.location.host);
+    $("#podLogs").text('');
+    // 监听服务端发来的日志
+    socket.on('log', function(data){
+        console.log(data.log);
+        if(data.log == ''){
+            var dbtr=$('<div style="color: rgba(55, 252, 52, 0.58);"><font style="color: rgba(55, 252, 52, 0.58)">没有日志产生。</font></div>');
+            dbtr.appendTo($("#podLogs"));
+        }else{
+            var dbtr=$('<div style="color: rgba(55, 252, 52, 0.58);"><font style="color: rgba(255, 255, 0, 0.58)">[历史记录]</font><font style="color: rgba(55, 252, 52, 0.58)">'+data.log+'</font></div>');
+            dbtr.appendTo($("#podLogs"));
+        }
+    });
+
+    // 根据容器实例id获取日志
+    socket.emit('getLogByInstanceId', containerid);
+
 })();

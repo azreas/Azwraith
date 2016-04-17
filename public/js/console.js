@@ -72,20 +72,20 @@
             imageDiv.appendTo($('#systemImages'));
 
             //创建容器取容器名
-            $('.list-item-description>.pull-deploy').on('click',function(){
-                var name = $(this).parents('.image-item').find('.container-name').val();  //取镜像名
-                //console.log(name);
-
-                $('.host_step1').hide();
-                $('.host_step2').show();
-                $('.radius_step').eq(1).addClass('action').siblings().removeClass('action');
-                $('.createPadding,.createPadding .go_backs01,.createPadding .two_step,.createPadding #createButton').removeClass('hide');
-                //容器配置
-                $('.imageName').text(name);
-                //$('#getImageName').val(name);
-                $('#getVersion').val($('.version-text').text());
-
-            });
+            //$('.list-item-description>.pull-deploy').on('click',function(){
+            //    var name = $(this).parents('.image-item').find('.container-name').val();  //取镜像名
+            //    //console.log(name);
+            //
+            //    $('.host_step1').hide();
+            //    $('.host_step2').show();
+            //    $('.radius_step').eq(1).addClass('action').siblings().removeClass('action');
+            //    $('.createPadding,.createPadding .go_backs01,.createPadding .two_step,.createPadding #createButton').removeClass('hide');
+            //    //容器配置
+            //    $('.imageName').text(name);
+            //    $('#getImageName').val(name);
+            //    $('#getVersion').val($('.version-text').text());
+            //
+            //});
         }
     });
     //添加已创建容器列表
@@ -240,6 +240,8 @@
             console.log(resp.app);
             var status = resp.app.status;
             $('input[name="chkItem"]:checked').attr('status',status);
+            $('input[name="chkItem"]:checked').prop('checked',false);
+
             var ip = resp.app.address.ip;
             var port = resp.app.address.port;
 
@@ -255,7 +257,6 @@
             setTimeout(function () {
                 containerNames.forEach(function(containerName){
                     $('#' + containerName + 'status').html('<span>已停止</span>');
-                    $('#' + containerName).find('input[name="chkItem"]').attr('status', '-');
                 })
             }, 1000);
         });
@@ -291,10 +292,12 @@
         }).done(function(resp) {
             var status = resp.app.status;
             $('input[name="chkItem"]:checked').attr('status',status);
+            $('input[name="chkItem"]:checked').prop('checked',false);
 
             setTimeout(function () {
                 containerNames.forEach(function(containerName){
                     $('#' + containerName + 'status').html('<span>已停止</span>');
+                    $('#' + containerName + 'id').html('<a target="_blank" href="javascript:void(0)">-</a>');
                 })
             }, 1000);
         }).fail(function (err) {
@@ -357,46 +360,45 @@
     //删除容器
     $('#iframe').on('click','#deleteButton',function(){
         if($(this).hasClass('cursor-drop')) return;
-        var startCont = [];
-        var containerNames = [];
-        var displaynames = '';
-        $('input[name="chkItem"]:checked').each(function(){
-            var containerName = $(this).val();
-            var containerId = $(this).attr('val');
-            //displaynames += ',' + containerId;
-            startCont.push(containerId);
-            containerNames.push(containerName);
-        });
+        //弹出是否删除框
+        var ret = window.confirm("确定删除容器？");
+        //当点击确定时 返回 true
+        if(ret){
+            var startCont = [];
+            var containerNames = [];
+            $('input[name="chkItem"]:checked').each(function(){
+                var containerName = $(this).val();
+                var containerId = $(this).attr('val');
+                //displaynames += ',' + containerId;
+                startCont.push(containerId);
+                containerNames.push(containerName);
+            });
 
-        $('.dropdown-menu.drop-left').hide();   //隐藏更多操作
-        $('a.more').attr('aria-expanded',false);
+            $('.dropdown-menu.drop-left').hide();   //隐藏更多操作
+            $('a.more').attr('aria-expanded',false);
 
-        containerNames.forEach(function(containerName){
-            $('#' + containerName + 'status').html('<i class="fa_createing"></i><span style="color: #FF9C00">删除中<img class="margin" src="/images/loading4.gif"></span>');
-            $('#' + containerName).find('input[name="chkItem"]').attr('status', '-');
-        })
+            containerNames.forEach(function(containerName){
+                $('#' + containerName + 'status').html('<i class="fa_createing"></i><span style="color: #FF9C00">删除中<img class="margin" src="/images/loading4.gif"></span>');
+            })
 
-        $.ajax({
-            url: '/container/stop/'+startCont,
-            type: 'get'
-            //data: JSON.stringify(startCont),
-            //contentType: 'application/json',
-            //dataType: 'json'
-        }).done(function(resp) {
-            console.log(resp);
-            setTimeout(function () {
-                containerNames.forEach(function(containerName){
-                    $('#' + containerName + 'status').html('<span>已删除</span>');
-                })
-            }, 1000);
-        }).fail(function (err) {
-            alert('停止失败，请重新启动');
-            setTimeout(function () {
-                containerNames.forEach(function(containerName){
-                    $('#' + containerName + 'status').html('<span>运行中</span>');
-                })
-            }, 1000);
-        });
+            $.ajax({
+                url: '/container/recycle/'+startCont,
+                type: 'get'
+                //data: JSON.stringify(startCont),
+                //contentType: 'application/json',
+                //dataType: 'json'
+            }).done(function(resp) {
+                alert('删除成功');
+                $('input[name="chkItem"]:checked').parents('.show-tr').hide();
+
+            }).fail(function (err) {
+                alert('删除失败，请重新删除');
+            });
+        }else{
+            $('.dropdown-menu.drop-left').hide();   //隐藏更多操作
+            $('a.more').attr('aria-expanded',false);
+        }
+
     });
 
 })();

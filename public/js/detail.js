@@ -25,9 +25,10 @@
             $(this).find('.time-line-message').slideUp('fast');
         }
         return false;
-    })
-    //添加事件内容
-    //$('.EVENT').click(function(){
+    });
+
+    //添加服务事件内容
+    $('.EVENT').click(function(){
         var containerid = $('#containerId').val();
         //console.log(containerid);
         $.ajax({
@@ -57,7 +58,7 @@
                 return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
             }
         });
-    //});
+    });
 
 })();
 

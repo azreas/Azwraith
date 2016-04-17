@@ -42,12 +42,15 @@
     }
 
     //用户信息
-    var userId = $('#userId').val();
-    $.ajax({
-        url: '/user/'+userId
-    }).done(function(resp){
-        var userName = resp.account.user.name;
-        $('.namespace').html(userName);
-    });
+    //var userId = $('#userId').val();
+    //$.ajax({
+    //    url: '/login',
+    //    type: 'post'
+    //}).done(function(resp){
+    //    console.log(resp);
+    //    var userName = resp.account.user.name;
+    //    console.log(userName);
+    //    $('.namespace').html(userName);
+    //});
 
 })();
