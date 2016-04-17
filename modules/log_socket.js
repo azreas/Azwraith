@@ -5,7 +5,7 @@
 
 var http = require('http');
 var uuid = require('node-uuid');
-var dockerConfig = require("../../settings").dockerConfig;
+var dockerConfig = require("../settings").dockerConfig;
 
 // docker 连接响应对象 map
 var logDockerRes = {};
