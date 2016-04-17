@@ -77,9 +77,13 @@ exports.post = function(){
     // 合并对象
     options = joinObject(options,preoptions);
 
+    var resData = "";
     var reqPost = http.request(options, function(resPost) {
         resPost.on('data', function(data) {
-            callback(data);
+            resData += data;
+        });
+        resPost.on('end', function() {
+            callback(resData);
         });
     });
 
@@ -168,9 +172,13 @@ exports.get = function(){
         options.path += query;
     }
 
-    var reqGet = http.request(options, function(reqGet) {
-        reqGet.on('data', function(data) {
-            callback(data);
+    var resData = "";
+    var reqGet = http.request(options, function(resGet) {
+        resGet.on('data', function(data) {
+            resData += data;
+        });
+        resGet.on('end', function() {
+            callback(resData);
         });
     });
 
@@ -234,16 +242,20 @@ exports.put = function(){
     // 合并对象
     options = joinObject(options,preoptions);
 
-    var reqPost = http.request(options, function(resPost) {
-        resPost.on('data', function(data) {
-            callback(data);
+    var resData = "";
+    var reqPut = http.request(options, function(resPut) {
+        resPut.on('data', function(data) {
+            resData += data;
+        });
+        resPut.on('end', function() {
+            callback(resData);
         });
     });
 
     // 发送REST请求时传入JSON数据
-    reqPost.write(reqJosnData);
-    reqPost.end();
-    reqPost.on('error', function(e) {
+    reqPut.write(reqJosnData);
+    reqPut.end();
+    reqPut.on('error', function(e) {
         console.error(e);
     });
 }
@@ -286,14 +298,18 @@ exports.delete = function(){
     // 合并对象
     options = joinObject(options,preoptions);
 
-    var reqGet = http.request(options, function(reqGet) {
-        reqGet.on('data', function(data) {
-            callback(data);
+    var resData = "";
+    var reqDelete = http.request(options, function(resDelete) {
+        resDelete.on('data', function(data) {
+            resData += data;
+        });
+        resDelete.on('end', function() {
+            callback(resData);
         });
     });
 
-    reqGet.end();
-    reqGet.on('error', function(e) {
+    reqDelete.end();
+    reqDelete.on('error', function(e) {
         console.error(e);
     });
 }
