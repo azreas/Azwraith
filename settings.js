@@ -62,11 +62,18 @@ var dockerservice = {
 /********************* request docker service end *********************/
 
 
+var dockerapitest={
+    host:'192.168.1.238',
+    port:2375
+}
+
 module.exports = {
     appConfig : appConfig,
     redis : redis,
     mongodb : mongodb,
     dockerConfig : dockerConfig,
     userservice : userservice,
-    dockerservice : dockerservice
+    dockerservice : dockerservice,
+    dockerapitest:dockerapitest
 }
+
