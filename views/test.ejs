@@ -38,6 +38,11 @@
         <p></p>
     </div>
 
+    <h1>monitor</h1>
+    <div id="monitor">
+        <p></p>
+    </div>
+
 <script>
     //连接websocket后端服务器
     var socket = io.connect('ws://'+window.location.host);
@@ -47,8 +52,20 @@
         console.log(data.log);
     });
 
+    // 监听服务端发来的监控数据
+    socket.on('monitor', function(data){
+        //data = JSON.parse(data);
+        console.log("cpu ---> "+data.cpu);
+        console.log("memory ---> "+data.memory);
+        console.log("netRx ---> "+data.netRx);
+        console.log("netTx ---> "+data.netTx);
+    });
+
     // 根据容器实例id获取日志
-    socket.emit('getLogByInstanceId', "9b8eaea2245ed26215e385964499d77c98c096b507313068959af0bdf605cf65");
+    socket.emit('getLogByInstanceId', "f46fe65e5caa");
+
+    // 根据容器实例id获取监控
+    socket.emit('getMonitorByInstanceId', "f46fe65e5caa");
 </script>
 
 </body>
