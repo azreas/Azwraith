@@ -141,13 +141,13 @@ container.top({ps_args:"-ef"},function (err, data) {
 
 
 // 日志（follow:返回流数据，stdout:标准输出流，stderr:标准输出错误，since:时间戳，tail:显示条数）
-/*var container = docker.getContainer('cd755cb4e8cfb302ab9166206685fc7358dfc0f044fdb9360cdac1ac1d0a7375');
+var container = docker.getContainer('cd755cb4e8cfb302ab9166206685fc7358dfc0f044fdb9360cdac1ac1d0a7375');
 container.logs({follow:true,stdout:false,stderr:true,since:0,timestamps:true,tail:1},function (err, data) {
     console.log("err ---> "+err);
     console.log("data ---> "+data);
     console.log(data);
-});*/
-/*var http = require('http');
+});
+var http = require('http');
 
 var headers = {
     'Content-Type' : 'application/plain; charset=utf-8'
@@ -179,7 +179,7 @@ var reqGet = http.request(options, function(resGet) {
 reqGet.end();
 reqGet.on('error', function(e) {
     console.error(e);
-});*/
+});
 
 
 
