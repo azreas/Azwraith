@@ -17,9 +17,57 @@ var logDockerRes = {};
 exports.createLogSocket = function(server) {
     var io = require('socket.io')(server);
     io.on('connection', function(socket){
+        socket.name = uuid.v4();
+
+        // 监听实时监控事件
+        socket.on('getMonitorByInstanceId',function(instanceId){
+            var headers = {
+                'Content-Type' : 'application/plain; charset=utf-8'
+            };
+            var options = {
+                host : dockerConfig.host,
+                port : dockerConfig.port,
+                path : '/containers/'+instanceId+'/stats?stream=1',
+                method : 'GET',
+                headers : headers
+            }
+            var monitorData = null;
+            var dataJson = null;
+            var reqGet = http.request(options, function(resGet) {
+                if (socket.name in logDockerRes) {
+                    logDockerRes[socket.name]["monitor"] = resGet; // docker 连接
+                } else {
+                    logDockerRes[socket.name] = {
+                        monitor : resGet
+                    };
+                }
+                resGet.on('data', function(data) {
+                    console.log(data.toString());
+
+                    dataJson = JSON.parse(data.toString());
+                    monitorData = {
+                        cpu : dataJson.cpu_stats.cpu_usage.total_usage,
+                        memory : dataJson.memory_stats.usage,
+                        netRx : dataJson.networks.eth0.rx_bytes,
+                        netTx : dataJson.networks.eth0.tx_bytes
+                    };
+                    console.log(JSON.stringify(monitorData));
+
+                    // 向指定页面发监控数据
+                    socket.emit("monitor", monitorData);
+                });
+                resGet.on('end', function() {
+                    resGet.destroy(); // 断开 docker 连接
+                });
+            });
+            reqGet.end();
+            reqGet.on('error', function(e) {
+                console.error(e);
+            });
+        });
+
         // 监听获取日志事件
         socket.on('getLogByInstanceId',function(instanceId){
-            socket.name = uuid.v4();
             var headers = {
                 'Content-Type' : 'application/plain; charset=utf-8'
             };
@@ -31,7 +79,13 @@ exports.createLogSocket = function(server) {
                 headers : headers
             }
             var reqGet = http.request(options, function(resGet) {
-                logDockerRes[socket.name] = resGet; // docker 连接
+                if (socket.name in logDockerRes) {
+                    logDockerRes[socket.name]["log"] = resGet; // docker 连接
+                } else {
+                    logDockerRes[socket.name] = {
+                        log : resGet
+                    };
+                }
                 resGet.on('data', function(data) {
                     console.log(data.toString());
                     // 向指定页面发日志
@@ -51,7 +105,8 @@ exports.createLogSocket = function(server) {
         socket.on("disconnect", function(){
             try {
                 console.log("disconnnect ---> "+socket.name);
-                logDockerRes[socket.name].destroy(); // 断开 docker 连接
+                logDockerRes[socket.name]["log"].destroy(); // 断开 docker 连接
+                logDockerRes[socket.name]["monitor"].destroy(); // 断开 docker 连接
             } catch(e) {
                 console.log("disconnect error："+e);
             } finally {
