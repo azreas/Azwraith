@@ -9,9 +9,10 @@ var rest = require('restler');
 var dockerapitest=require('../../../../../settings').dockerapitest;
 var postdata={};
 postdata={
-    "Hostname": "",
-    "Domainname": "",
-    "User": "",
+    "Hostname": "",     //容器名称
+    "Domainname": "",   //域名
+    "User": "",         //用户
+    "Memory ":5000,     //内存限制 字节
     "AttachStdin": false,
     "AttachStdout": true,
     "AttachStderr": true,
@@ -26,7 +27,7 @@ postdata={
         "date"
     ],
     "Entrypoint": "",
-    "Image": "ubuntu",
+    "Image": "tomcat",
     "Labels": {
         "com.example.vendor": "Acme",
         "com.example.license": "GPL",
@@ -44,7 +45,7 @@ postdata={
     "StopSignal": "SIGTERM",
     "HostConfig": {
         "Binds": ["/tmp:/tmp"],
-        "Links": ["redis3:redis"],
+
         "Memory": 0,
         "MemorySwap": 0,
         "MemoryReservation": 0,
@@ -52,8 +53,6 @@ postdata={
         "CpuShares": 512,
         "CpuPeriod": 100000,
         "CpuQuota": 50000,
-        "CpusetCpus": "0,1",
-        "CpusetMems": "0,1",
         "BlkioWeight": 300,
         "BlkioWeightDevice": [{}],
         "BlkioDeviceReadBps": [{}],
@@ -71,7 +70,6 @@ postdata={
         "DnsOptions": [""],
         "DnsSearch": [""],
         "ExtraHosts": null,
-        "VolumesFrom": ["parent", "other:ro"],
         "CapAdd": ["NET_ADMIN"],
         "CapDrop": ["MKNOD"],
         "GroupAdd": ["newgroup"],
@@ -98,8 +96,33 @@ postdata={
         }
     }
 };
-rest.post('http://'+dockerapitest.host+':'+dockerapitest.port+'/containers/create', postdata
-).on('complete', function(data,response) {
+var postdata=      {
+    Image: 'tomcat',
+    "Labels": {
+        "interlock.hostname": "test",
+        "interlock.domain": "local"
+    },
+    "HostConfig": {
+        // "PortBindings": { "8080/tcp": [{ "HostPort": "38300" }] },
+        "PublishAllPorts": true,
+        "MemorySwap":16*1024*1024,
+        "Memory": 1024*1024*4,
+        "CpuShares": 128,
+"NetworkMode": "isolated_nw"
+    }
+};
+rest.postJson('http://'+dockerapitest.host+':'+dockerapitest.port+'/containers/create', postdata).on('complete', function(data, response) {
     console.log(response.statusCode );
     console.log(data);
 });
+
+
+//返回
+// 201
+// { Id: '67e1dab39226315f1d3b4a086b664772391c0ae7bd8fc46895321158a77c6b58',
+//     Warnings: null }
+
+// 201 – no error
+// 404 – no such container
+// 406 – impossible to attach (container not running)
+// 500 – server error
