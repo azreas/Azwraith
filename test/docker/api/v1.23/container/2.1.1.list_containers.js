@@ -13,11 +13,11 @@ var dockerapitest=require('../../../../../settings').dockerapitest;
 //获取容器列表
 //GET /containers/json
 //参数
-//all       1/True/true or 0/False/false   是否显示所有容器，默认flase，仅显示运行中的
+//all       1/True/true or 0/False/false   是否显示所有容器，默认false，仅显示运行中的
 //limit     1/2/3/...  限制返回结果数
 //since     容器ID    显示该ID之后创建的所有容器
 //before    容器ID    显示该ID之前创建的所有容器
-//size      1/True/true or 0/False/false       是否返回 SizeRw,SizeRootFs
+//size      1/True/true or 0/False/false       是否返回 SizeRw,SizeRootFs ，默认false
 //filters   json形式，过滤结果
 // {"label":["key1","key2"],"status":["exited"]}
 //      exited=<int> 容器以i指定数字退出
