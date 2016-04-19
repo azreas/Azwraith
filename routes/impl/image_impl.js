@@ -96,3 +96,48 @@ exports.get = function (req, res){
         res.render('index', { title: 'Express' });
     });
 }
+
+/**
+ * 到 docker hub 搜索镜像（返回 json）
+ * @param req
+ * @param res
+ */
+exports.search = function (req, res){
+    var opts = {
+        term: req.params.term
+    };
+    docker.searchImages(opts,function(err,data){
+        try {
+            if (err) {
+                throw new Error(err);
+            }
+            console.log("返回的镜像数组："+JSON.stringify(data));
+            /*
+             参数说明：
+             star_count: 星
+             is_official: 是否是官方的
+             name: 名称
+             is_trusted: 是否可信任
+             is_automated: 是否是自动化的
+             description: 描述信息
+             */
+            res.json({
+                result: true,
+                info: {
+                    code: "10000",
+                    script: "根据 "+req.params.term+" 搜索镜像成功"
+                },
+                data: data // 镜像数组
+            });
+        } catch (e) {
+            console.log("根据 "+req.params.term+" 搜索镜像失败："+e.message);
+            res.json({
+                result: false,
+                info: {
+                    code: "00000",
+                    script: "根据 "+req.params.term+" 搜索镜像失败，"+e.message
+                }
+            });
+        }
+    });
+}

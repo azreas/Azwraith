@@ -17,6 +17,9 @@ module.exports = function(app){
     // 根据镜像名称获取指定镜像
     router.get( '/get/:name', image_impl.get);
 
+    // 到 docker hub 搜索镜像（返回 json）
+    router.get( '/search/:term', image_impl.search);
+
     // router 命名空间
     app.use('/image', router);
 };
