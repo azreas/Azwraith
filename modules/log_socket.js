@@ -51,7 +51,7 @@ exports.createLogSocket = function(server) {
                         netRx : dataJson.networks.eth0.rx_bytes,
                         netTx : dataJson.networks.eth0.tx_bytes
                     };
-                    console.log(JSON.stringify(monitorData));
+                    //console.log(JSON.stringify(monitorData));
 
                     // 向指定页面发监控数据
                     socket.emit("monitor", monitorData);
@@ -87,7 +87,7 @@ exports.createLogSocket = function(server) {
                     };
                 }
                 resGet.on('data', function(data) {
-                    console.log(data.toString());
+                    //console.log(data.toString());
                     // 向指定页面发日志
                     socket.emit("log", {log : data.toString()});
                 });

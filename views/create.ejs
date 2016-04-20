@@ -38,6 +38,21 @@
         </div>
         <div class="step-inner">
           <div class="host_step1">
+            <section class="info-class">
+              <!--<span class="info-system primary" id="system">常用</span>-->
+              <!--<span class="info-system" id="stack">Stack</span>-->
+              <!--<span class="info-block" id="public">公有</span>-->
+              <!--<span class="info-block" id="private">私有</span>-->
+              <!--<span class="info-block" id="favorites">收藏夹</span>-->
+              <!--<span class="info-block" id="docker">Docker/第三方镜像</span>-->
+                <span class="search container-search" style="margin:0;min-width: 230px;float:right;">
+                  <div class="search-group-inner">
+                    <input type="text" id="search-img" placeholder="搜索镜像" style="width:225px;height:36px;"><button type="submit" class="btn btn-primary btn-send" style="height:36px;line-height:22px;position: absolute;top:0px;right: 0;">搜索</button>
+                    <!--<input type="hidden" name="_csrf" value="sbUsSIXJ-0qk2Be7uoT36WQIu8hGWuCZpzz8">-->
+                  </div>
+                </span>
+            </section>
+
             <ul class="dialog">
               <li class="blankApp">
                 <!-- <span>操作系统</span> -->
@@ -46,22 +61,11 @@
                     <div class="loadimages"><i>正在加载...</i></div>
                   </li> -->
                   <li id="systemImages" class="list-wrapper">
-                    <div class="image-item">
-                      <span class="img_icon span2">
-                      </span>
-                      <span class="img_icon span6">
-                          <form class="search-group-inner">
-                            <input type="text" id="search-img" placeholder="镜像名称" style="width:225px;height:36px;">
-                          </form>
-                      </span>
-                      <span class="span2">
-                        <div class="list-item-description">
-                          <span id="inputSubmit" class="pull-deploy btn btn-primary" data-attr="tenxcloud/php">
-                            部署<i class="fa fa-arrow-circle-o-right margin fa-lg"></i>
-                          </span>
-                        </div>
-                      </span>
-                    </div>
+
+                  </li>
+                  <li id="searchImages" class="list-wrapper hideimage">
+
+                  </li>
                 </ul>
               </li>
             </ul>

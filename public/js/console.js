@@ -8,23 +8,22 @@
         $('.part01').hide();
         $('.part02').show();
     });
-    //创建容器取容器名
-    $('#inputSubmit').click(function(){
-        var name = $('#search-img').val();  //取镜像名
-        if( name === "" ){
-            alert("镜像名称不能为空！");
-        }else {
-            $('.host_step1').hide();
-            $('.host_step2').show();
-            $('.radius_step').eq(1).addClass('action').siblings().removeClass('action');
-            $('.createPadding,.createPadding .go_backs01,.createPadding .two_step,.createPadding #createButton').removeClass('hide');
-            //容器配置
-            $('.imageName').text(name);
-            $('#getImageName').val(name);
-            $('#getVersion').val($('.version-text').text());
-        }
-    });
 
+    //创建容器取容器名
+    $('.dialog').on('click','.list-item-description>.pull-deploy',function(){
+        var name = $(this).parents('.image-item').find('.container-name').val();  //取镜像名
+        console.log(name);
+
+        $('.host_step1').hide();
+        $('.host_step2').show();
+        $('.radius_step').eq(1).addClass('action').siblings().removeClass('action');
+        $('.createPadding,.createPadding .go_backs01,.createPadding .two_step,.createPadding #createButton').removeClass('hide');
+        //容器配置
+        $('.imageName').text(name);
+        $('#getImageName').val(name);
+        $('#getVersion').val($('.version-text').text());
+
+    });
 
     //创建
     $('#createButton').click(function(){
@@ -71,23 +70,38 @@
 
             imageDiv.appendTo($('#systemImages'));
 
-            //创建容器取容器名
-            //$('.list-item-description>.pull-deploy').on('click',function(){
-            //    var name = $(this).parents('.image-item').find('.container-name').val();  //取镜像名
-            //    //console.log(name);
-            //
-            //    $('.host_step1').hide();
-            //    $('.host_step2').show();
-            //    $('.radius_step').eq(1).addClass('action').siblings().removeClass('action');
-            //    $('.createPadding,.createPadding .go_backs01,.createPadding .two_step,.createPadding #createButton').removeClass('hide');
-            //    //容器配置
-            //    $('.imageName').text(name);
-            //    $('#getImageName').val(name);
-            //    $('#getVersion').val($('.version-text').text());
-            //
-            //});
         }
     });
+
+    //搜索dockerhub镜像
+    $('button[type="submit"]').click(function(){
+        $('#systemImages').hide().siblings().show();
+
+        var searchName = $('#search-img').val();
+        if(searchName == ''){
+            alert('请输入您想要搜索的镜像名称');
+        }else {
+            $('#searchImages').html('<i class="fa_createing"></i><span style="color: #FF9C00">搜索中<img class="margin" src="/images/loading4.gif"></span>');
+            $.ajax({
+                url: '/image/search/'+searchName,
+                type: 'GET'
+            }).done(function(resp){
+                $('#searchImages').html('');
+                var images = resp.data;
+                for(var i in images){
+                    var imageDiv;
+                    imageDiv = $('<div class="image-item"><span class="img_icon span2"><img src=""></span><span class="span6 type" type="runtime"><div class="list-item-description"><div class="name h4">'+images[i].name+'<a title="点击查看镜像详情" target="_blank" href=""><i class="fa fa-external-link-square"></i></a></div><span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">'+images[i].description+'</span></div></span><span class="span2"><div class="list-item-description"><span class="pull-deploy btn btn-primary" data-attr="tenxcloud/php">部署<i class="fa fa-arrow-circle-o-right margin fa-lg"></i></span></div></span><input class="container-name" type="hidden" value="'+images[i].name+'"></div>');
+
+                    imageDiv.appendTo($('#searchImages'));
+                }
+
+            }).fail(function(err){
+                console.log(err);
+                //$('#searchImages').html('<div id="nodata" class="nodata"><i>镜像服务器正在维护当中，请稍后重试...</i></div>');
+            });
+        }
+    });
+
     //添加已创建容器列表
     $.ajax({
         url: '/container/list',
@@ -103,15 +117,13 @@
 
             var dbtr=$('<tr class="show-tr"><td><div class="contents-table"><table class="table"><tr class="clusterId">\
         <td style="width:5%;text-indent: 30px;"><input type="checkbox" name="chkItem" value="'+servers[i].name+'" aria-expanded="false" val="'+servers[i].id+'" status="'+servers[i].status+'"/></td>\
-        <td style="width:20%;white-space:nowrap;"><b class="caret margin" style="-webkit-transform:rotate(-90deg);transform:rotate(-90deg);"></b><a href="/container/get/'+servers[i].id+'" class="cluster_mirrer_name">' + servers[i].name + '</a></td>\
+        <td style="width:20%;white-space:nowrap;"><a href="/container/get/'+servers[i].id+'" class="cluster_mirrer_name">' + servers[i].name + '</a></td>\
         <td style="width:10%" id="'+servers[i].name+'status">'+servers[i].status+'</td>\
         <td style="width:20%;"><span class="cluster_mirrer">' + servers[i].image + '</span></td>\
         <td style="width:34%" id="'+servers[i].name+'id"><a target="_blank" href="http://'+servers[i].address.ip+':'+servers[i].address.port+'" class="cluster_mirrer_name">'+servers[i].address.ip+':'+servers[i].address.port+'</a><span class="urlStatus"></span></td>\
         <td style="width:10%" class="tdTimeStrap">'+date+'<input type="hidden" class="timeStrap" value=""><i class="fa_time"></i><span></span></td></tr></td></div></table></tr>');
 
             dbtr.appendTo($('#dbtable'));
-
-
 
         }
 
