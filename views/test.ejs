@@ -33,18 +33,37 @@
         </p>
     </form>
 
-    <h1>log</h1>
-    <div id="log">
-        <p></p>
-    </div>
+    <hr/>
 
-    <h1>monitor</h1>
-    <div id="monitor">
-        <p></p>
-    </div>
+    <form action="/serve/create" method="post">
+        <p>
+            服务名称：<input name="name">
+        </p>
+        <p>
+            镜像名称：<input name="image">
+        </p>
+        <p>
+            镜像版本：<input name="imagetag">
+        </p>
+        <p>
+            配置级别：<input name="conflevel">
+        </p>
+        <p>
+            初始实例：<input name="instance">
+        </p>
+        <p>
+            拓展方式：<input name="expandPattern">
+        </p>
+        <p>
+            执行命令：<input name="command">
+        </p>
+        <p>
+            <input type="submit">
+        </p>
+    </form>
 
 <script>
-    //连接websocket后端服务器
+    /*//连接websocket后端服务器
     var socket = io.connect('ws://'+window.location.host);
 
     // 监听服务端发来的日志
@@ -65,7 +84,7 @@
     socket.emit('getLogByInstanceId', "f46fe65e5caa");
 
     // 根据容器实例id获取监控
-    socket.emit('getMonitorByInstanceId', "f46fe65e5caa");
+    socket.emit('getMonitorByInstanceId', "f46fe65e5caa");*/
 </script>
 
 </body>
