@@ -17,7 +17,8 @@ rest.get('http://'+dockerapitest.host+':'+dockerapitest.port+'/networks').on('co
         console.log('Error:', result.message);
         this.retry(5000); // try again after 5 sec
     } else {
-        console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
         console.log(result);
+        console.log(JSON.stringify(result));
+
     }
 });
