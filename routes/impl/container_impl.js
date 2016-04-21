@@ -603,7 +603,6 @@ exports.get = function (req, res){
                                 id: result.apps[0].id,
                                 status: result.apps[0].status,
                                 domain: result.apps[0].subdomain,
-                                container: result.apps[0].container,
                                 updateTime:result.apps[0].updatetime,
                                 createTime:result.apps[0].createtime
                             };
