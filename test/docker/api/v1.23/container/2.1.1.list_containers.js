@@ -30,19 +30,14 @@ var dockerapitest=require('../../../../../settings').dockerapitest;
 //      volume=(<volume name> or <mount point destination>)
 
 
-rest.get('http://'+dockerapitest.host+':'+dockerapitest.port+'/containers/json?limit=1&size=true').on('complete', function(result) {
+rest.get('http://'+dockerapitest.host+':'+dockerapitest.port+'/containers/json?&size=true&all=1').on('complete', function(result) {
     if (result instanceof Error) {
         console.log('Error:', result.message);
         this.retry(5000); // try again after 5 sec
     } else {
         console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
         console.log(result);
+        console.log(JSON.stringify(result));
     }
 });
 
-var filter='{"status":["exited"]}'
-rest.get('http://192.168.1.238:2375/containers/json?filters='+filter).on('complete', function(data) {
-    console.log("55555555555555555555555555555555~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-    console.log(data);
-    // console.log(data[1]);
-});

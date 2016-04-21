@@ -98,17 +98,21 @@ postdata={
 };
 var postdata=      {
     Image: 'tomcat',
-    "Labels": {
-        "interlock.hostname": "test",
-        "interlock.domain": "local"
-    },
+    // "Labels": {
+    //     "interlock.hostname": "test",
+    //     "interlock.domain": "local"
+    // },
+    // "ExposedPorts": {
+    //     "8080/tcp": {}
+    // },
     "HostConfig": {
         // "PortBindings": { "8080/tcp": [{ "HostPort": "38300" }] },
         "PublishAllPorts": true,
-        "MemorySwap":16*1024*1024,
-        "Memory": 1024*1024*4,
-        "CpuShares": 128,
-"NetworkMode": "isolated_nw"
+        // "MemorySwap":16*1024*1024,
+        // "Memory": 1024*1024*256,
+        "MemoryReservation": 1024*1024*4,
+        // "CpuShares":2,
+        "NetworkMode": "xzj"
     }
 };
 rest.postJson('http://'+dockerapitest.host+':'+dockerapitest.port+'/containers/create', postdata).on('complete', function(data, response) {

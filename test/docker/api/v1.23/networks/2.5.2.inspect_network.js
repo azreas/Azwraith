@@ -6,13 +6,14 @@
 var rest = require('restler');
 var dockerapitest=require('../../../../../settings').dockerapitest;
 
-var networkid='db168fc4a4f11ed61de5cd5b2da9262fb2632a62711d08240c4fc3b78e77975d';
+var networkid='dade2a85a194cce6f32bbbd6e526e28b1e9d467cb399e9e30c7facee8bdb8a20';
 rest.get('http://'+dockerapitest.host+':'+dockerapitest.port+'/networks/'+networkid).on('complete', function(result) {
     if (result instanceof Error) {
         console.log('Error:', result.message);
         this.retry(5000); // try again after 5 sec
     } else {
         console.log(result);
+        console.log(JSON.stringify(result));
     }
 });
 

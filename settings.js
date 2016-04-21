@@ -64,7 +64,7 @@ var dockerservice = {
 
 var dockerapitest={
     host:'192.168.1.243',
-    port:2375
+    port:3375
 }
 
 module.exports = {
