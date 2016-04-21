@@ -136,7 +136,7 @@ exports.create = function (req, res){
         createtime:"",
         status:"运行中",// 运行状态
         container: []
-    }
+    };
     var opts = null;
     var count = 0; // 创建容器计数器
     for (var i=0; i<containersConfig.instance; i++) {
@@ -156,7 +156,7 @@ exports.create = function (req, res){
                             Memory: levelResult.memory*1024*1024,
                             CpuShares: levelResult.cpu*512
                         }
-                    }
+                    };
                     docker.createContainer(opts, function (err, container) {
                         if (err) {
                             throw new Error(err);
@@ -271,7 +271,7 @@ exports.create = function (req, res){
             }
         });
     }
-}
+};
 
 /**
  * 根据服务 id 删除服务（删除 docker 里的信息）
@@ -334,7 +334,7 @@ exports.delete = function (req, res){
             });
         }
     });
-}
+};
 
 /**
  * 更新服务信息
@@ -373,7 +373,7 @@ var updateApp = function(req, res, app) {
             });
         }
     });
-}
+};
 
 /**
  * 根据服务 id 将服务放入回收站（逻辑删除）
@@ -466,7 +466,7 @@ exports.recycle = function (req, res){
             });
         }
     });
-}
+};
 
 /**
  * 根据容器 id 更改容器配置
@@ -485,7 +485,7 @@ exports.update = function (req, res){
         MemorySwap: req.body.MemorySwap,
         MemoryReservation: req.body.MemoryReservation,
         KernelMemory: req.body.KernelMemory
-    }
+    };
     var container = docker.getContainer(req.body.id);
     container.update(opts, function (err, data) {
         var result;
@@ -502,7 +502,7 @@ exports.update = function (req, res){
         }
         res.render('index', { title: 'Express' });
     });
-}
+};
 
 /**
  * 获取所有容器
@@ -526,7 +526,7 @@ exports.listAll = function (req, res){
         }
         res.render('index', { title: 'Express' });
     });
-}
+};
 
 /**
  * 获取当前用户所属服务列表
@@ -570,7 +570,7 @@ exports.listByUid = function (req, res){
             console.log(e);
         }
     });
-}
+};
 
 /**
  * 根据容器 id 获取指定容器信息
@@ -628,7 +628,7 @@ exports.get = function (req, res){
             });
         }
     });
-}
+};
 
 /**
  * 根据容器id获取容器实例列表
@@ -639,7 +639,7 @@ exports.listAllInstance = function (req, res){
     // 向底层服务接口发起获取容器实例列表请求
     //TODO
 
-}
+};
 
 /**
  * 根据容器实例id获取容器实例基本信息
@@ -737,7 +737,7 @@ exports.getInstance = function (req, res){
             });
         }
     });
-}
+};
 
 /**
  * 根据容器实例id和日期（以天为单位）获取日志
@@ -748,7 +748,7 @@ exports.listInstanceAllLog = function (req, res){
     // 向底层服务接口发起获取容器实例日志请求
     //TODO
 
-}
+};
 
 /**
  * 根据容器实例id获取事件列表
@@ -779,7 +779,7 @@ exports.listInstanceEventById = function (req, res){
             });
         }
     });
-}
+};
 
 /**
  * 根据容器id获取绑定域名列表
@@ -790,7 +790,7 @@ exports.listAllDomain = function (req, res){
     // 向底层服务接口发起获取绑定域名列表请求
     //TODO
 
-}
+};
 
 /**
  * 根据容器id获取端口列表
@@ -801,7 +801,7 @@ exports.listAllPort = function (req, res){
     // 向底层服务接口获取端口列表请求
     //TODO
 
-}
+};
 
 /**
  * 根据容器id和日期（以天为单位）获取日志
@@ -812,7 +812,7 @@ exports.listAllLog = function (req, res){
     // 向底层服务接口获取日志请求
     //TODO
 
-}
+};
 
 /**
  * 根据服务id获取事件列表
@@ -838,7 +838,7 @@ exports.listAppEventById = function (req, res){
             // 这里应该返回 json 格式的提示
         }
     });
-}
+};
 
 /**
  * 启动服务后更新服务信息
@@ -870,7 +870,7 @@ var startAfterupdateApp = function(req, res, app, jsonResult) {
             });
         }
     });
-}
+};
 
 /**
  * 根据服务id启动服务
@@ -999,7 +999,7 @@ exports.start = function (req, res){
             });
         }
     });
-}
+};
 
 /**
  * 停止服务后更新服务信息
@@ -1031,7 +1031,7 @@ var stopAfterupdateApp = function(req, res, app, jsonResult) {
             });
         }
     });
-}
+};
 
 /**
  * 根据服务id关闭服务
@@ -1112,7 +1112,7 @@ exports.stop = function (req, res){
             });
         }
     });
-}
+};
 
 /**
  * 根据容器实例 id 获取日志
@@ -1142,7 +1142,7 @@ exports.getInstanceLog = function (req, res){
         path : '/containers/'+req.params.instanceid+'/logs?stderr=1&stdout=1',
         method : 'GET',
         headers : headers
-    }
+    };
     var reqGet = http.request(options, function(resGet) {
         resGet.on("data", function(data){
             logData.push(data.toString());
@@ -1164,6 +1164,6 @@ exports.getInstanceLog = function (req, res){
     reqGet.on('error', function(e) {
         console.error(e);
     });
-}
+};
 
 
