@@ -19,3 +19,8 @@ rest.postJson('http://'+dockerapitest.host+':'+dockerapitest.port+'/networks/'+n
     console.log(response.statusCode );
     console.log(data);
 });
+
+
+// 200 - no error
+// 404 - network or container is not found
+// 500 - Internal Server Error
