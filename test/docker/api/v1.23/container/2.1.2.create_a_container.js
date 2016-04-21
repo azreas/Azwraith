@@ -7,7 +7,7 @@
 //POST /containers/create
 var rest = require('restler');
 var dockerapitest=require('../../../../../settings').dockerapitest;
-var postdata={};
+/*var postdata={};
 postdata={
     "Hostname": "",     //容器名称
     "Domainname": "",   //域名
@@ -95,7 +95,7 @@ postdata={
             }
         }
     }
-};
+};*/
 var postdata=      {
     Image: 'tomcat',
     // "Labels": {
@@ -111,12 +111,13 @@ var postdata=      {
         // "MemorySwap":16*1024*1024,
         // "Memory": 1024*1024*256,
         "MemoryReservation": 1024*1024*4,
-        "CpuShares":0,
-        "NetworkMode": "xzj"
+        "CpuShares":2,
+        "NetworkMode": "ctest-mytomcat105"
     }
 };
 rest.postJson('http://'+dockerapitest.host+':'+dockerapitest.port+'/containers/create', postdata).on('complete', function(data, response) {
-    console.log(response.statusCode );
+    console.log(response.statusCode);
+    //console.log(response);
     console.log(data);
 });
 
