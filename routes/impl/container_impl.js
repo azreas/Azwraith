@@ -977,6 +977,34 @@ exports.get = function (req, res){
 }
 
 /**
+ * 根据服务 id 获取所属容器实例列表
+ * @param req
+ * @param res
+ */
+exports.listByAppid = function (req, res){
+    httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/containers/"+req.params.appid}, function(result){
+        try {
+            console.log("containers list by appid result ---> "+result);
+            result = JSON.parse(result);
+            
+            if (result.result !== true) {
+                throw new Error(result.info.script);
+            }
+            res.json(result);
+        } catch (e) {
+            console.log("根据服务 "+req.params.appid+" 获取所属容器实例列表失败："+e);
+            res.json({
+                result: false,
+                info: {
+                    code: "00000",
+                    script: "根据服务 "+req.params.appid+" 获取所属容器实例列表失败"
+                }
+            });
+        }
+    });
+}
+
+/**
  * 根据容器id获取容器实例列表
  * @param req
  * @param res

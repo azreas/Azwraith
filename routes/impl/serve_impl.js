@@ -164,8 +164,7 @@ exports.create = function (req, res){
                     }
                 });
 
-                //res.redirect("/detail/"+serveConfig.id); // 重定向到服务详情页
-                res.redirect("/test");
+                res.redirect("/detail/"+serveConfig.id); // 重定向到服务详情页
             }
         });
     } catch (e) {
