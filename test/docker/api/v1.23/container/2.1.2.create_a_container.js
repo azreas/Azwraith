@@ -111,7 +111,7 @@ var postdata=      {
         // "MemorySwap":16*1024*1024,
         // "Memory": 1024*1024*256,
         "MemoryReservation": 1024*1024*4,
-        // "CpuShares":2,
+        "CpuShares":0,
         "NetworkMode": "xzj"
     }
 };

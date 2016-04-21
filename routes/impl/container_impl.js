@@ -595,16 +595,19 @@ exports.get = function (req, res){
                         levelResult = JSON.parse(levelResult);
                         console.log("level result.result ---> "+levelResult.result);
                         if (levelResult.result === true) {
-                            res.render('detail',{
+                            var resultData={
                                 memory: levelResult.setneal.memory+"MB",
                                 cpu: levelResult.setneal.cpu+"个",
                                 name: result.apps[0].name,
-                                image: result.apps[0].image,
+                                image: result.apps[0].image+':'+result.apps[0].imagetag,
                                 id: result.apps[0].id,
                                 status: result.apps[0].status,
-                                http: 'http://'+result.apps[0].address.ip+':'+result.apps[0].address.port,
-                                container: result.apps[0].container
-                            });
+                                domain: result.apps[0].subdomain,
+                                container: result.apps[0].container,
+                                updateTime:result.apps[0].updatetime,
+                                createTime:result.apps[0].createtime
+                            };
+                            res.json(resultData);
                         } else {
                             throw new Error(500);
                         }
