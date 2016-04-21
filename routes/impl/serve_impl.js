@@ -143,14 +143,29 @@ exports.create = function (req, res){
         ],function(err, result) {
             if (err) {
                 console.log("保存服务配置失败："+err);
-                res.status(e.status || 500);
+                res.status(500);
                 res.render('error', {
                     message: err,
                     error: err
                 });
             } else {
                 console.log("serveConfig ---> "+JSON.stringify(serveConfig));
-                res.redirect("/detail/"+serveConfig.id); // 重定向到服务详情页
+
+                // 保存服务配置成功，则发异步请求创建实例
+                var hostAndPort = req.headers.host.split(":");
+                httpUtil.get({host:hostAndPort[0], port:hostAndPort[1], path:"/container/create/"+serveConfig.id}, function(result){
+                    try {
+                        console.log("container start result ---> "+result);
+                        result = JSON.parse(result);
+
+                        console.log("服务 "+serveConfig.name+" 的实例启动情况："+result.info.script);
+                    } catch (e) {
+                        console.log("服务 "+serveConfig.name+" 的实例启动失败："+e);
+                    }
+                });
+
+                //res.redirect("/detail/"+serveConfig.id); // 重定向到服务详情页
+                res.redirect("/test");
             }
         });
     } catch (e) {
