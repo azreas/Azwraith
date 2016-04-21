@@ -6,7 +6,7 @@
 var rest = require('restler');
 var dockerapitest=require('../../../../../settings').dockerapitest;
 
-var networkid='dade2a85a194cce6f32bbbd6e526e28b1e9d467cb399e9e30c7facee8bdb8a20';
+var networkid='xzj4';
 rest.get('http://'+dockerapitest.host+':'+dockerapitest.port+'/networks/'+networkid).on('complete', function(result) {
     if (result instanceof Error) {
         console.log('Error:', result.message);

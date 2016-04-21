@@ -24,7 +24,7 @@ var postdata=      {
         // "Memory": 1024*1024*256,
         "MemoryReservation": 1024*1024*4,
         // "CpuShares":2,
-        "NetworkMode": "zds2"
+        "NetworkMode": "c6db4b630478a7fc748e1e022c73eb2bce32645caa079c8785578cacb6c14d6f"
     }
 };
 var id;

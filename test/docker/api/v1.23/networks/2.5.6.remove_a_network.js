@@ -5,7 +5,7 @@
 
 var rest = require('restler');
 var dockerapitest=require('../../../../../settings').dockerapitest;
-var networkid='zds_net_3';
+var networkid='xzj2';
 rest.del('http://'+dockerapitest.host+':'+dockerapitest.port+'/networks/'+networkid).on('complete', function(result,response) {
         console.log(response.statusCode );
 });

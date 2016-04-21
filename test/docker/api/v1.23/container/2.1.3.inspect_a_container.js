@@ -8,7 +8,7 @@ var dockerapitest=require('../../../../../settings').dockerapitest;
 //GET /containers/(id or name)/json
 //参数
 //size      1/True/true or 0/False/false       是否返回 SizeRw,SizeRootFs，默认false
-var name='5ff48172a1621c2789e8c71f024616094aba4e8be88725316bf5c8bbe07abc0f';
+var name='xzj3';
 rest.get('http://'+dockerapitest.host+':'+dockerapitest.port+'/containers/'+name+'/json').on('complete', function(result) {
     if (result instanceof Error) {
         console.log('Error:', result.message);
