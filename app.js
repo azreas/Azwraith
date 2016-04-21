@@ -28,6 +28,9 @@ require('./routes/user')(app);
 // 引入 image controller
 require('./routes/image')(app);
 
+// 引入 serve controller
+require('./routes/serve')(app);
+
 // 引入 container controller
 require('./routes/container')(app);
 /*************************** 需经过登录认证的请求结束 *******************************/
