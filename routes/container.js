@@ -9,9 +9,12 @@ var router = express.Router();
 
 module.exports = function(app){
 
+    // 根据服务 id 创建容器实例
+    router.get( '/create/:appid', container_impl.create);
+    
 /********************************** 同步请求路由开始 *************************************/
     // 根据镜像创建容器（先创建，后保存信息到数据库）
-    router.post( '/create', container_impl.create);
+    //router.post( '/create', container_impl.create);
 
     // 获取当前用户所属服务列表
     router.get( '/list', container_impl.listByUid);
@@ -21,6 +24,9 @@ module.exports = function(app){
 /********************************** 异步请求路由开始 *************************************/
     // 根据容器 id 获取指定容器信息
     router.get( '/get/:id', container_impl.get);
+
+    // 根据服务 id 获取所属容器实例列表
+    router.get( '/list/:appid', container_impl.listByAppid);
 
     // 根据服务id获取事件列表
     router.get( '/app/event/list/:id', container_impl.listAppEventById);

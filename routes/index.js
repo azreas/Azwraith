@@ -16,8 +16,8 @@ module.exports = function(app){
   // 测试界面
   router.get('/test', index_impl.test);
 
-  // 容器详情页面
-  router.get('/detail',index_impl.detail);
+  // 服务详情界面
+  router.get('/detail/:id',index_impl.detail);
 
   // router 命名空间
   app.use('/', router);
