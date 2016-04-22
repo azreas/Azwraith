@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title><%= title %></title>
+  <title>零云 - 新一代云平台</title>
   <meta charset="UTF-8">
   <meta name="renderer" content="webkit|ie-comp|ie-stand">
   <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css">
@@ -47,19 +47,16 @@
                 <a href="/">产品</a>
               </li>
               <li>
-                <a href="/">解决方案</a>
-              </li>
-              <li>
                 <a href="/">价格</a>
               </li>
               <li>
-                <a href="/">镜像广场</a>
-              </li>
-              <li>
-                <a href="/">文档</a>
+                <a href="/">服务广场</a>
               </li>
               <li>
                 <a href="/">社区</a>
+              </li>
+              <li>
+                <a href="/">文档</a>
               </li>
               <li>
                 <a href="/">关于</a>
@@ -76,10 +73,10 @@
       <div class="container">
         <div class="col-sm-12">
           <div class="ban2-status">
-            <div class="sourehan animated fadeInDown">ZeroCloud,新一代云平台</div>
-            <div class="h3 animated fadeInDown text-center">开发者和企业青睐的一站式容器云平台</div>
+            <div class="sourehan animated fadeInDown">ZeroCloud,新一代量子云平台</div>
+            <div class="h3 animated fadeInDown text-center">便捷操作的一站式云平台服务商</div>
             <div class="ban2-experience text-center animated fadeInDown">
-              <a href="http://localhost:3000/">
+              <a href="/login">
                 <span class="btn proceed">立刻体验</span>
               </a>
             </div>
@@ -92,37 +89,45 @@
     <div class="container">
       <div class="col-xs-12">
         <ul class="product">
-          <li>产品</li>
-          <li>容器服务</li>
-          <li>代码构建</li>
+          <li>关于公司</li>
+          <li>官网</li>
+          <li>社区</li>
+          <li>文档</li>
+          <li>下载</li>
+          <li>社区</li>
         </ul>
         <ul class="solutions">
-          <li>通用解决方案</li>
-          <li>网站及部署</li>
-        </ul>
-        <ul class="resoure">
-          <li>资源</li>
-          <li>价格</li>
-          <li>文档</li>
-        </ul>
-        <ul class="about">
-          <li>关于我们</li>
-          <li>关于我们</li>
-          <li>加入我们</li>
+          <li>社交媒体</li>
+          <li>微博</li>
+          <li>Facebook</li>
         </ul>
         <ul class="contactus">
-          <li>联系我们</li>
-          <li>公司：广州市天河区建工路9号308</li>
-          <li>Email：qk6337@vip.qq.com</li>
+          <li>联系方式</li>
+          <li>邮箱：zerocloud@zerosky.cn</li>
+          <li>电话：020-85475121</li>
+          <li>地址：广州市天河区建工路9号308</li>
         </ul>
       </div>
     </div>
   </section>
   <section class="screen3">
-    <p>广州是零空信息技术有限公司Copyright © 2016 版权所有</p>
+    <p>广州市零空信息技术有限公司Copyright © 2016 版权所有</p>
     <p>粤ICP备15024287号-2</p>
   </section>
 
 </div>
+
+<script type="text/javascript">
+  (function(){
+    $(window).scroll(function(){
+      var top = $(window).scrollTop();
+      if(top > 0 ){
+        $('header').addClass('header-fixed');
+      }else{
+        $('header').removeClass('header-fixed');
+      }
+    });
+  })();
+</script>
 </body>
 </html>

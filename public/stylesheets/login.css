@@ -20,7 +20,8 @@ time, mark, audio, video {
 }
 #wrapper{width: 100%;height: 100%}
 .none{display: none;}
-.form-login,.form-signup{width: 500px;margin: 10% auto 0 auto;box-shadow: 0 0 10px rgba(0,0,0,0.3)}
+header{background: #FEFEFE;box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);}
+.form-login,.form-signup{width: 500px;margin: 10% auto 0 auto;box-shadow: 0 0 10px rgba(0,0,0,0.3);background: #fff}
 .form-group{width: 100%;margin-bottom: 20px}
 .form-group input{width: 300px;height: 40px;text-indent:15px}
 .signup-title{height: 50px;line-height: 50px;font-size: 20px;text-align: center;border-bottom: 1px solid #ededed}
@@ -28,3 +29,4 @@ time, mark, audio, video {
 .signup-button input{background: #00afdd;width: 300px;height: 40px;border-radius: 5px;color: white;font-size: 16px;border: none;cursor: pointer}
 .signup-button input:hover{background: #008CD6;}
 #signup,#login{color: #337ab7;font-size: 12px;cursor:pointer;display: block}
+body{background: #F3F5F5;}

@@ -36,7 +36,7 @@ exports.create = function (req, res){
             imagetag : req.body.imagetag ? req.body.imagetag : "latest", // 镜像版本
             conflevel : req.body.conflevel, // 配置级别
             instance : parseInt(req.body.instance,10), // 实例个数
-            expandPattern : req.body.expandPattern, // 拓展方式，1表示自动，2表示手动
+            expandPattern : 1, // 拓展方式，1表示自动，2表示手动
             command : req.body.command, // 执行命令
             network : "", // 网络名（email-name+appname）
             networkid : "", // 网络 id
@@ -165,7 +165,7 @@ exports.create = function (req, res){
                     }
                 });
 
-                res.redirect("/detail/"+serveConfig.id); // 重定向到服务详情页
+              res.redirect("/detail/"+serveConfig.id); // 重定向到服务详情页
             }
         });
     } catch (e) {

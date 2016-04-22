@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta charset="UTF-8">
+  <meta name="renderer" content="webkit">
+  <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css?rev=0.1.0">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+  <!--浏览器窗口图标-->
+  <!--<link rel="icon" type="image/x-icon" href="/images/favicon.ico">-->
+  <link rel="stylesheet" href="/stylesheets/dashboard.css?rev=0.1.0">
+  <script src="/jquery/dist/jquery.min.js"></script>
+  <meta content="_csrf" name="csrf-param">
+  <meta content="FDs3VXHK-FKQuYYYVhnwDOafqB-hqLoTq2bQ" name="csrf-token">
+  <link id="console_main_css" rel="stylesheet" href="/stylesheets/container/main.css?rev=0.1.0">
+  <link rel="stylesheet" href="/stylesheets/layer/skin/layer.css" id="layui_layer_skinlayercss">
+  <title>零云 - 代码构建</title>
+</head>
+<body>
+
+<% include header.ejs %>
+
+<div class="page-container" style="margin-left: 200px;">
+  <article>
+    <div class="contentTitle">
+      <div class="dbserver">
+        <i class="fa_home"></i>
+        <a href="/servesCenter" data-permalink="" onclick="_permalink(this);" class="go">服务中心</a>
+        <i class="fa fa-angle-right fa_r"></i>
+        <a>代码构建</a>
+      </div>
+    </div>
+    <div class="showlist">
+      <div class="aption">
+        <a id="refreshInst"><i class="fa_refresh"></i></a>
+        <a href="" id="addcode">添加源代码</a>
+        <!--<a href="/ci/addproject?method=fast_build" class="btn btn-quick">快速构建</a>-->
+        <!--<a href="http://doc.tenxcloud.com/doc/v1/ci/faq-how-to-build-private-code-repositories.html" target="_blank"><i class="fa fa-question-circle"></i> 构建私有代码仓库提示</a>-->
+      </div>
+      <div class="itemTable">
+        <table class="table ci-table ">
+          <thead>
+          <tr>
+            <th>
+              <div class="table-head">
+                <table class="table" style="margin:0px;">
+                  <thead>
+                  <tr style="height:40px;">
+                    <th style="width: 15%; text-indent:30px;">项目名称</th>
+                    <th style="width: 12%;text-indent: 15px;">构建状态</th>
+                    <th style="width: 15%;text-indent: 20px;">代码源</th>
+                    <th style="width: 12%;">上次构建时间</th>
+                    <!-- <th style='width: 10%;text-indent: 7px;'>语言</th> -->
+                    <th style="width: 10%;  text-indent: 8px;">持续时间</th>
+                    <th style="width: 15%;text-indent: 10px;">镜像</th>
+                    <th style="width: 18%;text-indent: 10px;">功能</th>
+                  </tr>
+                  </thead>
+                </table>
+              </div>
+            </th>
+          </tr>
+          </thead>
+          <tbody id="projectsBody">
+          <tr>
+            <td>
+              <div class="content-table">
+                <table class="table tables">
+                  <tbody>
+                  <tr class="ci-listTr" style="cursor:auto" id="2c9af4db-7077-467f-b3ff-3ab472e7494c"
+                      tag="latest">
+                    <td style="width: 15%; text-indent:22px;">
+                      <a href="/ci/detail/2c9af4db-7077-467f-b3ff-3ab472e7494c" title="查看详细信息">
+                        php-sample
+                      </a>
+                    </td>
+                    <td style="width: 12%;">
+                      <i class="fa_success">
+                      </i>
+                      <span>
+                        成功
+                      </span>
+                      <!--<img src="/images/loading4.gif">-->
+                    </td>
+                    <td style="width: 15%;">
+                      <a data-toggle="tooltip" data-placement="left" title="" target="_blank"
+                         href="https://github.com/tenxcloud/php-hello-world.git" data-original-title="查看源代码">
+                  <span class="bj-code-source">
+                    <i class="fa fa-github fa-lg">
+                    </i>
+                    github
+                  </span>
+                      </a>
+                    </td>
+                    <td style="width: 12%;">
+                      几秒前
+                    </td>
+                    <td style="width: 10%;">
+                      07分37秒
+                    </td>
+                    <td style="width: 15%;">
+                <span title="镜像不存在" style="cursor:no-drop">
+                  php-sample
+                </span>
+                    </td>
+                    <td style="width:18%">
+                <span class="bj-green" data-toggle="tooltip" data-placement="right" title=""
+                      data-original-title="重新构建">
+                  构建&nbsp;&nbsp;
+                  <i class="fa fa-arrow-circle-right">
+                  </i>
+                </span>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+<!--<script src="/scripts/console/ci.js?rev=0.1.0"></script>-->
+  </article>
+</div>
+
+
+
+<!--<input id="userId" type="hidden" value="">-->
+<script src="/js/header.js"></script>
+<script>
+  (function(){
+    $('.nav-menu li').eq(2).addClass('item-click');
+  })();
+</script>
+</body>
+</html>

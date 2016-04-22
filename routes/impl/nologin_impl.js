@@ -13,8 +13,8 @@ var cookieUtil = require("../../modules/util/cookieUtil");
  * @param res
  */
 exports.home = function(req, res) {
-    res.render('index', { title: '零云 - 新一代云平台' });
-}
+    res.render('index', { });
+};
 
 /**
  * 进入注册界面
@@ -22,8 +22,8 @@ exports.home = function(req, res) {
  * @param res
  */
 exports.enterRegist = function (req, res){
-    res.render('regist', { title: '零云 - 注册'});
-}
+    res.render('regist', { });
+};
 
 /**
  * 注册
@@ -71,10 +71,9 @@ exports.regist = function (req, res){
  */
 exports.enterLogin = function (req, res){
     res.render('login', {
-        title: '零云 - 登录',
         status: ''
     });
-}
+};
 
 /**
  * 登录
@@ -88,7 +87,7 @@ exports.login = function (req, res){
             email:req.body.username,
             password:req.body.passwd
         }
-    }
+    };
     // 调用底层服务实现 登录
     httpUtil.post("/v1/auth", params, function(result){
         try {
@@ -109,7 +108,7 @@ exports.login = function (req, res){
                     cookieUtil.set(res, "token", result.token);
                     //TODO
                     // 进入重定向页面
-                    res.redirect('console');
+                    res.redirect('servesCenter');
                 });
             } else {
                 // 登录失败，重定向回 登录页面 带着提示信息和回显信息
@@ -126,4 +125,4 @@ exports.login = function (req, res){
             });
         }
     });
-}
+};

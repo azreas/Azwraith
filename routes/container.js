@@ -4,7 +4,7 @@
  */
 
 var container_impl = require('./impl/container_impl');
-var express = require('express')
+var express = require('express');
 var router = express.Router();
 
 module.exports = function(app){
@@ -51,7 +51,7 @@ module.exports = function(app){
     // 获取所有容器
     router.get( '/list/all', container_impl.listAll);
 
-    // 根据容器id获取绑定域名列表
+    // 根据容器id获取绑定域名列表30
     router.get( '/domain/list/all', container_impl.listAllDomain);
 
     // 根据容器id获取端口列表

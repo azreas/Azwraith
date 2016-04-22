@@ -5,11 +5,11 @@
     <div class="contentTitle">
       <div class="dbserver">
         <i class="fa_home"></i>
-        <a href="/" class="go" data-permalink=""><span>控制台</span></a>
+        <a href="/servesCenter" class="go" data-permalink=""><span>服务中心</span></a>
         <i class="fa fa-angle-right fa_r"></i>
-        <a class="go" href="/console" data-permalink="" onclick="_permalink(this);">容器服务</a>
+        <a class="go" href="/container" data-permalink="" onclick="_permalink(this);">容器服务</a>
         <i class="fa fa-angle-right fa_r"></i>
-        <a class="goback">创建服务<!--（<span class="clusterText" data="tenx_district3">杭州区</span>）--></a>
+        <a class="goback page-in">创建服务</a>
       </div>
     </div>
     <div id="home-main" class="modalCrealApp" style="background:#fff;min-height:100%;">
@@ -25,18 +25,20 @@
               容器配置
               <div class="triangle"></div>
             </div>
-            <div class="radius_step">
-              <span>3</span>
-              高级设置
-            </div>
+            <!--<div class="radius_step">-->
+              <!--<span>3</span>-->
+              <!--高级设置-->
+            <!--</div>-->
             <div class="hide">
               <span class="STEPS"></span>
               <span class="STEPS"></span>
-              <span class="STEPS"></span>
+              <!--<span class="STEPS"></span>-->
             </div>
           </div>
         </div>
         <div class="step-inner">
+
+          <!--创建页面第一部分-->
           <div class="host_step1">
             <section class="info-class">
               <!--<span class="info-system primary" id="system">常用</span>-->
@@ -70,34 +72,22 @@
               </li>
             </ul>
           </div>
-          <!--创建页面第二部-->
+
+          <!--创建页面第二部分-->
           <div class="host_step2" style="display:none">
             <!--<i class="tips">载入容器配置中...</i>-->
             <ul class="safeSet">
               <!--提交镜像名，版本，服务名-->
-              <form id="createContainerForm" method="post" action="/container/create">
+              <form id="createContainerForm" method="post" action="/serve/create">
                 <li class="line-h-3">
                   <span class="ve_top">镜像名称：</span>
                   <span class="imageName"></span>
                   <input id="getImageName" type="hidden" name="image" value="">
                   <!--<input id="getImageName" type="hidden" name="image" value="alexwhen/docker-2048">-->
                 </li>
-                <li class="line-h-3" style="display: none">
-                  <span class="ve_top">镜像版本：</span>
-                  <div class="select-versions" data-toggle="dropdown">
-                    <span class="version-text">latest</span>
-                    <div class="sign">
-                      <i class="fa fa-angle-right"></i>
-                    </div>
-                  </div>
-                  <ul id="imageTag" class="dropdown-menu dropdown-position">
-                    <li>latest</li>
-                  </ul>
-                  <input id="getVersion" type="hidden" name="imagetag">
-                </li>
                 <li class="line-h-3">
                   <span class="ve_top">服务名称：</span>
-                  <input name="containerName" type="text" value="" class="in_style" id="containerName">
+                  <input name="name" type="text" value="" class="in_style" id="containerName">
                 </li>
               <li class="line-h-3" style="min-height:109px;padding-top: 10px;">
                 <input name="conflevel" id="typeX" type="hidden" value="">
@@ -145,14 +135,6 @@
                   </ul>
                 </section>
               </li>
-              <li class="line-h-3" id="instNotice" style="min-height:30px;display:none">
-                <div>
-                  <span class="number-title"></span>
-                    <span class="imageMsg" style="margin-left: 0px;">
-                      <i>提示：目前操作系统是一个沙箱(sandbox)容器，暂不适用于生产环境。</i>
-                    </span>
-                </div>
-              </li>
               <li class="line-h-3" id="instsize">
                 <div class="param-set">
                   <span class="number-title">实例数量：</span>
@@ -167,187 +149,123 @@
                 <ol id="param_list"></ol>
               </li>
               <li id="service_type">
-                <span class="ve_top">服务类型：</span>
-                <span class="update-mi"><input type="checkbox" id="state_service" disabled="" stateless="1"> <label for="state_service"><font color="blue" title="是否对存储卷数据进行持久化">无状态服务</font></label><span class="mountTips">（该镜像未配置volume）</span></span>
-              </li>
-              <li class="loadingVolume" style="display:none">
-                <span class="ve_top">&nbsp;&nbsp;&nbsp;</span>
-                <span class="update-mi"><i>载入存储卷列表中...</i></span>
-              </li>
-              <li class="hide-set" id="save_roll_dev" style="display:none">
-                <ul id="mountPathList">
-                  <!-- <li>
-                    <span class="ve_top"> &nbsp;&nbsp;&nbsp;存储卷：</span>
-                    <ol class='pull-left'>
-                      <li>
-                        <select class="selectVolume" style="height:30px;width:230px;">
-                          <option value="0">选择一个存储卷</option>
-                        </select>
-                        <input type="checkbox" id="isVolumeReadonly" class="isVolumeReadonly"> <label for="isVolumeReadonly">只读</label>
-                        <a id="refreshVolume" class="btn btn-link">刷新</a>
-                      </li>
-                    </ol>
-                  </li> -->
-                </ul>
-              </li>
-              <li id="save_roll" style="height: 100px; display: none;">
-                <table class="table enabled">
-                  <thead style="background:#fafafa">
-                  <tr>
-                    <th>名称</th>
-                    <th>大小</th>
-                    <th>格式</th>
-                    <th style="vertical-align:middle; text-align:center;">操作</th>
-                  </tr>
-                  </thead>
-                  <tbody class="BORDER" id="pushdevroll">
-                  <tr>
-                    <td style="width:180px;">
-                      <input id="fastImageName" placeholder="存储卷名称" class="input" type="text"></td>
-                    <td>
-                      <input type="number" placeholder="1024" id="fastVolumeSize" style="width:80%" value="1024">&nbsp;M</td>
-                    <td class="dropdown">
-                      <div class="select-versions setinput" data-toggle="dropdown">
-                        <span id="fastFormat" class="hostingText" style="width:60px;">ext4</span>
-                        <div class="sign">
-                          <i class="fa fa-angle-right"></i>
-                        </div>
-                      </div>
-                      <ul class="dropdown-menu dropdown-position" style="left:5px;top:33px;">
-                        <li>ext4</li>
-                        <li>xfs</li>
-                        <li>reiserfs</li>
-                      </ul>
-                    </td>
-                    <td class="text-center">
-                      <span id="fastCreateVolume" class="btn btn-primary btn-sm">创建存储卷</span>
-                    </td>
-                  </tr>
-                  <tr></tr>
-                  </tbody>
-                </table>
-              </li>
-              <li class="line-h-3">
-                <span class="ve_top">接入点：</span>
-                <span class="update-mi"> <input id="entrypoint" type="text" style="width:230px;height:27px;cursor:no-drop;padding:0px;margin:0px;" class="cmdtext" disabled=""></span>
+                <span class="ve_top">拓展方式：</span>
+                <span class="update-mi">
+                  <input name="expand" type="radio" id="state_service" value="0">
+                  <label for="state_service"><font color="blue" title="">手动</font></label>
+                  <input name="expand" type="radio" id="state_service" value="1">
+                  <label for="state_service"><font color="blue" title="">自动</font></label>
+                </span>
               </li>
               <li class="line-h-3">
                 <span class="ve_top">执行命令：</span>
                 <span class="update-mi"><input id="execmd" type="text" style="width:230px;height:27px;cursor:no-drop;padding:0px;margin:0px;" class="cmdtext" disabled="">&nbsp;&nbsp; <input type="radio" class="execmd" name="defaultcmd" value="default" checked=""> 镜像默认&nbsp;&nbsp; <input type="radio" class="execmd" name="defaultcmd" value="self"> 自定义 </span>
               </li>
-              <li class="line-h-3">
-                <span class="ve_top">镜像设置：</span>
-                <span class="update-mi"><input type="checkbox" id="pullPolicy" name="pullPolicy" checked=""> <label for="pullPolicy" title="是否优先使用本地缓存的镜像。为了更快的启动速度，推荐取消该选项；为了保证始终使用最新镜像，请选中此选项">更新镜像</label></span>
-              </li>
-              <li class="line-h-3">
-                <span class="ve_top">时区设置：</span>
-                <span class="update-mi"><input type="checkbox" id="syncTimezone" name="syncTimezone"> <label for="syncTimezone" title="使用所在节点相同的时区">与节点同步</label></span>
-              </li>
             </ul>
             <div style="height: 80px !important;"></div>
           </div>
           <!--高级设置-->
-          <div class="host_step3 hide">
-            <ul class="advanced">
-              <li class="hide-set">
-                <span class="ve_top">链接服务：</span>
-                <ol class="pull-left" style="width:100%;">
-                  <li class="hide-select">
-                    <select class="col col-4" id="linkcontainers" style="min-width:100px;height:28px;"><option>test</option></select>
-                    <input id="containernickname" type="text" placeholder="value">
-                    <a id="addcontainer" class="cursor">添加</a>
-                  </li>
+          <!--<div class="host_step3 hide">-->
+            <!--<ul class="advanced">-->
+              <!--<li class="hide-set">-->
+                <!--<span class="ve_top">链接服务：</span>-->
+                <!--<ol class="pull-left" style="width:100%;">-->
+                  <!--<li class="hide-select">-->
+                    <!--<select class="col col-4" id="linkcontainers" style="min-width:100px;height:28px;"><option>test</option></select>-->
+                    <!--<input id="containernickname" type="text" placeholder="value">-->
+                    <!--<a id="addcontainer" class="cursor">添加</a>-->
+                  <!--</li>-->
 
-                  <li>
-                    <table id="linkcontainertb" class="table table-hover enabled" style="display:none">
-                      <thead>
-                      <tr>
-                        <th style="width40%">服务</th>
-                        <th style="width:40%">名称</th>
-                        <th style="width:20%">操作</th>
-                      </tr>
-                      </thead>
-                      <tbody id="linkcontainerbody"></tbody>
-                    </table>
-                  </li>
-                </ol>
-              </li>
-              <li class="hide-set">
-                <span class="ve_top">环境变量：</span>
-                <ol class="pull-left" style="width:100%;">
-                  <li class="hide-select">
-                    <input type="text" placeholder="name" id="Name">
-                    <input type="text" placeholder="value" id="Value">
-                    <a id="cratePATH">添加</a>
-                  </li>
-                  <li>
-                    <table class="table table-hover enabled" id="Path">
-                      <thead>
-                      <tr>
-                        <th style="width:45%">键</th>
-                        <th style="width:45%">值</th>
-                        <th style="width:10%">操作</th>
-                      </tr>
-                      </thead>
-                      <tbody id="Path-oper">
-                      </tbody>
-                    </table>
-                  </li>
-                </ol>
-              </li>
-              <li class="hide-set">
-                <span class="ve_top">端口配置：</span>
-                <table class="table enabled">
-                  <thead style="background:#fafafa">
-                  <tr><th style="width:35%">容器端口</th>
-                    <th style="width:35%">协议</th>
-                    <th style="width:15%">映射端口</th>
-                    <th style="vertical-align:middle;width:8.9%">操作</th>
-                  </tr></thead>
-                  <tbody class="BORDER" id="pushPrptpcol">
-                  </tbody>
-                </table>
-                <div class="createPort">
-                  <span><i class="fa fa-plus margin"></i></span>
-                </div>
-              </li>
-              <li class="hide-set hosting dropup">
-                <span class="ve_hosting">宿主主机：</span>
-                <div class="select-versions" data-toggle="dropdown">
-                  <span id="hosting-host-1" class="hostingText">加载中...</span>
-                  <div class="sign">
-                    <i class="fa fa-angle-right"></i>
-                  </div>
-                </div>
-                <ul id="hostingTag1" class="dropdown-menu dropdown-position">
-                </ul>
-              </li>
-              <li class="hide-set hosting dropup">
-                <span class="ve_hosting">服务出口：</span>
-                <div class="select-versions" data-toggle="dropdown">
-                  <span id="hosting-service-out" class="hostingText">加载中...</span>
-                  <div class="sign">
-                    <i class="fa fa-angle-right"></i>
-                  </div>
-                </div>
-                <ul id="hostingTag2" class="dropdown-menu dropdown-position">
-                </ul>
-              </li>
-            </ul>
-            <div style="height: 80px !important;"></div>
-          </div>
+                  <!--<li>-->
+                    <!--<table id="linkcontainertb" class="table table-hover enabled" style="display:none">-->
+                      <!--<thead>-->
+                      <!--<tr>-->
+                        <!--<th style="width40%">服务</th>-->
+                        <!--<th style="width:40%">名称</th>-->
+                        <!--<th style="width:20%">操作</th>-->
+                      <!--</tr>-->
+                      <!--</thead>-->
+                      <!--<tbody id="linkcontainerbody"></tbody>-->
+                    <!--</table>-->
+                  <!--</li>-->
+                <!--</ol>-->
+              <!--</li>-->
+              <!--<li class="hide-set">-->
+                <!--<span class="ve_top">环境变量：</span>-->
+                <!--<ol class="pull-left" style="width:100%;">-->
+                  <!--<li class="hide-select">-->
+                    <!--<input type="text" placeholder="name" id="Name">-->
+                    <!--<input type="text" placeholder="value" id="Value">-->
+                    <!--<a id="cratePATH">添加</a>-->
+                  <!--</li>-->
+                  <!--<li>-->
+                    <!--<table class="table table-hover enabled" id="Path">-->
+                      <!--<thead>-->
+                      <!--<tr>-->
+                        <!--<th style="width:45%">键</th>-->
+                        <!--<th style="width:45%">值</th>-->
+                        <!--<th style="width:10%">操作</th>-->
+                      <!--</tr>-->
+                      <!--</thead>-->
+                      <!--<tbody id="Path-oper">-->
+                      <!--</tbody>-->
+                    <!--</table>-->
+                  <!--</li>-->
+                <!--</ol>-->
+              <!--</li>-->
+              <!--<li class="hide-set">-->
+                <!--<span class="ve_top">端口配置：</span>-->
+                <!--<table class="table enabled">-->
+                  <!--<thead style="background:#fafafa">-->
+                  <!--<tr><th style="width:35%">容器端口</th>-->
+                    <!--<th style="width:35%">协议</th>-->
+                    <!--<th style="width:15%">映射端口</th>-->
+                    <!--<th style="vertical-align:middle;width:8.9%">操作</th>-->
+                  <!--</tr></thead>-->
+                  <!--<tbody class="BORDER" id="pushPrptpcol">-->
+                  <!--</tbody>-->
+                <!--</table>-->
+                <!--<div class="createPort">-->
+                  <!--<span><i class="fa fa-plus margin"></i></span>-->
+                <!--</div>-->
+              <!--</li>-->
+              <!--<li class="hide-set hosting dropup">-->
+                <!--<span class="ve_hosting">宿主主机：</span>-->
+                <!--<div class="select-versions" data-toggle="dropdown">-->
+                  <!--<span id="hosting-host-1" class="hostingText">加载中...</span>-->
+                  <!--<div class="sign">-->
+                    <!--<i class="fa fa-angle-right"></i>-->
+                  <!--</div>-->
+                <!--</div>-->
+                <!--<ul id="hostingTag1" class="dropdown-menu dropdown-position">-->
+                <!--</ul>-->
+              <!--</li>-->
+              <!--<li class="hide-set hosting dropup">-->
+                <!--<span class="ve_hosting">服务出口：</span>-->
+                <!--<div class="select-versions" data-toggle="dropdown">-->
+                  <!--<span id="hosting-service-out" class="hostingText">加载中...</span>-->
+                  <!--<div class="sign">-->
+                    <!--<i class="fa fa-angle-right"></i>-->
+                  <!--</div>-->
+                <!--</div>-->
+                <!--<ul id="hostingTag2" class="dropdown-menu dropdown-position">-->
+                <!--</ul>-->
+              <!--</li>-->
+            <!--</ul>-->
+            <!--<div style="height: 80px !important;"></div>-->
+          <!--</div>-->
         </div>
       </div>
       <div class="createPadding hide">
         <button class="btn btn-default go_backs01 hide" style="margin-right:30px;">上一步</button>
         <button class="btn btn-default go_backs02 hide" style="margin-right:30px;">上一步</button>
-        <button class="btn btn-success two_step hide">高级设置</button>
+        <!--<button class="btn btn-success two_step hide">高级设置</button>-->
         <button id="createButton" class="pull-right btn btn-primary pull_confirm hide">创建</button>
-          <span class="pull-right">
-            <span>消费预估：</span>
-              <span id="consume" style="margin-right: 30px;"><span class="prospect-price">￥ <font id="consumptionEstimate">0.042</font> </span>元/小时</span>
-              <span class="small hide" id="consumptionEstimateTips" style="margin-left:50px;">1.01 元/天</span>
-          </span>
+          <!--<span class="pull-right">-->
+            <!--<span>消费预估：</span>-->
+              <!--<span id="consume" style="margin-right: 30px;"><span class="prospect-price">￥ <font id="consumptionEstimate">0.042</font> </span>元/小时</span>-->
+              <!--<span class="small hide" id="consumptionEstimateTips" style="margin-left:50px;">1.01 元/天</span>-->
+          <!--</span>-->
       </div>
     </div>
     <!--iframe -->

@@ -4,7 +4,7 @@
  */
 
 var serve_impl = require('./impl/serve_impl');
-var express = require('express')
+var express = require('express');
 var router = express.Router();
 
 module.exports = function(app){

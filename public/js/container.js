@@ -3,6 +3,21 @@
  */
 (function(){
 
+    $('.nav-menu li').eq(1).addClass('item-click');
+    //执行命令选择
+    $('.execmd').click(function() {
+        var type = $(this).val();
+        if (type === 'self') {
+            $('#execmd').removeClass('cmdtext');
+            $('#execmd').removeAttr('disabled');
+            $('#execmd').css('cursor', '');
+        } else {
+            $('#execmd').addClass('cmdtext');
+            $('#execmd').attr('disabled', 'disabled');
+            $('#execmd').css('cursor', 'no-drop');
+        }
+    });
+
     //container切换
     $('.create.pushContaienrs').click(function(){
         $('.part01').hide();
@@ -12,7 +27,7 @@
     //创建容器取容器名
     $('.dialog').on('click','.list-item-description>.pull-deploy',function(){
         var name = $(this).parents('.image-item').find('.container-name').val();  //取镜像名
-        console.log(name);
+        //console.log(name);
 
         $('.host_step1').hide();
         $('.host_step2').show();
@@ -31,7 +46,7 @@
         if ( containerName === "") {
             alert("服务名称不能为空！");
         } else {
-            var typeX = $('#createContainerForm>li').eq(3).find('.active>.up_style').text().toLowerCase();
+            var typeX = $('#createContainerForm>li').eq(2).find('.active>.up_style').text().toLowerCase();
             $('#typeX').val(typeX);
             //alert($('#typeX').val());
             $("#createContainerForm").submit();
@@ -90,7 +105,7 @@
                 var images = resp.data;
                 for(var i in images){
                     var imageDiv;
-                    imageDiv = $('<div class="image-item"><span class="img_icon span2"><img src=""></span><span class="span6 type" type="runtime"><div class="list-item-description"><div class="name h4">'+images[i].name+'<a title="点击查看镜像详情" target="_blank" href=""><i class="fa fa-external-link-square"></i></a></div><span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">'+images[i].description+'</span></div></span><span class="span2"><div class="list-item-description"><span class="pull-deploy btn btn-primary" data-attr="tenxcloud/php">部署<i class="fa fa-arrow-circle-o-right margin fa-lg"></i></span></div></span><input class="container-name" type="hidden" value="'+images[i].name+'"></div>');
+                    imageDiv = $('<div class="image-item"><span class="img_icon span2"><img src="/images/blue-logo.png"></span><span class="span6 type" type="runtime"><div class="list-item-description"><div class="name h4">'+images[i].name+'<a title="点击查看镜像详情" target="_blank" href=""></a></div><span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">'+images[i].description+'</span></div></span><span class="span2"><div class="list-item-description"><span class="pull-deploy btn btn-primary" data-attr="tenxcloud/php">部署<i class="fa fa-arrow-circle-o-right margin fa-lg"></i></span></div></span><input class="container-name" type="hidden" value="'+images[i].name+'"></div>');
 
                     imageDiv.appendTo($('#searchImages'));
                 }
@@ -109,34 +124,63 @@
 
     }).done(function(resp){
         var servers = resp.servers;
-        //console.log(servers);
+        console.log(servers);
         for(var i in servers){
             //console.log(servers[i].address.ip);
             var titme = new Date(servers[i].createtime);
             var date = formatDate(titme);
+            var status = "";
+            var deleteFlag = servers[i].deleteFlag;
+            if(deleteFlag == '1'){
 
-            var dbtr=$('<tr class="show-tr"><td><div class="contents-table"><table class="table"><tr class="clusterId">\
+            }else{
+                switch (servers[i].status)
+                {
+                    //1.启动中，2.运行中，3.停止中，4.已停止,5.启动失败,6.停止失败
+                    case 1:
+                        status = "启动中";
+                        break;
+                    case 2:
+                        status = "运行中";
+                        break;
+                    case 3:
+                        status = "停止中";
+                        break;
+                    case 4:
+                        status = "已停止";
+                        break;
+                    case 5:
+                        status = "启动失败";
+                        break;
+                    case 6:
+                        status = "停止失败";
+                        break;
+                }
+                var dbtr=$('<tr class="show-tr"><td><div class="contents-table"><table class="table"><tr class="clusterId">\
         <td style="width:5%;text-indent: 30px;"><input type="checkbox" name="chkItem" value="'+servers[i].name+'" aria-expanded="false" val="'+servers[i].id+'" status="'+servers[i].status+'"/></td>\
-        <td style="width:20%;white-space:nowrap;"><a href="/container/get/'+servers[i].id+'" class="cluster_mirrer_name">' + servers[i].name + '</a></td>\
-        <td style="width:10%" id="'+servers[i].name+'status">'+servers[i].status+'</td>\
+        <td style="width:20%;white-space:nowrap;"><a href="/detail/'+servers[i].id+'" class="cluster_mirrer_name">' + servers[i].name + '</a></td>\
+        <td style="width:10%" id="'+servers[i].name+'status">'+status+'</td>\
         <td style="width:20%;"><span class="cluster_mirrer">' + servers[i].image + '</span></td>\
-        <td style="width:34%" id="'+servers[i].name+'id"><a target="_blank" href="http://'+servers[i].address.ip+':'+servers[i].address.port+'" class="cluster_mirrer_name">'+servers[i].address.ip+':'+servers[i].address.port+'</a><span class="urlStatus"></span></td>\
+        <td style="width:34%" id="'+servers[i].name+'id"><a target="_blank" href="http://'+servers[i].address+'" class="cluster_mirrer_name">'+servers[i].address+'</a><span class="urlStatus"></span></td>\
         <td style="width:10%" class="tdTimeStrap">'+date+'<input type="hidden" class="timeStrap" value=""><i class="fa_time"></i><span></span></td></tr></td></div></table></tr>');
 
-            dbtr.appendTo($('#dbtable'));
+                dbtr.appendTo($('#dbtable'));
 
+            }
+
+            //时间格式化
+            function formatDate(now) {
+                var year=now.getFullYear();
+                var month=now.getMonth()+1;
+                var date=now.getDate();
+                var hour=now.getHours();
+                var minute=now.getMinutes();
+                var second=now.getSeconds();
+                return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
+            }
         }
 
-        //时间格式化
-        function formatDate(now) {
-            var year=now.getFullYear();
-            var month=now.getMonth()+1;
-            var date=now.getDate();
-            var hour=now.getHours();
-            var minute=now.getMinutes();
-            var second=now.getSeconds();
-            return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
-        }
+
     });
 
     $('#createContainerForm>li>section').click(function(){
@@ -187,7 +231,7 @@
     $('#iframe').on('click','input[name="chkItem"]',function(){
         if($(this).prop('checked') == true){
             var status = $(this).attr('status');
-            if(status == '运行中'){
+            if(status == '1' || status =='2'){
                 //$('#startContainer').removeClass('cursor-drop').addClass('a-live');
                 $('#stopContainer').removeClass('cursor-drop').addClass('a-live');
                 $('#scaleCluster').removeClass('cursor-drop').addClass('a-live');
@@ -196,7 +240,7 @@
                 $('#deleteButton').removeClass('cursor-drop').addClass('a-live');
                 $('#upgradeCluster').removeClass('cursor-drop').addClass('a-live');
                 $(this).attr('aria-expanded',true);
-            }else if(status == '已停止'){
+            }else if(status == '3' || status == '4' || status == '5' || status == '6'){
                 $('#startContainer').removeClass('cursor-drop').addClass('a-live');
                 //$('#stopContainer').removeClass('cursor-drop').addClass('a-live');
                 $('#scaleCluster').removeClass('cursor-drop').addClass('a-live');
@@ -240,7 +284,7 @@
         containerNames.forEach(function(containerName){
             $('#' + containerName + 'status').html('<i class="fa_createing"></i><span style="color: #FF9C00">启动中<img class="margin" src="/images/loading4.gif"></span>');
 
-        })
+        });
 
         $.ajax({
             url: '/container/start/'+startCont,
@@ -249,18 +293,17 @@
             //contentType: 'application/json',
             //dataType: 'json'
         }).done(function(resp) {
-            console.log(resp.app);
-            var status = resp.app.status;
-            $('input[name="chkItem"]:checked').attr('status',status);
-            $('input[name="chkItem"]:checked').prop('checked',false);
-
-            var ip = resp.app.address.ip;
-            var port = resp.app.address.port;
+            console.log(resp);
+            if(resp.result == true){
+                var status = '2';
+                $('input[name="chkItem"]:checked').attr('status',status);
+                $('input[name="chkItem"]:checked').prop('checked',false);
+            }
 
             setTimeout(function () {
                 containerNames.forEach(function(containerName){
                     $('#' + containerName + 'status').html('<span>运行中</span>');
-                    $('#' + containerName + 'id').html('<a target="_blank" href="http://'+ip+':'+port+'" class="cluster_mirrer_name">'+ip+':'+port+'</a>');
+                    $('#' + containerName + 'id').html('<a target="_blank" href="http://'+resp.address+'" class="cluster_mirrer_name">'+resp.address+'</a>');
 
                 })
             }, 1000);
@@ -293,7 +336,7 @@
 
         containerNames.forEach(function(containerName){
             $('#' + containerName + 'status').html('<i class="fa_createing"></i><span style="color: #FF9C00">停止中<img class="margin" src="/images/loading4.gif"></span>');
-        })
+        });
 
         $.ajax({
             url: '/container/stop/'+startCont,
@@ -302,9 +345,13 @@
             //contentType: 'application/json',
             //dataType: 'json'
         }).done(function(resp) {
-            var status = resp.app.status;
-            $('input[name="chkItem"]:checked').attr('status',status);
-            $('input[name="chkItem"]:checked').prop('checked',false);
+            console.log(resp);
+            if(resp.result == true){
+                var status = '4';
+                $('input[name="chkItem"]:checked').attr('status',status);
+                $('input[name="chkItem"]:checked').prop('checked',false);
+            }
+
 
             setTimeout(function () {
                 containerNames.forEach(function(containerName){
@@ -373,9 +420,11 @@
     $('#iframe').on('click','#deleteButton',function(){
         if($(this).hasClass('cursor-drop')) return;
         //弹出是否删除框
-        var ret = window.confirm("确定删除容器？");
-        //当点击确定时 返回 true
-        if(ret){
+        layer.confirm('确定删除容器', {
+            icon: 3,
+            btn: ['确定', '取消']
+        }, function(index){
+            layer.close(index);
             var startCont = [];
             var containerNames = [];
             $('input[name="chkItem"]:checked').each(function(){
@@ -400,17 +449,20 @@
                 //contentType: 'application/json',
                 //dataType: 'json'
             }).done(function(resp) {
-                alert('删除成功');
-                $('input[name="chkItem"]:checked').parents('.show-tr').hide();
+                console.log(resp);
+                layer.open({
+                    content: '删除成功'
+                });
+                $('input[name="chkItem"]:checked').parents('.show-tr').remove();
 
             }).fail(function (err) {
                 alert('删除失败，请重新删除');
             });
-        }else{
+
             $('.dropdown-menu.drop-left').hide();   //隐藏更多操作
             $('a.more').attr('aria-expanded',false);
-        }
 
+        });
     });
 
 })();

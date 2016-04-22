@@ -2,13 +2,51 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title><%= title %></title>
+  <title>零云 - 登录</title>
+  <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/stylesheets/login-top.css">
   <link rel="stylesheet" href="/stylesheets/login.css">
-
   <script type="text/javascript" src="/jquery/dist/jquery.min.js"></script>
+  <script type="text/javascript" src="/stylesheets/layer/layer.js"></script>
+  <script type="text/javascript" src="/bootstrap/dist/js/bootstrap.min.js"></script>
 </head>
 <body>
 <div id="wrapper">
+  <header>
+    <nav id="main-nav" class="navbar navbar-default" role="navigation">
+      <div class="container">
+        <div class="row">
+          <div class="navbar-header">
+            <button type="button" class="toggle navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-top-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a href="/"><span class="logo"></span></a>
+          </div>
+          <div class="navbar-collapse navbar-top-collapse collapse" style="height: 1px;">
+            <ul class="nav navbar-nav navbar-right c_navbar">
+
+              <li><a href="/login" class="font_size login" id="llogin" style="padding:5px 15px">登 录</a></li>
+              <li><a href="/regist" class="font_size registry" id="register" style="padding:5px 15px">注 册</a></li>
+
+            </ul>
+            <ul class="nav navbar-nav navbar-left z_navbar">
+              <li class="header-products"><a href="https://www.tenxcloud.com/products">服务中心</a>
+
+              </li>
+              <li class="header-solutions">
+                <a href="" target="_block">社区</a>
+              </li>
+              <li><a href="">文档</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
   <form method="post" action="/login">
     <div class="form-login">
       <div class="form-group">
@@ -44,26 +82,26 @@
     $('#username').blur(function (event) {
       var email = $(this).val();
       if (!email || email.trim() === '') {
-        alert('邮箱不能为空');
+        layer.tips('邮箱不能为空',$(this),{tips: [1, '#EF6578']});
         return;
       }
       email = email.trim();
       if (email.search(/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/) !== -1) {
         if (email.length > 50) {
           // $(this).siblings('span.m').html('邮箱长度不能大于50');
-          alert('邮箱长度不能大于50');
+          layer.tips('邮箱长度不能大于50',$(this),{tips: [1, '#EF6578']});
         }
         return;
       }
-      alert('请输入合法的邮箱');
+      layer.tips('请输入合法的邮箱',$(this),{tips: [1, '#EF6578']});
     });
     // 密码验证
     $('#passwd').blur(function(event) {
       var html = $(this).val();
       if(html===''){
-        alert('密码不能为空');
+        layer.tips('密码不能为空',$(this),{tips: [1, '#EF6578']});
       }else if(html.length < 6 || html.length > 30){
-        alert('密码长度必须在6-30位数');
+        layer.tips('密码长度必须在6-30位数',$(this),{tips: [1, '#EF6578']});
       }
     });
     //登录状态返回验证
@@ -72,7 +110,7 @@
     if(status == '' || status == null){
 
     }else {
-      alert(status);
+      layer.msg(state);
     }
   })();
 

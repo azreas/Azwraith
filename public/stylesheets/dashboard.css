@@ -988,6 +988,7 @@ button.close{
   margin-right: 5px;
 }
 button.close-message{margin-top:15px;}
+.page-in{color:#4c9be0 !important}
 /*--------------------   引导    ----------------------------*/
 .lead-box{
   position: fixed;

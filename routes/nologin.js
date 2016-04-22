@@ -3,7 +3,7 @@
  * Created by lingyuwang on 2016/4/7.
  */
 var nologin_impl = require('./impl/nologin_impl');
-var express = require('express')
+var express = require('express');
 var router = express.Router();
 
 module.exports = function(app){

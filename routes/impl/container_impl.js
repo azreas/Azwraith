@@ -1029,10 +1029,11 @@ exports.get = function (req, res){
                                 memory: levelResult.setneal.memory+"MB",
                                 cpu: levelResult.setneal.cpu+"个",
                                 name: result.apps[0].name,
+                                iamgeName: result.apps[0].image,
                                 image: result.apps[0].image+':'+result.apps[0].imagetag,
                                 id: result.apps[0].id,
                                 status: result.apps[0].status,
-                                domain: result.apps[0].subdomain,
+                                address: result.apps[0].address,
                                 updateTime:result.apps[0].updatetime,
                                 createTime:result.apps[0].createtime
                             };
@@ -1072,7 +1073,7 @@ exports.listByAppid = function (req, res){
         try {
             console.log("containers list by appid result ---> "+result);
             result = JSON.parse(result);
-            
+
             if (result.result !== true) {
                 throw new Error(result.info.script);
             }
@@ -1188,6 +1189,29 @@ exports.getInstance = function (req, res){
                     }
                     if (containerEventResult.result === true) {
                         // 返回 json 数据
+                        var status = "";
+                        switch (containerResult.container.status)
+                        {
+                            //1.启动中，2.运行中，3.停止中，4.已停止,5.启动失败,6.停止失败
+                            case 1:
+                                status = "启动中";
+                                break;
+                            case 2:
+                                status = "运行中";
+                                break;
+                            case 3:
+                                status = "停止中";
+                                break;
+                            case 4:
+                                status = "已停止";
+                                break;
+                            case 5:
+                                status = "启动失败";
+                                break;
+                            case 6:
+                                status = "停止失败";
+                                break;
+                        }
                         res.render('instanceDetail',{
                             containerId:req.params.instanceid,
                             memory:levelresult.setneal.memory+"MB",
@@ -1196,7 +1220,7 @@ exports.getInstance = function (req, res){
                             imagetag:app.imagetag,
                             date:date,
                             name: containerResult.container.name,
-                            status: containerResult.container.status,
+                            status: status,
                             httpout: 'http://'+containerResult.container.outaddress.ip+':'+containerResult.container.outaddress.port,
                             httpin: 'http://'+containerResult.container.inaddress.ip+':'+containerResult.container.inaddress.port,
                             containerEvents:containerEventResult.containerEvents
@@ -1221,7 +1245,7 @@ exports.getInstance = function (req, res){
 
         }
     ],function(err, result) {
-        
+
     });
 }
 
@@ -1592,7 +1616,8 @@ exports.start = function (req, res){
                     info: {
                         code: "10000",
                         script: "根据服务 "+req.params.id+" 启动容器实例成功"
-                    }
+                    },
+                    address: app.address
                 });
             }
         });
@@ -1879,12 +1904,12 @@ exports.stop = function (req, res){
             }
         });
     } catch (e) {
-        console.log("根据服务 "+req.params.id+" 停止容器实例失败："+e);
+        console.log("根据服务 " + req.params.id + " 停止容器实例失败：" + e);
         res.json({
             result: false,
             info: {
                 code: "00000",
-                script: "根据服务 "+req.params.id+" 停止容器实例失败："+e
+                script: "根据服务 " + req.params.id + " 停止容器实例失败：" + e
             }
         });
     }

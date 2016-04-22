@@ -226,7 +226,7 @@ pre{white-space: pre-wrap;word-wrap:break-word }
 .circle.red{background: #EF3232;}
 .circle.blue{background: #3F7AC1;}
 .circle.green{background: #36FD33;}
-.containerEvent,.bindDomain,.portMapping{
+.containerEvent,.bindDomain,.portMapping,.containerResource{
     width:98%;
     margin-left: 1%;
     background: white;
