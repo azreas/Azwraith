@@ -1052,28 +1052,38 @@ exports.getInstance = function (req, res){
                     console.log("level result ---> "+levelResult);
                     levelResult = JSON.parse(levelResult);
 
-                    var time = new Date(container.createtime);
-                    var date = formatDate(time);
+
 
                     if (levelResult.result === true) {
                         // 返回 json 数据
-                        res.render('instanceDetail',{
-                            container:container,
-                            memory:levelResult.setneal.memory+"MB",
-                            cpu:levelResult.setneal.cpu,
-                            image:app.image,
-                            imagetag:app.imagetag,
-                            date:date,
-                            name: container.name,
-                            id: app.id,
-                            containerId: req.params.instanceid,
-                            status: container.status,
-                            httpout: 'http://'+container.outaddress.ip+':'+container.outaddress.port,
-                            httpin: 'http://'+container.inaddress.ip+':'+container.inaddress.port
-                        });
+
+                        callback(null,app,levelResult);
                     } else {
                         throw new Error(result.info.script);
                     }
+
+
+
+                } catch (e) {
+                    console.log("获取配置信息 "+app.conflevel+" 失败："+e);
+                    res.json({
+                        result: false,
+                        info: {
+                            code: "00000",
+                            script: "获取配置信息 "+app.conflevel+" 失败"
+                        }
+                    });
+                }
+            });
+
+        },function (app, level, callback) { // 根据容器实例id获取容器实例基本信息
+            httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/container/"+req.params.instanceid}, function(containerResult){
+                try {
+                    console.log("containerResult  ---> "+containerResult);
+                    containerResult = JSON.parse(containerResult);
+
+                    var time = new Date(containerResult.container.createtime);
+                    var date = formatDate(time);
 
                     function formatDate(now) {
                         var year=now.getFullYear();
@@ -1084,7 +1094,23 @@ exports.getInstance = function (req, res){
                         var second=now.getSeconds();
                         return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
                     }
-
+                    if (containerResult.result === true) {
+                        // 返回 json 数据
+                        res.render('instanceDetail',{
+                            containerId:req.params.instanceid,
+                            memory:level.setneal.memory+"MB",
+                            cpu:level.setneal.cpu,
+                            image:app.image,
+                            imagetag:app.imagetag,
+                            date:date,
+                            name: containerResult.container.name,
+                            status: containerResult.container.status,
+                            httpout: 'http://'+containerResult.container.outaddress.ip+':'+containerResult.container.outaddress.port,
+                            httpin: 'http://'+containerResult.container.inaddress.ip+':'+containerResult.container.inaddress.port
+                        });
+                    } else {
+                        throw new Error(result.info.script);
+                    }
                 } catch (e) {
                     console.log("获取容器实例 "+req.params.instanceid+" 失败："+e);
                     res.json({
@@ -1097,8 +1123,6 @@ exports.getInstance = function (req, res){
                 }
             });
             callback(null);
-        },function (app, level, callback) { // 根据容器实例id获取容器实例基本信息
-            
         }
     ],function(err, result) {
         

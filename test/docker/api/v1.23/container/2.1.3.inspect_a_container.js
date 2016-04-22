@@ -8,14 +8,16 @@ var dockerapitest=require('../../../../../settings').dockerapitest;
 //GET /containers/(id or name)/json
 //参数
 //size      1/True/true or 0/False/false       是否返回 SizeRw,SizeRootFs，默认false
-var name='0d0751abcd680d6c9eb03eaccf893f244dea2fa8c6340b20032f150b1026d40b';
+var name='419f4628a7277a342f864a38ddab0d3c9caa311b1b1dfb595e3b4850f0f8562b';
 rest.get('http://'+dockerapitest.host+':'+dockerapitest.port+'/containers/'+name+'/json').on('complete', function(result) {
     if (result instanceof Error) {
         console.log('Error:', result.message);
         this.retry(5000); // try again after 5 sec
     } else {
-        console.log(result);
+        console.dir(result);
         console.log(JSON.stringify(result));
+        console.log(result.NetworkSettings.Networks.ctest_ctesttomcat1);
+
     }
 });
 
