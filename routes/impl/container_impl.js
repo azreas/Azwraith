@@ -790,7 +790,7 @@ exports.recycle = function (req, res){
                     rest.del('http://' + dockerConfig.host + ':' + dockerConfig.port + '/containers/' + containerid + '?v=1&force=1').on('complete', function (result, response) {
                         if (response.statusCode == 204) {
                             // console.log("删除容器 " + containerid + " 成功");
-                            calldelback(null)
+                            calldelback(null,"删除容器"+containerid+"成功")
                         } else {
                             // console.log("删除容器失败");
                             calldelback("删除容器 " + containerid + "失败")
@@ -865,9 +865,8 @@ exports.recycle = function (req, res){
                          }
                      });
                  }],function (error, results) {
-                     console.log("error ---> "+error);
-                     console.log(results);
                      if(error){
+                         console.log("error ---> "+error);
                          res.json({result:false});
                      }else{
                          res.json({result:true});
