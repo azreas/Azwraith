@@ -43,12 +43,8 @@ exports.listByLabelAndKind = function (req, res){
         label : req.query.label,
         kind : req.query.kind
     }*/
-    var params = {
-        label : "normal",
-        kind : "dataorcache"
-    }
     // 调用底层服务接口
-    httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/image"}, params, function(result){
+    httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/image"}, function(result){
         try {
             console.log("listByLabelAndKind result ---> "+result);
             result = JSON.parse(result);
