@@ -724,77 +724,91 @@ var updateApp = function(req, res, app) {
  * @param res
  */
 exports.recycle = function (req, res){
-    httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/app/"+req.params.id}, function(result){
+    var isSuccess={
+        deleteContainer:false,
+        deleteNetwork:false,
+        deleteAPP:false,
+        count:0
+    };
+    httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/containers/"+req.params.id}, function(result){
         try {
             console.log("get app result ---> "+result);
             result = JSON.parse(result);
-
             // 获取成功，则更新删除标识，若服务开着，先进行关闭操作
             if (result.result === true) {
-                var app = result.apps[0];
-                var containers = app.container;
+                // var app = result.apps[0];
+                var containers = result.containers;
                 var count = 0; // 容器实例计数器
                 var deleteAppFlag = true; // 删除失败标记
                 var script = ""; // 异常记录
                 for (var i=0; i<containers.length; i++) {
-                    docker.getContainer(containers[i].id).inspect(function (err, data) {
-                        var container_id = data.Id;
-                        console.log("container_id ---> "+container_id);
-                        if (err) {
-                            console.log("获取容器实例 "+container_id+" 信息失败");
-                            script += "获取容器实例 "+container_id+" 信息失败；";
-                        } else {
-                            // 检查容器实例是否关闭，若还没关闭，则进行关闭操作，否则就跳过这操作
-                            if (data.State.Running === true) { // 容器实例在跑着，应先关闭实例
-                                docker.getContainer(container_id).stop(function (err, data) {
-                                    try {
-                                        if (err) {
-                                            deleteAppFlag = false;
-                                            console.log("关闭容器实例 "+container_id+" 失败");
-                                            script += "关闭容器实例 "+container_id+" 失败；";
-                                        }
-                                        // 更改容器实例状态
-                                        updateAppContainer(app, container_id, "status", "已停止");
-                                        count ++;
-                                        if (count === containers.length) { // 检查到最后一个实例，则进行回收服务
-                                            if (deleteAppFlag) { // 若删除成功
-                                                delete app._id; // 删除 _id 属性
-                                                app.deleteflag = 1; // 删除标记（0：正常；1：删除；2：审核；3：彻底删除）
-                                                app.status = "已停止";
-                                                updateApp(req, res, app); // 更新服务信息
-                                            } else {
-                                                throw new Error(500);
-                                            }
-                                        }
-                                    } catch (e) {
-                                        console.log(e);
-                                        res.json({
-                                            result: false,
-                                            info: {
-                                                code: "00000",
-                                                script: "将服务 "+req.params.id+" 放入回收站失败："+ e.message
-                                            }
-                                        });
-                                    }
-                                });
-                            } else {
-                                // 更改容器实例状态
-                                updateAppContainer(app, container_id, "status", "已停止");
-                                count ++;
-                                if (count === containers.length) { // 检查到最后一个实例，则进行回收服务
-                                    if (deleteAppFlag) { // 若删除成功
-                                        delete app._id; // 删除 _id 属性
-                                        app.deleteflag = 1; // 删除标记（0：正常；1：删除；2：审核；3：彻底删除）
-                                        app.status = "已停止";
-                                        updateApp(req, res, app); // 更新服务信息
-                                    } else {
-                                        throw new Error(500);
-                                    }
-                                }
+                    try {
+                        // 删除容器
+                        rest.del('http://'+dockerConfig.host+':'+dockerConfig.port+'/containers/'+containers[i].id+'?v=1&force=1').on('complete', function(result,response) {
+                            console.log(response.statusCode);
+                            if(response.statusCode==204){
+                                console.log("删除容器 " + containers[i].id + " 成功");
+                                isSuccess.deleteContainer=true;
+                                isSuccess.count++;
+                            }else{
+                                console.log("删除容器失败");
                             }
-                        }
-                    });
+                        });
+                    }catch (e){
+                        console.log("删除容器 " + containers[i].id + " 失败" + err);
+                    }
                 }
+                //获取网络ID
+                rest.get('http://'+dockerservice.host+':'+dockerservice.port+'/v1/app/'+req.params.id).on('complete', function(result) {
+                    if(result.result === true){
+                        var networkid=result.apps[0].networkid;
+                        //删除容器相关网络
+                        rest.del('http://'+dockerConfig.host+':'+dockerConfig.port+'/networks/'+networkid).on('complete', function(result,response) {
+                            if(response.statusCode==204){
+                                console.log("删除网络成功");
+                                isSuccess.deleteNetwork=true;
+                                isSuccess.count++;
+                            }
+                            else{
+                                console.log("删除网络失败");
+                            }
+                        });
+                        //数据库APP标记为已删除
+                        var app={
+                            "id":result.apps[0].id,
+                            "owner": result.apps[0].owner,
+                            "name": result.apps[0].name,
+                            "image": result.apps[0].image,
+                            "imagetag": result.apps[0].imagetag,
+                            "conflevel": result.apps[0].conflevel,
+                            "instance": result.apps[0].instance,
+                            "expandPattern": result.apps[0].expandPattern,
+                            "command": result.apps[0].command,
+                            "network": result.apps[0].network,
+                            "networkid": result.apps[0].networkid,
+                            "subdomain": result.apps[0].subdomain,
+                            "status": result.apps[0].status,
+                            "createtime": result.apps[0].createtime,
+                            "updatetime": new Date().getTime(),
+                            "deleteFlag":1
+                        };
+                        rest.putJson('http://'+dockerservice.host+':'+dockerservice.port+'/v1/app', app).on('complete', function(data, response) {
+                            if(data.result ===true){
+                                console.log("数据库APP标记为已删除成功");
+                                isSuccess.deleteAPP=true;
+                                isSuccess.count++;
+                            }else{
+                                console.log("数据库APP标记为已删除失败");
+                            }
+                        });
+                        while (isSuccess.count != 3){
+                        }
+                        if(isSuccess.count===3){
+                            console.log(isSuccess);
+                            res.json(isSuccess);
+                        }
+                    }
+                });
             } else {
                 throw new Error("没有此app信息，appid "+req.params.id+" 有误");
             }
