@@ -36,7 +36,7 @@ var updateAppContainer = function(app, containerId, pname, pvalue) {
             break;
         }
     }
-}
+};
 
 /**
  * 记录服务事件
@@ -395,7 +395,7 @@ exports.create = function (req, res){
                 if (containerSuccessCounter<=0) {
                     callback(null, containerSuccessCounter); // 触发下一步，并传容器实例创建成功个数
                 } else {
-                    httpUtil.post({host:"192.168.1.253", port:9000, path:"/v1/domain"}, {subdomain:app.subdomain}, function(result){
+                    httpUtil.post({host:dockerservice.host, port:dockerservice.port, path:"/v1/domain"}, {subdomain:app.subdomain}, function(result){
                         try {
                             console.log("domain result ---> "+result);
                             result = JSON.parse(result);
@@ -1365,127 +1365,248 @@ var startAfterupdateApp = function(req, res, app, jsonResult) {
  * @param res
  */
 exports.start = function (req, res){
-    // 根据服务id，获取容器实例信息，根据容器实例id启动实例
-    httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/app/"+req.params.id}, function(result){
-        try {
-            console.log("get app result ---> "+result);
-            result = JSON.parse(result);
+/****************************** 步骤开始 *********************************/
+    // 1.根据服务id，获取服务信息
+    // 2.根据服务id，获取容器实例列表
 
-            // 获取成功
-            if (result.result === true) {
-                var app = result.apps[0]; // 服务对象
-                delete app._id; // 删除 _id 属性
-                var count = 0; // 启动容器实例计数器
-                var containers = app.container; // 容器实例数组
-                var script = ""; // 异常记录
-                var startContainerFlag = true; // 启动容器实例成功标记
-                for (var i=0; i<containers.length; i++) {
-                    // 注：传containerId参数启动容器，意在在回调函数里使用
-                    docker.getContainer(containers[i].id).start({containerId:containers[i].id},function (err, data) {
-                        var container_id = this.opts.containerId;
-                        if (err) {
-                            startContainerFlag = false;
-                            console.log("启动容器实例 "+container_id+" 失败："+err);
-                            // 记录异常
-                            script += "启动容器实例 "+container_id+" 失败";
-                            // 更新容器实例的状态
-                            updateAppContainer(app, container_id, "status", "启动失败");
+    /*********************** 循环开始 **************************/
+    // 2.根据容器实例id启动实例
+    // 3.更新容器实例状态
+    // 4.记录容器实例启动成功或失败事件（异步，服务事件）
+    /*********************** 循环结束 **************************/
+
+    // 5.若服务启动成功，则映射网络
+    // 6.根据容器实例启动情况，更新服务状态和时间信息
+    // 7.存储服务事件（运行中事件，异步，不管成功与否）
+/****************************** 步骤结束 *********************************/
+
+    try {
+        var app = null; // 服务对象
+        var containers = []; // 容器实例数组
+        async.waterfall([
+            function(callback){ // 根据服务id，获取服务信息
+                httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/app/"+req.params.id}, function(result){
+                    try {
+                        console.log("get app result ---> "+result);
+                        result = JSON.parse(result);
+
+                        if (result.result !== true) {
+                            throw new Error(result.info.script);
                         }
-                        // 更新容器实例的状态
-                        updateAppContainer(app, container_id, "status", "运行中");
+                        app = result.apps[0];
+                        delete app._id;
+                        callback(null); // 触发下一步
+                    } catch (e) {
+                        callback(e);
+                    }
+                });
+            },function(callback){ // 根据服务id，获取容器实例列表
+                httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/containers/"+req.params.id}, function(result){
+                    try {
+                        console.log("get containers result ---> "+result);
+                        result = JSON.parse(result);
 
-                        // 获取容器实例端口，更新数据库信息
-                        docker.getContainer(container_id).inspect(function (err, data) {
-                            if (err) {
-                                startContainerFlag = false;
-                                console.log("获取容器实例 "+container_id+" 失败："+err);
-                                // 记录异常
-                                script += "获取容器实例 "+container_id+" 失败";
-                            }
-
-                            // 更改服务配置
-                            var instanceProtocol; // 实例协议
-                            var instancePort; // 实例端口
-                            var serverHost = dockerConfig.host; // 服务ip
-                            var serverPort; // 服务端口
-                            var ports = data.NetworkSettings.Ports;
-                            for(var p in ports){
-                                serverPort = ports[p][0].HostPort;
-                                instancePort = p.split("/")[0];
-                                instanceProtocol = p.split("/")[1];
-                                break;
-                            }
-                            console.log("serverAddress ---> "+serverHost+":"+serverPort);
-
-                            var instanceHost = data.NetworkSettings.IPAddress; // 实例ip
-                            console.log("instanceAddress ---> "+instanceHost+":"+instancePort);
-
-                            console.log("instanceProtocol ---> "+instanceProtocol);
-
-                            // 更新容器实例配置
-                            updateAppContainer(app, container_id, "outaddress", {
-                                schema: instanceProtocol,
-                                ip: serverHost,
-                                port: serverPort
-                            });
-                            updateAppContainer(app, container_id, "inaddress", {
-                                schema: instanceProtocol,
-                                ip: instanceHost,
-                                port: instancePort
-                            });
-
-                            count ++;
-                            if (count === containers.length) { // 若容器实例启动完毕，则返回 json
-                                app.address = {
-                                    schema: instanceProtocol,
-                                    ip: serverHost,
-                                    port: serverPort
-                                };
-
-                                var jsonResult = null; // 返回信息
-                                if (startContainerFlag) { // 若没有启动关闭失败，则返回成功提示
-                                    // 更新服务的状态
-                                    app.status = "运行中";
-                                    jsonResult = {
-                                        result: true,
-                                        info: {
-                                            code: "10000",
-                                            script: "启动服务 "+req.params.id+" 成功"
-                                        },
-                                        app : app
+                        if (result.result !== true) {
+                            throw new Error(result.info.script);
+                        }
+                        containers = result.containers;
+                        callback(null); // 触发下一步
+                    } catch (e) {
+                        callback(e);
+                    }
+                });
+            },function(callback){ // 循环
+                var containerCounter = 0;
+                var containerSuccessCounter = 0;
+                var startContainerCounter = 0; // 启动容器技术器
+                var startContainerFun = function (outstartcallback) {
+                    var container = containers[startContainerCounter++];
+                    delete container._id;
+                    async.waterfall([
+                        function(startcallback){ // 根据容器实例id启动实例
+                            rest.postJson('http://'+dockerConfig.host+':'+dockerConfig.port+'/containers/'+container.id+'/start').on('complete', function(data, response) {
+                                try {
+                                    if (response.statusCode !== 204) {
+                                        console.log("启动容器实例 "+container.id+" 失败："+data);
+                                        startcallback(null, data);
+                                        return;
                                     }
-                                } else {
-                                    // 更新服务的状态
-                                    app.status = "启动失败";
-                                    jsonResult = {
-                                        result: false,
-                                        info: {
-                                            code: "00000",
-                                            script: "启动服务 "+req.params.id+" 失败："+script
-                                        },
-                                        app : app
-                                    }
+                                    startcallback(null, null);
+                                } catch (e) {
+                                    startcallback(e);
                                 }
-                                // 更新 服务 和 容器实例 的状态
-                                startAfterupdateApp(req, res, app, jsonResult);
+                            });
+                        },function(err, startcallback){ // 更新容器实例状态
+                            var status = 2; // 表示 运行中
+                            if (err) {
+                                status = 5; // 表示 启动失败
                             }
-                        });
+                            container.status = status;
+                            httpUtil.put({host:dockerservice.host, port:dockerservice.port, path:"/v1/container"}, container, function(result){
+                                try {
+                                    console.log("update container result ---> "+result);
+                                    result = JSON.parse(result);
+
+                                    if (result.result !== true) {
+                                        throw new Error(result.info.script);
+                                    }
+                                    startcallback(null, err); // 触发下一步
+                                } catch (e) {
+                                    console.log("容器实例 "+container.id+" 更新状态失败："+e);
+                                    startcallback(e);
+                                }
+                            });
+                        },function (err, startcallback) { // 记录容器实例启动成功或失败事件（异步，服务事件）
+                            var eventTitle = "启动成功";
+                            var script = "start container "+container.id+" success";
+                            if (err) {
+                                eventTitle = "启动失败";
+                                script = "start container "+container.id+" error";
+                            }
+                            var serverEventConfig = {
+                                appid : app.id,
+                                event : eventTitle,
+                                titme : new Date().getTime(),
+                                script : script
+                            }
+                            httpUtil.post({host:dockerservice.host, port:dockerservice.port, path:"/v1/appevent"}, serverEventConfig, function(eventResult){
+                                try {
+                                    console.log("server event result ---> "+eventResult);
+                                    eventResult = JSON.parse(eventResult);
+
+                                    console.log("服务 "+app.name+" 保存"+serverEventConfig.event+"事件情况："+eventResult.info.script);
+                                } catch (e) {
+                                    console.log("服务 "+app.name+" 保存"+serverEventConfig.event+"事件失败："+e);
+                                }
+                            });
+                            startcallback(null); // 触发下一步
+                        }
+                    ],function(err, result) {
+                        containerCounter ++;
+                        if (err) {
+                            console.log(err);
+                            outstartcallback(null, "服务 "+app.name+ "第 ["+containerCounter+"/"+app.instance+"] 个实例启动失败");
+                            return;
+                        }
+                        containerSuccessCounter ++;
+                        outstartcallback(null, "服务 "+app.name+ "第 ["+containerCounter+"/"+app.instance+"] 个实例启动成功");
                     });
                 }
-            } else {
-                throw new Error(500);
-            }
-        } catch (e) {
-            console.log("启动服务失败："+e);
-            res.json({
-                result: false,
-                info: {
-                    code: "00000",
-                    script: "启动失败"
+                var startContainerFuns = [];
+                for (var i=0; i<containers.length; i++) {
+                    startContainerFuns[i] = startContainerFun;
                 }
-            });
-        }
-    });
+                async.parallel(
+                    startContainerFuns,
+                    function(err, results){
+                        if (err) {
+                            console.log(err);
+                        }
+                        console.log("服务 "+app.name+ " 有 ["+containerSuccessCounter+"/"+app.instance+"] 个实例启动成功");
+                        console.log(results);
+                        callback(null, containerSuccessCounter); // 触发下一步，并传容器实例启动成功个数
+                    }
+                );
+            },function (containerSuccessCounter, callback) { // 若服务启动成功，则映射网络
+                if (containerSuccessCounter<=0) {
+                    callback(null, containerSuccessCounter); // 触发下一步，并传容器实例创建成功个数
+                } else {
+                    httpUtil.post({host:dockerservice.host, port:dockerservice.port, path:"/v1/domain"}, {subdomain:app.subdomain}, function(result){
+                        try {
+                            console.log("domain result ---> "+result);
+                            result = JSON.parse(result);
+
+                            if (result.result !== true) {
+                                throw new Error("映射服务 "+app.name+" 网络失败");
+                            }
+                            callback(null, containerSuccessCounter); // 触发下一步，并传容器实例创建成功个数
+                        } catch (e) {
+                            callback(e);
+                        }
+                    });
+                }
+            },function (containerSuccessCounter, callback) { // 根据容器实例启动情况，更新服务状态和时间信息
+                if (containerSuccessCounter<=0) { // 表示服务启动失败，更新状态为：5.启动失败
+                    app.status = 5;
+                } else { // 表示服务停止成功，更新状态为：2.运行中
+                    app.status = 2;
+                }
+                app.updatetime = new Date().getTime();
+                app.address = app.subdomain+"."+dockerConfig.domain;
+                httpUtil.put({host:dockerservice.host, port:dockerservice.port, path:"/v1/app"}, app, function(updateAppResult){
+                    try {
+                        console.log("update app result ---> "+updateAppResult);
+                        updateAppResult = JSON.parse(updateAppResult);
+
+                        if (updateAppResult.result !== true) {
+                            throw new Error("更新服务 "+app.name+" 状态失败");
+                        }
+                        callback(null, containerSuccessCounter); // 触发下一步，并传容器实例停止成功个数
+                    } catch (e) {
+                        callback(e);
+                    }
+                });
+            },function (containerSuccessCounter, callback) { // 存储服务事件（停止事件，异步，不管成功与否）
+                var serverEventConfig = {
+                    appid : app.id,
+                    event : "",
+                    titme : new Date().getTime(),
+                    script:""
+                }
+                if (containerSuccessCounter<=0) { // 表示服务启动失败，存储服务启动失败事件
+                    serverEventConfig.event = "服务启动失败";
+                    serverEventConfig.script = "启动服务 "+app.name+ "失败";
+                } else { // 表示服务启动成功，存储服务运行中事件
+                    serverEventConfig.event = "运行中";
+                    serverEventConfig.script = "启动服务 "+app.name+ "成功，共有 ["+containerSuccessCounter+"/"+app.instance+"] 个实例启动成功";
+                }
+                httpUtil.post({host:dockerservice.host, port:dockerservice.port, path:"/v1/appevent"}, serverEventConfig, function(eventResult){
+                    try {
+                        console.log("server event result ---> "+eventResult);
+                        eventResult = JSON.parse(eventResult);
+
+                        console.log("服务 "+app.name+" 保存"+serverEventConfig.event+"事件情况："+eventResult.info.script);
+                    } catch (e) {
+                        console.log("服务 "+app.name+" 保存"+serverEventConfig.event+"事件失败："+e);
+                    }
+                });
+                if (containerSuccessCounter<=0) { // 服务启动失败
+                    callback("没有实例启动成功");
+                } else { // 表示服务启动成功，触发下一步
+                    callback(null);
+                }
+            }
+        ],function(err, result) {
+            if (err) {
+                console.log("根据服务 "+req.params.app+" 启动容器实例失败："+err);
+                res.json({
+                    result: false,
+                    info: {
+                        code: "00000",
+                        script: "根据服务 "+req.params.id+" 启动容器实例失败："+err
+                    }
+                });
+            } else {
+                console.log("根据服务 "+req.params.id+" 启动容器实例成功");
+                res.json({
+                    result: true,
+                    info: {
+                        code: "10000",
+                        script: "根据服务 "+req.params.id+" 启动容器实例成功"
+                    }
+                });
+            }
+        });
+    } catch (e) {
+        console.log("根据服务 "+req.params.id+" 启动容器实例失败："+e);
+        res.json({
+            result: false,
+            info: {
+                code: "00000",
+                script: "根据服务 "+req.params.id+" 启动容器实例失败："+e
+            }
+        });
+    }
 }
 
 /**
@@ -1672,7 +1793,7 @@ exports.stop = function (req, res){
                 if (containerSuccessCounter<=0) {
                     callback(null, containerSuccessCounter); // 触发下一步，并传容器实例创建成功个数
                 } else {
-                    httpUtil.delete({host:"192.168.1.253", port:9000, path:"/v1/domain/"+app.subdomain}, function(result){
+                    httpUtil.delete({host:dockerservice.host, port:dockerservice.port, path:"/v1/domain/"+app.subdomain}, function(result){
                         try {
                             console.log("delete domain result ---> "+result);
                             result = JSON.parse(result);
@@ -1693,6 +1814,7 @@ exports.stop = function (req, res){
                     app.status = 4;
                 }
                 app.updatetime = new Date().getTime();
+                app.address = "-";
                 httpUtil.put({host:dockerservice.host, port:dockerservice.port, path:"/v1/app"}, app, function(updateAppResult){
                     try {
                         console.log("update app result ---> "+updateAppResult);
