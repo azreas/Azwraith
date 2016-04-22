@@ -120,7 +120,7 @@
     //二次密码
     $('#confirmPwd').blur(function(event) {
       var html = $(this).val();
-      var password = $('#password').val();
+      var password = $('#passwd').val();
       if(html === ''){
         layer.tips('请再次输入密码',$(this),{tips: [1, '#EF6578']});
       } else if (html !== password) {
