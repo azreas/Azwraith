@@ -1051,19 +1051,12 @@ exports.getInstance = function (req, res){
                 try {
                     console.log("level result ---> "+levelResult);
                     levelResult = JSON.parse(levelResult);
-
-
-
                     if (levelResult.result === true) {
                         // 返回 json 数据
-
                         callback(null,app,levelResult);
                     } else {
                         throw new Error(result.info.script);
                     }
-
-
-
                 } catch (e) {
                     console.log("获取配置信息 "+app.conflevel+" 失败："+e);
                     res.json({
@@ -1073,14 +1066,36 @@ exports.getInstance = function (req, res){
                             script: "获取配置信息 "+app.conflevel+" 失败"
                         }
                     });
+                    callback(e);
                 }
             });
-
-        },function (app, level, callback) { // 根据容器实例id获取容器实例基本信息
+        },function (app, levelresult, callback) { // 根据容器实例id获取容器实例基本信息
             httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/container/"+req.params.instanceid}, function(containerResult){
                 try {
                     console.log("containerResult  ---> "+containerResult);
                     containerResult = JSON.parse(containerResult);
+                    if (containerResult.result === true) {
+                        // 返回 json 数据
+                        callback(null,app,levelresult,containerResult);
+                    } else {
+                        throw new Error(result.info.script);
+                    }
+                } catch (e) {
+                    console.log("获取容器实例 "+req.params.instanceid+" 失败："+e);
+                    res.json({
+                        result: false,
+                        info: {
+                            code: "00000",
+                            script: "获取容器实例 "+req.params.instanceid+" 失败"
+                        }
+                    });
+                }
+            });
+        },function (app, levelresult,containerResult, callback) { // 根据容器实例id获取容器实例事件信息
+            httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/containerevent/"+req.params.instanceid}, function(containerEventResult){
+                try {
+                    console.log("containerEventResult  ---> "+containerEventResult);
+                    containerEventResult = JSON.parse(containerEventResult);
 
                     var time = new Date(containerResult.container.createtime);
                     var date = formatDate(time);
@@ -1094,32 +1109,34 @@ exports.getInstance = function (req, res){
                         var second=now.getSeconds();
                         return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
                     }
-                    if (containerResult.result === true) {
+                    if (containerEventResult.result === true) {
                         // 返回 json 数据
                         res.render('instanceDetail',{
                             containerId:req.params.instanceid,
-                            memory:level.setneal.memory+"MB",
-                            cpu:level.setneal.cpu,
+                            memory:levelresult.setneal.memory+"MB",
+                            cpu:levelresult.setneal.cpu,
                             image:app.image,
                             imagetag:app.imagetag,
                             date:date,
                             name: containerResult.container.name,
                             status: containerResult.container.status,
                             httpout: 'http://'+containerResult.container.outaddress.ip+':'+containerResult.container.outaddress.port,
-                            httpin: 'http://'+containerResult.container.inaddress.ip+':'+containerResult.container.inaddress.port
+                            httpin: 'http://'+containerResult.container.inaddress.ip+':'+containerResult.container.inaddress.port,
+                            containerEvents:containerEventResult.containerEvents
                         });
                     } else {
                         throw new Error(result.info.script);
                     }
                 } catch (e) {
-                    console.log("获取容器实例 "+req.params.instanceid+" 失败："+e);
+                    console.log("获取容器实例事件 "+req.params.instanceid+" 失败："+e);
                     res.json({
                         result: false,
                         info: {
                             code: "00000",
-                            script: "获取容器实例 "+req.params.instanceid+" 失败"
+                            script: "获取容器实例事件 "+req.params.instanceid+" 失败"
                         }
                     });
+                    callback();
                 }
             });
             callback(null);
