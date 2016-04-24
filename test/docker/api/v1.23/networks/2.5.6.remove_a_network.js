@@ -5,8 +5,8 @@
 
 var rest = require('restler');
 var dockerapitest=require('../../../../../settings').dockerapitest;
-var networkid='xzj2';
-rest.del('http://'+dockerapitest.host+':'+dockerapitest.port+'/networks/'+networkid).on('complete', function(result,response) {
+var networkid='c93a3516c17ca205832ec8d9f4d7954341665b9b66218c3dfd1f0abd2a3aa62e';
+rest.del('http://'+dockerapitest.host+':'+dockerapitest.port+'/networks/'+networkid+'').on('complete', function(result,response) {
         console.log(response.statusCode );
 });
 //

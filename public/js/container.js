@@ -81,7 +81,7 @@
         //console.log(images);
         for(var i in images){
             var imageDiv;
-            imageDiv = $('<div class="image-item"><span class="img_icon span2"><img src="'+images[i].icon+'"></span><span class="span6 type" type="runtime"><div class="list-item-description"><div class="name h4">'+images[i].name+'<a title="点击查看镜像详情" target="_blank" href="'+images[i].detail+'"><i class="fa fa-external-link-square"></i></a></div><span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">'+images[i].tag+'</span></div></span><span class="span2"><div class="list-item-description"><span class="pull-deploy btn btn-primary" data-attr="tenxcloud/php">部署<i class="fa fa-arrow-circle-o-right margin fa-lg"></i></span></div></span><input class="container-name" type="hidden" value="'+images[i].name+'"></div>');
+            imageDiv = $('<div class="image-item"><span class="img_icon span2"><img src="'+images[i].icon+'"></span><span class="span6 type" type="runtime"><div class="list-item-description"><div class="name h4">'+images[i].name+'<a title="点击查看镜像详情" target="_blank" href="'+images[i].detail+'"><i class="fa fa-external-link-square"></i></a></div><span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">'+images[i].tag+'</span></div></span><span class="span2"><div class="list-item-description"><span class="pull-deploy btn btn-primary">部署<i class="fa fa-arrow-circle-o-right margin fa-lg"></i></span></div></span><input class="container-name" type="hidden" value="'+images[i].name+'"></div>');
 
             imageDiv.appendTo($('#systemImages'));
 
@@ -105,7 +105,7 @@
                 var images = resp.data;
                 for(var i in images){
                     var imageDiv;
-                    imageDiv = $('<div class="image-item"><span class="img_icon span2"><img src="/images/blue-logo.png"></span><span class="span6 type" type="runtime"><div class="list-item-description"><div class="name h4">'+images[i].name+'<a title="点击查看镜像详情" target="_blank" href=""></a></div><span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">'+images[i].description+'</span></div></span><span class="span2"><div class="list-item-description"><span class="pull-deploy btn btn-primary" data-attr="tenxcloud/php">部署<i class="fa fa-arrow-circle-o-right margin fa-lg"></i></span></div></span><input class="container-name" type="hidden" value="'+images[i].name+'"></div>');
+                    imageDiv = $('<div class="image-item"><span class="img_icon span2"><img src="/images/blue-logo.png"></span><span class="span6 type" type="runtime"><div class="list-item-description"><div class="name h4">'+images[i].name+'<a title="点击查看镜像详情" target="_blank" href=""></a></div><span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">'+images[i].description+'</span></div></span><span class="span2"><div class="list-item-description"><span class="pull-deploy btn btn-primary">部署<i class="fa fa-arrow-circle-o-right margin fa-lg"></i></span></div></span><input class="container-name" type="hidden" value="'+images[i].name+'"></div>');
 
                     imageDiv.appendTo($('#searchImages'));
                 }

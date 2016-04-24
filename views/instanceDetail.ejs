@@ -1,267 +1,271 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta charset="UTF-8">
-  <meta name="renderer" content="webkit">
-  <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css?rev=0.1.0">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-  <!--浏览器窗口图标-->
-  <!--<link rel="icon" type="image/x-icon" href="/images/favicon.ico">-->
-  <link rel="stylesheet" href="/stylesheets/dashboard.css?rev=0.1.0">
-  <script src="/jquery/dist/jquery.min.js"></script>
-  <script type="text/javascript" src="/highcharts/highcharts.js"></script>
-  <meta content="_csrf" name="csrf-param">
-  <meta content="FDs3VXHK-FKQuYYYVhnwDOafqB-hqLoTq2bQ" name="csrf-token">
-  <link type="text/css" rel="stylesheet" href="/stylesheets/detail.css">
-  <link type="text/css" rel="stylesheet" href="https://console.tenxcloud.com/lib/layer/need/laydate.css">
-  <link type="text/css" rel="stylesheet" href="https://console.tenxcloud.com/lib/layer/skins/default/laydate.css">
-  <link rel="stylesheet" href="/stylesheets/layer/skin/layer.css">
-  <title>零云 - 实例详情</title>
-  <style type="text/css">
-    .btn-toogle {
-      line-height: 30px;
-      border-radius: 2px;
-      border: 1px solid #4280CB;
-      display: inline-block;
-      font-size: 12px;
-    }
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css?rev=0.1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <!--浏览器窗口图标-->
+    <!--<link rel="icon" type="image/x-icon" href="/images/favicon.ico">-->
+    <link rel="stylesheet" href="/stylesheets/dashboard.css?rev=0.1.0">
+    <script src="/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/highcharts/highcharts.js"></script>
+    <meta content="_csrf" name="csrf-param">
+    <meta content="FDs3VXHK-FKQuYYYVhnwDOafqB-hqLoTq2bQ" name="csrf-token">
+    <link type="text/css" rel="stylesheet" href="/stylesheets/detail.css">
+    <link rel="stylesheet" href="/stylesheets/layer/skin/layer.css">
+    <title>零云 - 实例详情</title>
+    <style type="text/css">
+        .btn-toogle {
+            line-height: 30px;
+            border-radius: 2px;
+            border: 1px solid #4280CB;
+            display: inline-block;
+            font-size: 12px;
+        }
 
-    .btn-toogle .btn-t {
-      width: 50px;
-      text-align: center;
-      height: 30px;
-      display: inline-block;
-      cursor: pointer;
-      color: #4280CB;
-    }
+        .btn-toogle .btn-t {
+            width: 50px;
+            text-align: center;
+            height: 30px;
+            display: inline-block;
+            cursor: pointer;
+            color: #4280CB;
+        }
 
-    .btn-toogle .toogle-on {
-      background: #4280CB;
-      color: #fff;
-      cursor: auto;
-    }
-  </style>
+        .btn-toogle .toogle-on {
+            background: #4280CB;
+            color: #fff;
+            cursor: auto;
+        }
+    </style>
 </head>
 <body>
 
 <% include header.ejs %>
 
 <div class="page-container" style="margin-left: 200px">
-  <div class="container-right">
-    <div class="contentTitle">
-      <div class="dbserver">
-        <i class="fa_home"></i>
-        <a class="go" href="/servesCenter">服务中心</a>
-        <i class="fa fa-angle-right fa_r"></i>
-        <a class="go" href="/container">容器服务</a>
-        <i class="fa fa-angle-right fa_r"></i>
-        <a class="go page-in" href="">实例详情</a>
-      </div>
-    </div>
-
-
-    <section class="detail-succeed">
-      <div class="icon-img"><div class="type-icon">
-          <img src="" height="100%">
-        </div></div>
-      <ul class="succeed-content pull-left">
-        <li>运行状态：<%= status %></li>
-        <li>服务地址：<a href="<%= httpout %>" target="_blank"><%= httpout %></a></li>
-        <li>创建时间：<%= date %></li>
-        <!--<li>更新时间：2016-04-13 09:33:26</li>-->
-      </ul>
-      <!--<div class="applocation">-->
-        <!--<a href="http://china-zds038.tenxapp.com" target="_blank" class="open"><i class="fa fa-toggle-on"></i>&nbsp;打开应用</a>-->
-      <!--</div>-->
-    </section>
-
-    <div class="baseInfo center-style">
-      <a class="btn-prim BASE">容器</a>
-      <a class="MONITOR">实例监控</a>
-      <a class="LOG">日志</a>
-      <a class="EVENT">事件</a>
-    </div>
-    <div id="detail-content-box">
-
-      <div class="containerInfo">
-        <table class="table w50">
-          <thead>
-          <tr><th> 基本信息</th>
-            <th> &nbsp;</th>
-          </tr></thead>
-          <tbody class="BORDER">
-          <tr>
-            <td> 名称：<%= name %></td>
-            <td> 运行状态：<%= status %></td>
-          </tr>
-          <tr>
-            <td> 镜像名称：<%= image %>:<%= imagetag %></td>
-            <td> 创建时间：<%= date %></td>
-          </tr>
-          <tr>
-            <td>
-              内网地址：<%= httpin %>
-            </td>
-            <!--<td>-->
-              <!--所属节点：-->
-              <!--北京2区-->
-            <!--</td>-->
-          </tr>
-          </tbody>
-        </table>
-        <table class="table basicInfo w50">
-          <thead>
-          <tr>
-            <th>配置信息</th>
-            <th>&nbsp;</th>
-          </tr>
-          </thead>
-          <tbody class="BORDER">
-          <tr>
-            <td> 带宽：10MB（公有网络）</td>
-            <td> 数据盘：10GB</td>
-          </tr>
-          <tr>
-            <td> cpu：<%= cpu %></td>
-            <td> 内存：<%= memory %></td>
-          </tr>
-          </tbody>
-        </table>
-
-        <table class="table basicInfo w50">
-          <thead>
-          <tr>
-            <th>环境变量</th>
-            <th>&nbsp;</th>
-          </tr>
-          </thead>
-          <tbody class="BORDER">
-          <tr>
-            <td> 变量名</td>
-            <td> 变量值</td>
-          </tr>
-
-          </tbody>
-        </table>
-        <table class="table basicInfo w50">
-          <thead>
-          <tr>
-            <th>数据存储卷</th>
-            <th>&nbsp;</th>
-          </tr>
-          </thead>
-          <tbody class="BORDER">
-
-          <tr>
-            <td colspan="2">无</td>
-          </tr>
-
-          </tbody>
-        </table>
-      </div>
-
-      <div class="monitorInfo">
-        <div class="data-analysis">
-          <!--<div class="data-btn">-->
-            <!--<span id="serviceNames" value="china"></span>-->
-            <!--<button class="btn monitor btn-prim 6h" onclick="update('tenx_district2','china','b8017db6-0117-11e6-857b-525459f27fef', '1h');">1小时</button>-->
-            <!--<button class="btn monitor 1d" onclick="update('tenx_district2','china','b8017db6-0117-11e6-857b-525459f27fef', '6h');">6小时</button>-->
-            <!--<button class="btn monitor 1d" onclick="update('tenx_district2','china','b8017db6-0117-11e6-857b-525459f27fef', '1d');">1天</button>-->
-            <!--<button class="btn monitor 1d" onclick="update('tenx_district2','china','b8017db6-0117-11e6-857b-525459f27fef', '1w');">1周</button>-->
-            <!--<button class="btn monitor 1d" onclick="update('tenx_district2','china','b8017db6-0117-11e6-857b-525459f27fef', '30d');">1月</button>-->
-          <!--</div>-->
-          <div class="charterTitle">处理器
-            <div class="symbol"> (
-              <span class="cpuColor"></span>
-              <h>处理器使用情况 %)</h>
+    <div class="container-right">
+        <div class="contentTitle">
+            <div class="dbserver">
+                <i class="fa_home"></i>
+                <a class="go" href="/servesCenter">服务中心</a>
+                <i class="fa fa-angle-right fa_r"></i>
+                <a class="go" href="/container">容器服务</a>
+                <i class="fa fa-angle-right fa_r"></i>
+                <a class="go page-in" href="">实例详情</a>
             </div>
-          </div>
-          <div class="data-table charterHoderCpu" data-highcharts-chart="0">
-
-          </div>
-          <div class="charterTitle">内存
-            <div class="symbol"> (
-              <span class="Memory"></span>
-              内存使用情况 M)
-            </div>
-          </div>
-          <div class="data-table charterHoderMemory" data-highcharts-chart="1">
-
-          </div>
-          <div class="charterTitle">网络监控
-            <div class="symbol"> (
-              <span class="NetworkIn"></span>
-              网络流入使用情况 字节/秒)
-            </div>
-          </div>
-          <div class="data-table charterHoderNetworkIn" data-highcharts-chart="2">
-
-          </div>
-          <!-- div.data-table.charterHoderNetworkIn -->
-          <div class="charterTitle">网络监控
-            <div class="symbol"> (
-              <span class="NetworkOut"></span>
-              网络流出使用情况 字节/秒)
-            </div>
-          </div>
-          <div class="data-table charterHoderNetworkOut" data-highcharts-chart="3">
-
-          </div>
-          <!-- div.data-table.charterHoderNetworkOut -->
         </div>
-      </div>
 
-      <div class="containerLog">
 
-        <div class="weblogtitle">
-
-          <div class="pull_left">
-            <span class="circle red"></span><span class="circle blue"></span><span class="circle green"></span>
-          </div>
-          <!--<div class="pull_right">-->
-          <!--<input id="date_log" type="text" value="历史记录">-->
-          <!--<i id="datePicker" class="fa fa-calendar margin cursor" data-toggle="tooltip" data-placement="top" title="" data-original-title="选择日期"></i>-->
-          <!--<i id="refreshLog" class="fa fa-refresh margin cursor" data-toggle="tooltip" data-placement="top" title="" data-original-title="刷新日志"></i>-->
-          <!--<i id="fullScreen" class="fa fa-expand margin cursor" title="满屏"></i>-->
-          <!--</div>-->
-        </div>
-        <div class="weblog">
-          <pre id="podLogs" style="background:none repeat scroll 0 0 black;color: #37fc34; border:0; font-size: 12px;">Loading...</pre>
-        </div>
-      </div>
-
-      <div class="containerEvent" style="min-height:500px;">
-        <% for(var i in containerEvents ){ %>
-        <div class="event">
-          <div class="event-line">
-            <div class="event-status success">
-              <i class="fa fa-check note"></i>
-            </div>
-            <div class="time-line-content">
-              <div class="time-line-reason event-title">
-                <div class="title-name success"><%= containerEvents[i].title %></div>
-                <div class="time-line-time">
-                  <div class="event-sign">
-                    <i class="fa fa-angle-right fa_caret"></i>
-                  </div>
-                  <div class="datetimes"><%= date %></div>
+        <section class="detail-succeed">
+            <div class="icon-img">
+                <div class="type-icon">
+                    <img src="" height="100%">
                 </div>
-                <div class="time-line-message">
-                  <p class="list-times">时间：<%= date %></p>
-                  <p class="list-conent">信息：<%= containerEvents[i].script %></p>
-                </div>
-              </div>
             </div>
-          </div>
+            <ul class="succeed-content pull-left">
+                <li>运行状态：<%= status %></li>
+                <li>服务地址：<a href="<%= httpout %>" target="_blank"><%= httpout %></a></li>
+                <li>创建时间：<%= date %></li>
+                <!--<li>更新时间：2016-04-13 09:33:26</li>-->
+            </ul>
+            <!--<div class="applocation">-->
+            <!--<a href="http://china-zds038.tenxapp.com" target="_blank" class="open"><i class="fa fa-toggle-on"></i>&nbsp;打开应用</a>-->
+            <!--</div>-->
+        </section>
+
+        <div class="baseInfo center-style">
+            <a class="btn-prim BASE">容器</a>
+            <a class="MONITOR">实例监控</a>
+            <a class="LOG">日志</a>
+            <a class="EVENT">事件</a>
         </div>
-        <% } %>
-      </div>
-      <!-- the end of  containerEvent-->
+        <div id="detail-content-box">
+
+            <div class="containerInfo">
+                <table class="table w50">
+                    <thead>
+                    <tr>
+                        <th> 基本信息</th>
+                        <th> &nbsp;</th>
+                    </tr>
+                    </thead>
+                    <tbody class="BORDER">
+                    <tr>
+                        <td> 名称：<%= name %></td>
+                        <td> 运行状态：<%= status %></td>
+                    </tr>
+                    <tr>
+                        <td> 镜像名称：<%= image %>:<%= imagetag %></td>
+                        <td> 创建时间：<%= date %></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            内网地址：<%= httpin %>
+                        </td>
+                        <!--<td>-->
+                        <!--所属节点：-->
+                        <!--北京2区-->
+                        <!--</td>-->
+                    </tr>
+                    </tbody>
+                </table>
+                <table class="table basicInfo w50">
+                    <thead>
+                    <tr>
+                        <th>配置信息</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                    </thead>
+                    <tbody class="BORDER">
+                    <tr>
+                        <td> 带宽：10MB（公有网络）</td>
+                        <td> 数据盘：10GB</td>
+                    </tr>
+                    <tr>
+                        <td> cpu：<%= cpu %></td>
+                        <td> 内存：<%= memory %></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <table class="table basicInfo w50">
+                    <thead>
+                    <tr>
+                        <th>环境变量</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                    </thead>
+                    <tbody class="BORDER">
+                    <tr>
+                        <td> 变量名</td>
+                        <td> 变量值</td>
+                    </tr>
+
+                    </tbody>
+                </table>
+                <table class="table basicInfo w50">
+                    <thead>
+                    <tr>
+                        <th>数据存储卷</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                    </thead>
+                    <tbody class="BORDER">
+
+                    <tr>
+                        <td colspan="2">无</td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="monitorInfo">
+                <div class="data-analysis">
+                    <!--<div class="data-btn">-->
+                    <!--<span id="serviceNames" value="china"></span>-->
+                    <!--<button class="btn monitor btn-prim 6h" onclick="update('tenx_district2','china','b8017db6-0117-11e6-857b-525459f27fef', '1h');">1小时</button>-->
+                    <!--<button class="btn monitor 1d" onclick="update('tenx_district2','china','b8017db6-0117-11e6-857b-525459f27fef', '6h');">6小时</button>-->
+                    <!--<button class="btn monitor 1d" onclick="update('tenx_district2','china','b8017db6-0117-11e6-857b-525459f27fef', '1d');">1天</button>-->
+                    <!--<button class="btn monitor 1d" onclick="update('tenx_district2','china','b8017db6-0117-11e6-857b-525459f27fef', '1w');">1周</button>-->
+                    <!--<button class="btn monitor 1d" onclick="update('tenx_district2','china','b8017db6-0117-11e6-857b-525459f27fef', '30d');">1月</button>-->
+                    <!--</div>-->
+                    <div class="charterTitle">处理器
+                        <div class="symbol"> (
+                            <span class="cpuColor"></span>
+                            <h>处理器使用情况 %)</h>
+                        </div>
+                    </div>
+                    <div class="data-table charterHoderCpu" data-highcharts-chart="0">
+
+                    </div>
+                    <div class="charterTitle">内存
+                        <div class="symbol"> (
+                            <span class="Memory"></span>
+                            内存使用情况 M)
+                        </div>
+                    </div>
+                    <div class="data-table charterHoderMemory" data-highcharts-chart="1">
+
+                    </div>
+                    <div class="charterTitle">网络监控
+                        <div class="symbol"> (
+                            <span class="NetworkIn"></span>
+                            网络流入使用情况 字节/秒)
+                        </div>
+                    </div>
+                    <div class="data-table charterHoderNetworkIn" data-highcharts-chart="2">
+
+                    </div>
+                    <!-- div.data-table.charterHoderNetworkIn -->
+                    <div class="charterTitle">网络监控
+                        <div class="symbol"> (
+                            <span class="NetworkOut"></span>
+                            网络流出使用情况 字节/秒)
+                        </div>
+                    </div>
+                    <div class="data-table charterHoderNetworkOut" data-highcharts-chart="3">
+
+                    </div>
+                    <!-- div.data-table.charterHoderNetworkOut -->
+                </div>
+            </div>
+
+            <div class="containerLog">
+
+                <div class="weblogtitle">
+
+                    <div class="pull_left">
+                        <span class="circle red"></span><span class="circle blue"></span><span
+                                class="circle green"></span>
+                    </div>
+                    <!--<div class="pull_right">-->
+                    <!--<input id="date_log" type="text" value="历史记录">-->
+                    <!--<i id="datePicker" class="fa fa-calendar margin cursor" data-toggle="tooltip" data-placement="top" title="" data-original-title="选择日期"></i>-->
+                    <!--<i id="refreshLog" class="fa fa-refresh margin cursor" data-toggle="tooltip" data-placement="top" title="" data-original-title="刷新日志"></i>-->
+                    <!--<i id="fullScreen" class="fa fa-expand margin cursor" title="满屏"></i>-->
+                    <!--</div>-->
+                </div>
+                <div class="weblog">
+                    <pre id="podLogs"
+                         style="background:none repeat scroll 0 0 black;color: #37fc34; border:0; font-size: 12px;">Loading...</pre>
+                </div>
+            </div>
+
+            <div class="containerEvent" style="min-height:500px;">
+                <% for(var i in containerEvents ){ %>
+                <div class="event">
+                    <div class="event-line">
+                        <div class="event-status success">
+                            <i class="fa fa-check note"></i>
+                        </div>
+                        <div class="time-line-content">
+                            <div class="time-line-reason event-title">
+                                <div class="title-name success"><%= containerEvents[i].title %></div>
+                                <div class="time-line-time">
+                                    <div class="event-sign">
+                                        <i class="fa fa-angle-right fa_caret"></i>
+                                    </div>
+                                    <div class="datetimes"><%= date %></div>
+                                </div>
+                                <div class="time-line-message">
+                                    <p class="list-times">时间：<%= date %></p>
+                                    <p class="list-conent">信息：<%= containerEvents[i].script %></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+            </div>
+            <!-- the end of  containerEvent-->
+        </div>
+
+
     </div>
-
-
-  </div>
 
     <input type="hidden" id="master" value="<%= name %>">
     <input type="hidden" id="creationTime" value="2016-04-13 09:33:26">

@@ -35,7 +35,7 @@
 
             </ul>
             <ul class="nav navbar-nav navbar-left z_navbar">
-              <li class="header-products"><a href="https://www.tenxcloud.com/products">服务中心</a>
+              <li class="header-products"><a href="">服务中心</a>
 
               </li>
               <li class="header-solutions">
@@ -89,6 +89,17 @@
 
 <script>
   (function(){
+    //提交注册
+    $('#submit').click(function () {
+      var e = $('#email').val();
+      var p = $('#passwd').val();
+      var cp = $('#confirmPwd').val();
+      if(e == '' || p == '' || cp == ''){
+        return false;
+      }else if(p != cp){
+        return false;
+      }
+    });
     // 邮箱验证
     $('#email').blur(function (event) {
       var email = $(this).val();

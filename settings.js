@@ -40,7 +40,7 @@ var dockerConfig = {
     timeout: 6000*/
     host:'192.168.1.243',
     port:3375,
-    domain:"kaijie.club"
+    domain:"zerocloud.club"
 }
 /********************* docker end *********************/
 
