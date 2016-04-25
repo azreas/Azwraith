@@ -9,27 +9,27 @@ var dockerservice = require("../../settings").dockerservice;
 
 var httpUtil = require("../../modules/util/httpUtil");
 
+var rest = require("restler");
+
 /**
  * 获取所有镜像
  * @param req
  * @param res
  */
-exports.listAll = function (req, res){
-    docker.listImages({all: true}, function (err, images) {
-        var result;
-        if (!err) {
-            result = {
-                code : "200",
-                msg : "获取所有镜像成功",
-                imageList : images
-            }
+exports.listAll = function (req, res) {
+    rest.get("http://" + dockerservice.host + ":" + dockerservice.port + "/v1/image").on("complete", function (result) {
+        if (result.result) {
+            delete result.images._id;
+            res.json(result.images);
         } else {
-            result = {
-                code : "500",
-                msg : "获取所有镜像失败,"+err
-            }
+            res.json({
+                result: false,
+                info: {
+                    code: "00000",
+                    script: "获取镜像失败"
+                }
+            });
         }
-        res.render('test', { title: 'Express' });
     });
 }
 
@@ -38,17 +38,17 @@ exports.listAll = function (req, res){
  * @param req
  * @param res
  */
-exports.listByLabelAndKind = function (req, res){
+exports.listByLabelAndKind = function (req, res) {
     /*var params = {
-        label : req.query.label,
-        kind : req.query.kind
-    }*/
+     label : req.query.label,
+     kind : req.query.kind
+     }*/
     // 调用底层服务接口
-    httpUtil.get({host:dockerservice.host, port:dockerservice.port, path:"/v1/image"}, function(result){
+    httpUtil.get({host: dockerservice.host, port: dockerservice.port, path: "/v1/image"}, function (result) {
         try {
-            console.log("listByLabelAndKind result ---> "+result);
+            console.log("listByLabelAndKind result ---> " + result);
             result = JSON.parse(result);
-            console.log("listByLabelAndKind result.result ---> "+result.result);
+            console.log("listByLabelAndKind result.result ---> " + result.result);
 
             if (result.result === true) {
                 res.json(result);
@@ -73,23 +73,23 @@ exports.listByLabelAndKind = function (req, res){
  * @param req
  * @param res
  */
-exports.get = function (req, res){
+exports.get = function (req, res) {
     var image = docker.getImage(request.params.name);
-    image.inspect(function(err,data){
+    image.inspect(function (err, data) {
         var result;
         if (!err) {
             result = {
-                code : "200",
-                msg : "获取镜像成功",
-                image : data
+                code: "200",
+                msg: "获取镜像成功",
+                image: data
             }
         } else {
             result = {
-                code : "500",
-                msg : "获取镜像失败,"+err
+                code: "500",
+                msg: "获取镜像失败," + err
             }
         }
-        res.render('index', { title: 'Express' });
+        res.render('index', {title: 'Express'});
     });
 }
 
@@ -98,16 +98,16 @@ exports.get = function (req, res){
  * @param req
  * @param res
  */
-exports.search = function (req, res){
+exports.search = function (req, res) {
     var opts = {
         term: req.params.term
     };
-    docker.searchImages(opts,function(err,data){
+    docker.searchImages(opts, function (err, data) {
         try {
             if (err) {
                 throw new Error(err);
             }
-            console.log("返回的镜像数组："+JSON.stringify(data));
+            console.log("返回的镜像数组：" + JSON.stringify(data));
             /*
              参数说明：
              star_count: 星
@@ -121,17 +121,17 @@ exports.search = function (req, res){
                 result: true,
                 info: {
                     code: "10000",
-                    script: "根据 "+req.params.term+" 搜索镜像成功"
+                    script: "根据 " + req.params.term + " 搜索镜像成功"
                 },
                 data: data // 镜像数组
             });
         } catch (e) {
-            console.log("根据 "+req.params.term+" 搜索镜像失败："+e.message);
+            console.log("根据 " + req.params.term + " 搜索镜像失败：" + e.message);
             res.json({
                 result: false,
                 info: {
                     code: "00000",
-                    script: "根据 "+req.params.term+" 搜索镜像失败，"+e.message
+                    script: "根据 " + req.params.term + " 搜索镜像失败，" + e.message
                 }
             });
         }
