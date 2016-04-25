@@ -52,7 +52,6 @@
                 $('.containerEvent').html(html);
             }
 
-            //$('.succeed-content>li>span').html(date);
 
         });
     }, 5000);
@@ -202,7 +201,12 @@
         $('#address').parent().attr('href','http://'+resp.address);
         $('#updateTime').html(updateTime);
         $('#createTime').html(createTime);
-        $('#containerImg').attr('src','https://hub.docker.com/public/images/official/'+resp.iamgeName+'.png');
+        if(resp.iamgeName == 'alexwhen/docker-2048'){
+            $('#containerImg').attr('src','/images/2048.jpg');
+        }else {
+            $('#containerImg').attr('src','https://hub.docker.com/public/images/official/'+resp.iamgeName+'.png');
+        }
+
     }).fail(function(err){
         console.log(err);
     });
@@ -249,7 +253,11 @@
             $('#address').parent().attr('href','http://'+resp.address);
             $('#updateTime').html(updateTime);
             $('#createTime').html(createTime);
-            $('#containerImg').attr('src','https://hub.docker.com/public/images/official/'+resp.iamgeName+'.png');
+            if(resp.iamgeName == 'alexwhen/docker-2048'){
+                $('#containerImg').attr('src','/images/2048.jpg');
+            }else {
+                $('#containerImg').attr('src','https://hub.docker.com/public/images/official/'+resp.iamgeName+'.png');
+            }
         }).fail(function(err){
             console.log(err);
         });

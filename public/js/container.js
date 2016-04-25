@@ -124,7 +124,7 @@
 
     }).done(function(resp){
         var servers = resp.servers;
-        console.log(servers);
+        //console.log(servers);
         for(var i in servers){
             //console.log(servers[i].address.ip);
             var titme = new Date(servers[i].createtime);
@@ -167,21 +167,19 @@
                 dbtr.appendTo($('#dbtable'));
 
             }
-
-            //时间格式化
-            function formatDate(now) {
-                var year=now.getFullYear();
-                var month=now.getMonth()+1;
-                var date=now.getDate();
-                var hour=now.getHours();
-                var minute=now.getMinutes();
-                var second=now.getSeconds();
-                return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
-            }
         }
-
-
     });
+
+    //时间格式化
+    function formatDate(now) {
+        var year=now.getFullYear();
+        var month=now.getMonth()+1;
+        var date=now.getDate();
+        var hour=now.getHours();
+        var minute=now.getMinutes();
+        var second=now.getSeconds();
+        return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
+    }
 
     $('#createContainerForm>li>section').click(function(){
         $(this).addClass('active').siblings().removeClass('active');
