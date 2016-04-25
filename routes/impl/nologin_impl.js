@@ -114,7 +114,7 @@ exports.login = function (req, res){
                     cookieUtil.set(res, "token", result.token);
                     //TODO
                     // 进入重定向页面
-                    res.redirect('servesCenter');
+                    res.redirect('container');
                 });
             } else {
                 // 登录失败，返回 登录页面 带着提示信息和回显信息
