@@ -87,6 +87,8 @@
   </form>
 </div>
 
+<input id="status" type="hidden" value="<%= status %>">
+
 <script>
   (function(){
     //提交注册
@@ -138,6 +140,15 @@
         layer.tips('两次密码不一致',$(this),{tips: [1, '#EF6578']});
       }
     });
+
+    //登录状态返回验证
+    var status = $('#status').val();
+//    console.log(status);
+    if(status == '' || status == null){
+
+    }else {
+      layer.msg(status);
+    }
 
     //////////////////////////////////////////////////////////////////////
     //检测密码强度

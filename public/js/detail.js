@@ -96,7 +96,7 @@
             html += "<td><a href='/container/instance/"+containers[i].appid+"/"+containers[i].id+"'><span id='containerName'>"+containers[i].name+"</span></a></td>";
             html += "<td><span id='containerStatus'>"+status+"</span></td>";
             html += "<td><span class='imageName'></span></td>";
-            html += "<td><span id='inaddress'>-</span></td>";
+            html += "<td><a href='http://"+containers[i].inaddress.ip+":"+containers[i].inaddress.port+"' target='_blank'><span id='inaddress'>"+containers[i].inaddress.ip+":"+containers[i].inaddress.port+"</span></a></td>";
             html += "<td><a href='http://"+containers[i].outaddress.ip+":"+containers[i].outaddress.port+"' target='_blank'><span id='outaddress'>"+containers[i].outaddress.ip+":"+containers[i].outaddress.port+"</span></a></td>";
             html += "<td><span id='containerCreatTime'>"+containerCreatTime+"</span></td>";
             html += "</tr>";
@@ -145,7 +145,7 @@
                 html += "<td><a href='/container/instance/"+containers[i].appid+"/"+containers[i].id+"'><span id='containerName'>"+containers[i].name+"</span></a></td>";
                 html += "<td><span id='containerStatus'>"+status+"</span></td>";
                 html += "<td><span class='imageName'></span></td>";
-                html += "<td><span id='inaddress'>-</span></td>";
+                html += "<td><a href='http://"+containers[i].inaddress.ip+":"+containers[i].inaddress.port+"' target='_blank'><span id='inaddress'>"+containers[i].inaddress.ip+":"+containers[i].inaddress.port+"</span></a></td>";
                 html += "<td><a href='http://"+containers[i].outaddress.ip+":"+containers[i].outaddress.port+"' target='_blank'><span id='outaddress'>"+containers[i].outaddress.ip+":"+containers[i].outaddress.port+"</span></a></td>";
                 html += "<td><span id='containerCreatTime'>"+containerCreatTime+"</span></td>";
                 html += "</tr>";

@@ -22,7 +22,9 @@ exports.home = function(req, res) {
  * @param res
  */
 exports.enterRegist = function (req, res){
-    res.render('regist', { });
+    res.render('regist', {
+        status: ''
+    });
 };
 
 /**
@@ -39,6 +41,8 @@ exports.regist = function (req, res){
             password:req.body.passwd
         }
     };
+    console.log(req.body.email);
+    console.log(req.body.passwd);
     console.log("params   "+ params);
     // 调用底层服务实现 注册
     httpUtil.post("/v1/user", params, function(result){
@@ -51,8 +55,10 @@ exports.regist = function (req, res){
             if (result.result === true) {
                 res.redirect("/login");
             } else {
-                // 注册失败，抛出 500 错误
-                throw new Error(500);
+                // 注册失败，返回 注册页面 带着提示信息和回显信息
+                res.render('regist',{
+                    status: result.info.script
+                });
             }
         } catch (e) {
             res.status(e.status || 500);
@@ -111,7 +117,7 @@ exports.login = function (req, res){
                     res.redirect('servesCenter');
                 });
             } else {
-                // 登录失败，重定向回 登录页面 带着提示信息和回显信息
+                // 登录失败，返回 登录页面 带着提示信息和回显信息
                 res.render("login",{
                     title: '零云 - 登录',
                     status: result.info.script

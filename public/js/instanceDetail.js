@@ -324,7 +324,7 @@
                 }
             },
             series: [{
-                name: 'cpu',
+                name: containername,
                 color: "#F7A400",
                 marker: {
                     enabled: false  // 显不显示线小圆点儿
@@ -417,7 +417,7 @@
                 }
             },
             series: [{
-                name: 'cpu',
+                name: containername,
                 color: "#42C043",
                 marker: {
                     enabled: false  // 显不显示线小圆点儿
