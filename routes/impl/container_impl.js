@@ -318,8 +318,9 @@ exports.create = function (req, res){
                                     }
                                     serverHost = data.Node.IP;
                                     console.log("serverAddress ---> "+serverHost+":"+serverPort);
+                                    var networkName=app.network;
 
-                                    var instanceHost = data.NetworkSettings.IPAddress; // 实例ip
+                                    var instanceHost = data.NetworkSettings.Networks[networkName].IPAddress; // 实例ip
                                     console.log("instanceAddress ---> "+instanceHost+":"+instancePort);
 
                                     console.log("instanceProtocol ---> "+instanceProtocol);

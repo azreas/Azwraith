@@ -77,7 +77,7 @@ exports.create = function (req, res){
                             return;
                         }
                         // 根据邮箱名称和服务名称，生成网络名和子域名
-                        var networkAndSubdomain = result.account["email-name"]+"-"+serveConfig.name;
+                        var networkAndSubdomain = result.account.profile.subdomain+"."+serveConfig.name+".app";
                         serveConfig.network = networkAndSubdomain;
                         serveConfig.subdomain = networkAndSubdomain;
                         callback(null); // 触发下一步
