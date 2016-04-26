@@ -255,6 +255,8 @@
             $('#createTime').html(createTime);
             if(resp.iamgeName == 'alexwhen/docker-2048'){
                 $('#containerImg').attr('src','/images/2048.jpg');
+            }else if(resp.iamgeName == 'zerosky/emt'){
+                $('#containerImg').attr('src','http://emt.zerosky.cn/image/emaotong.png');
             }else {
                 $('#containerImg').attr('src','https://hub.docker.com/public/images/official/'+resp.iamgeName+'.png');
             }
