@@ -204,7 +204,10 @@ exports.create = function (req, res){
                             PublishAllPorts: true,
                             MemoryReservation: level.memory,
                             // CpuShares:level.cpu,
-                            NetworkMode: app.network
+                            NetworkMode: app.network,
+                            RestartPolicy: {
+                                Name: "unless-stopped"
+                            }
                         }
                     }
                     async.waterfall([
@@ -254,15 +257,19 @@ exports.create = function (req, res){
                             });
                         },function(containerid, err, createcallback){ // 存储容器实例启动成功或失败事件，若失败，则直接结束“这条线”
                             var eventTitle = "";
+                            var script;
                             var time = new Date().getTime();
+                            var containerEventConfig = {
+                                containerid : containerid,
+                                title : "",
+                                titme : time,
+                                script : ""
+                            };
                             if (!err) {
                                 eventTitle = "启动成功";
-                                var containerEventConfig = {
-                                    containerid : containerid,
-                                    title : eventTitle,
-                                    titme : time,
-                                    script : "start container "+containerid+" success"
-                                };
+                                script="start container "+containerid+" success";
+                                containerEventConfig.title=eventTitle;
+                                containerEventConfig.script=script;
                                 httpUtil.post({host:dockerservice.host, port:dockerservice.port, path:"/v1/containerevent"}, containerEventConfig, function(containerEventResult){
                                     try {
                                         console.log("start containerEvent result ---> "+containerEventResult);
@@ -275,13 +282,14 @@ exports.create = function (req, res){
                                 });
                             } else {
                                 eventTitle = "启动失败";
+                                script="start container "+containerid+" error";
                             }
                             var serverEventConfig = {
                                 appid : app.id,
                                 event : eventTitle,
                                 titme : time,
-                                script : "start container "+containerid+" error"
-                            }
+                                script : script
+                            };
                             httpUtil.post({host:dockerservice.host, port:dockerservice.port, path:"/v1/appevent"}, serverEventConfig, function(eventResult){
                                 try {
                                     console.log("server event result ---> "+eventResult);
@@ -767,7 +775,7 @@ var updateApp = function(req, res, app) {
 }
 
 /**
- * 根据服务 id 将服务放入回收站（逻辑删除）
+ * 根据服务 id 将服务放入回收站（docker物理删除，数据库逻辑删除）
  * @param req
  * @param res
  */
@@ -785,26 +793,30 @@ exports.recycle = function (req, res){
             if (result.result === true) {
                 var containers = result.containers;
                 var count = 0; //删除容器计数器
-                var delcontainerFun =  function (calldelback) {
+                var delcontainerFun =  function (calldelback) {//创建异步方程组
                     var containerid=containers[count].id;
                     count++;
                     rest.del('http://' + dockerConfig.host + ':' + dockerConfig.port + '/containers/' + containerid + '?v=1&force=1').on('complete', function (result, response) {
-                        if (response.statusCode == 204) {
-                            // console.log("删除容器 " + containerid + " 成功");
-                            calldelback(null,"删除容器"+containerid+"成功")
-                        } else {
-                            // console.log("删除容器失败");
-                            calldelback("删除容器 " + containerid + "失败")
+                        try{
+                            if (response.statusCode == 204) {
+                                console.log("删除容器 " + containerid + " 成功");
+                                calldelback(null,"删除容器"+containerid+"成功")
+                            } else {
+                                // console.log("删除容器失败");
+                                calldelback("删除容器 " + containerid + "失败")
+                            }
+                        }catch(e){
+                            calldelback(e);
                         }
                     });
                 };
-                 async.waterfall([
+                 async.waterfall([//方法组依次执行
                      function(callback){//删除容器
                          var delcontainerFus=[];
                          for (var i=0; i<containers.length; i++) {
                              delcontainerFus[i] = delcontainerFun;
                          }
-                         async.parallel(
+                         async.parallel(//调用异步方程组
                              delcontainerFus
                          ,function (err,datas) {
                                  if(err){
@@ -874,6 +886,7 @@ exports.recycle = function (req, res){
                      }
                  });
             } else {
+                res.json({result:false});
                 throw new Error("没有此app信息，appid "+req.params.id+" 有误");
             }
         } catch (e) {
@@ -1492,9 +1505,10 @@ exports.start = function (req, res){
                                 event : eventTitle,
                                 titme : new Date().getTime(),
                                 script : script
-                            }
+                            };
                             httpUtil.post({host:dockerservice.host, port:dockerservice.port, path:"/v1/appevent"}, serverEventConfig, function(eventResult){
                                 try {
+                                    console.log("容器实例启动成功或失败事件"+serverEventConfig.event+serverEventConfig.script);
                                     console.log("server event result ---> "+eventResult);
                                     eventResult = JSON.parse(eventResult);
 
