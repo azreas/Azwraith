@@ -42,19 +42,23 @@ exports.createLogSocket = function(server) {
                     };
                 }
                 resGet.on('data', function(data) {
-                    console.log(data.toString());
+                    try {
+                        console.log(data.toString());
 
-                    dataJson = JSON.parse(data.toString());
-                    monitorData = {
-                        cpu : dataJson.cpu_stats.cpu_usage.total_usage,
-                        memory : dataJson.memory_stats.usage,
-                        netRx : dataJson.networks.eth0.rx_bytes,
-                        netTx : dataJson.networks.eth0.tx_bytes
-                    };
-                    //console.log(JSON.stringify(monitorData));
+                        dataJson = JSON.parse(data.toString());
+                        monitorData = {
+                            cpu : dataJson.cpu_stats.cpu_usage.total_usage,
+                            memory : dataJson.memory_stats.usage,
+                            netRx : dataJson.networks.eth0.rx_bytes,
+                            netTx : dataJson.networks.eth0.tx_bytes
+                        };
+                        //console.log(JSON.stringify(monitorData));
 
-                    // 向指定页面发监控数据
-                    socket.emit("monitor", monitorData);
+                        // 向指定页面发监控数据
+                        socket.emit("monitor", monitorData);
+                    } catch (e) {
+                        console.log(e);
+                    }
                 });
                 resGet.on('end', function() {
                     resGet.destroy(); // 断开 docker 连接
@@ -87,9 +91,13 @@ exports.createLogSocket = function(server) {
                     };
                 }
                 resGet.on('data', function(data) {
-                    //console.log(data.toString());
-                    // 向指定页面发日志
-                    socket.emit("log", {log : data.toString()});
+                    try {
+                        //console.log(data.toString());
+                        // 向指定页面发日志
+                        socket.emit("log", {log : data.toString()});
+                    } catch (e) {
+                        console.log(e);
+                    }
                 });
                 resGet.on('end', function() {
                     resGet.destroy(); // 断开 docker 连接
