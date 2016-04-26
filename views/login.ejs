@@ -78,6 +78,14 @@
 
 <script>
   (function(){
+    //提交登录
+    $('#submit').click(function () {
+      var u = $('#username').val();
+      var p = $('#passwd').val();
+      if(u == '' || p == ''){
+        return false;
+      }
+    });
     // 邮箱验证
     $('#username').blur(function (event) {
       var email = $(this).val();

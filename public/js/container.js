@@ -127,8 +127,8 @@
         //console.log(servers);
         for(var i in servers){
             //console.log(servers[i].address.ip);
-            var titme = new Date(servers[i].createtime);
-            var date = formatDate(titme);
+            var time = new Date(servers[i].createtime);
+            var date = formatDate(time);
             var status = "";
             var deleteFlag = servers[i].deleteFlag;
             if(deleteFlag == '1'){
