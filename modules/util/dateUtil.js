@@ -27,7 +27,10 @@ exports.getDateString = function(date) {
     // 秒数
     var second = date.getSeconds();
 
-    var dateStr = year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
+    // 毫秒
+    var millisecond = date.getMilliseconds();
+
+    var dateStr = year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second+"."+millisecond;
 
     return dateStr;
 }

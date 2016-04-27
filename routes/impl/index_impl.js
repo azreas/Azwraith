@@ -6,6 +6,8 @@
 var mongoPool = require("../../modules/db/mongodb").mongoPool;
 var httpUtil = require("../../modules/util/httpUtil");
 
+var logger = require("../../modules/log/log").logger();
+
 /**
  * 进入服务中心界面
  * @param req
@@ -48,6 +50,7 @@ exports.square = function(req, res) {
  * @param res
  */
 exports.test = function(req, res) {
+    logger.info("开始访问测试页");
     res.render('test', { title: '测试' });
 };
 

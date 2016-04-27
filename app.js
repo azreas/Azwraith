@@ -7,6 +7,11 @@ require('./modules/environment')(app);
 // 引入中间件
 require('./modules/middleware')(app);
 
+// 配置日志打印（存储到文件）
+//require("./modules/log/log_file").config(app);
+// 配置日志打印（存储到数据库）
+require("./modules/log/log").config(app);
+
 
 /*************************** 开放请求开始 *******************************/
 // 引入 nologin controller，不需登录验证的路由

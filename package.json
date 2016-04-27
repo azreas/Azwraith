@@ -16,6 +16,7 @@
     "express": "~4.13.1",
     "highcharts": "^4.2.4",
     "jquery": "^2.2.2",
+    "log4js": "^0.6.35",
     "morgan": "~1.6.1",
     "node-uuid": "^1.4.7",
     "restler": "^3.4.0",
