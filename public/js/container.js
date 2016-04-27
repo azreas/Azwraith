@@ -161,13 +161,33 @@
         <td style="width:20%;white-space:nowrap;"><a href="/detail/'+servers[i].id+'" class="cluster_mirrer_name">' + servers[i].name + '</a></td>\
         <td style="width:10%" id="'+servers[i].name+'status">'+status+'</td>\
         <td style="width:20%;"><span class="cluster_mirrer">' + servers[i].image + '</span></td>\
-        <td style="width:34%" id="'+servers[i].name+'id"><a target="_blank" href="http://'+servers[i].address+'" class="cluster_mirrer_name">'+servers[i].address+'</a><span class="urlStatus"></span></td>\
-        <td style="width:10%" class="tdTimeStrap">'+date+'<input type="hidden" class="timeStrap" value=""><i class="fa_time"></i><span></span></td></tr></td></div></table></tr>');
+        <td style="width:34%" id="'+servers[i].name+'id"><a  target="_blank" href="http://'+servers[i].address+'" class="cluster_mirrer_name">'+servers[i].address+'</a>&nbsp;<a target="'+servers[i].address+'" class="showCode" title="点击查看二维码" style="cursor: pointer"><i class="fa fa-external-link-square"></i></a></td>\
+        <td style="width:10%" class="tdTimeStrap">'+date+'<i class="fa_time"></i><span></span></td></tr></td></div></table></tr>');
 
                 dbtr.appendTo($('#dbtable'));
 
             }
         }
+    });
+
+    //显示二维码
+    $("#dbtable").on('click','.showCode',function(){
+        var code = $(this).attr('target');
+        $("#qrcode").addClass("show");
+        $("#codeBox").addClass("show");
+        var qrcode = new QRCode("qrcode", {
+            text: "http://"+code,
+            width: 300,
+            height: 300,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+    });
+    $("#codeBox").click(function(){
+        $("#qrcode").removeClass("show");
+        $("#codeBox").removeClass("show");
+        $("#qrcode canvas,#qrcode img").remove();
     });
 
     //时间格式化
