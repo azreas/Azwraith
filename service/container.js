@@ -7,6 +7,11 @@
 var containerDao = require('../dao/container');
 var serveDao = require('../dao/serve');
 var async = require("async");
+var dockerConfig = require("../settings").dockerConfig;
+var stringUtil = require("../modules/util/stringUtil");
+var logger = require("../modules/log/log").logger();
+
+
 
 
 /**
@@ -45,9 +50,9 @@ exports.create = function (appid, servicecallback) {
                             throw new Error(err);
                         }
 
-                        console.log("app result ---> "+JSON.stringify(data));
+                        logger.info("app result ---> "+JSON.stringify(data));
 
-                        app = appResult.apps[0];
+                        app = data.apps[0];
                         delete app._id; // 删除 _id 属性
                     } catch (e) {
                         return callback(e); // 直接跳到返回结果函数，进行异常处理
@@ -61,17 +66,17 @@ exports.create = function (appid, servicecallback) {
                             throw new Error(err);
                         }
 
-                        console.log("level result ---> "+JSON.stringify(data));
+                        logger.info("level result ---> "+JSON.stringify(data));
 
-                        level.memory = levelResult.setneal.memory*1024*1024;
-                        level.cpu = levelResult.setneal.cpu;
+                        level.memory = data.setneal.memory*1024*1024;
+                        level.cpu = data.setneal.cpu;
                     } catch (e) {
                         return callback(e); // 直接跳到返回结果函数，进行异常处理
                     }
                     callback(null); // 触发下一步
                 });
             },function (callback) { // 检查镜像是否已存在，若不存在，则先 pull 一个
-                console.log("检查镜像是否已存在，若不存在，则先 pull 一个 ...");
+                logger.info("检查镜像是否已存在，若不存在，则先 pull 一个 ...");
                 callback(null); // 触发下一步
             },function (callback) { // 循环创建容器实例
                 var containerCounter = 0; // 创建容器实例计数器
@@ -102,7 +107,7 @@ exports.create = function (appid, servicecallback) {
                                         throw new Error(err);
                                     }
 
-                                    console.log("容器实例 "+data.Id+" 创建成功");
+                                    logger.info("容器实例 "+data.Id+" 创建成功");
                                 } catch (e) {
                                     return createcallback(e);
                                 }
@@ -121,10 +126,10 @@ exports.create = function (appid, servicecallback) {
                                         throw new Error(err);
                                     }
 
-                                    console.log("create containerEvent result ---> "+JSON.stringify(data));
-                                    console.log("容器实例 "+containerEventConfig.containerid+" 保存创建事件情况："+data.info.script);
+                                    logger.info("create containerEvent result ---> "+JSON.stringify(data));
+                                    logger.info("容器实例 "+containerEventConfig.containerid+" 保存创建事件情况："+data.info.script);
                                 } catch (e) {
-                                    console.log("容器实例 "+containerEventConfig.containerid+" 保存创建事件失败："+e);
+                                    logger.info("容器实例 "+containerEventConfig.containerid+" 保存创建事件失败："+e);
                                 }
                             });
                             createcallback(null, containerid); // 触发下一步，不管事件保存成功与否
@@ -135,7 +140,7 @@ exports.create = function (appid, servicecallback) {
                                         throw new Error(err);
                                     }
                                 } catch (e) {
-                                    console.log("启动容器实例 "+containerid+" 失败："+e);
+                                    logger.info("启动容器实例 "+containerid+" 失败："+e);
                                     createcallback(e);
                                 }
                                 createcallback(null, containerid, null);
@@ -157,11 +162,11 @@ exports.create = function (appid, servicecallback) {
                                 containerEventConfig.script=script;
                                 containerDao.saveEvent(containerEventConfig, function (err, data) {
                                     try {
-                                        console.log("start containerEvent result ---> "+JSON.stringify(data));
+                                        logger.info("start containerEvent result ---> "+JSON.stringify(data));
 
-                                        console.log("容器实例 "+containerEventConfig.containerid+" 保存"+eventTitle+"事件情况："+data.info.script);
+                                        logger.info("容器实例 "+containerEventConfig.containerid+" 保存"+eventTitle+"事件情况："+data.info.script);
                                     } catch (e) {
-                                        console.log("容器实例 "+containerEventConfig.containerid+" 保存"+eventTitle+"事件失败："+e);
+                                        logger.info("容器实例 "+containerEventConfig.containerid+" 保存"+eventTitle+"事件失败："+e);
                                     }
                                 });
                             } else {
@@ -176,11 +181,11 @@ exports.create = function (appid, servicecallback) {
                             };
                             serveDao.saveEvent(serverEventConfig, function (err, data) {
                                 try {
-                                    console.log("server event result ---> "+JSON.stringify(data));
+                                    logger.info("server event result ---> "+JSON.stringify(data));
 
-                                    console.log("服务 "+app.name+" 保存"+serverEventConfig.event+"事件情况："+data.info.script);
+                                    logger.info("服务 "+app.name+" 保存"+serverEventConfig.event+"事件情况："+data.info.script);
                                 } catch (e) {
-                                    console.log("服务 "+app.name+" 保存"+serverEventConfig.event+"事件失败："+e);
+                                    logger.info("服务 "+app.name+" 保存"+serverEventConfig.event+"事件失败："+e);
                                 }
                             });
                             if (err) { // 若启动失败，则直接结束“这条线”
@@ -206,13 +211,13 @@ exports.create = function (appid, servicecallback) {
                                         break;
                                     }
                                     serverHost = data.Node.IP;
-                                    console.log("serverAddress ---> "+serverHost+":"+serverPort);
+                                    logger.info("serverAddress ---> "+serverHost+":"+serverPort);
                                     var networkName=app.network;
 
                                     var instanceHost = data.NetworkSettings.Networks[networkName].IPAddress; // 实例ip
-                                    console.log("instanceAddress ---> "+instanceHost+":"+instancePort);
+                                    logger.info("instanceAddress ---> "+instanceHost+":"+instancePort);
 
-                                    console.log("instanceProtocol ---> "+instanceProtocol);
+                                    logger.info("instanceProtocol ---> "+instanceProtocol);
 
                                     var containerConfig = {
                                         id : containerid,
@@ -243,9 +248,9 @@ exports.create = function (appid, servicecallback) {
                                         throw new Error(err);
                                     }
 
-                                    console.log("save container result ---> "+JSON.stringify(data));
+                                    logger.info("save container result ---> "+JSON.stringify(data));
                                 } catch (e) {
-                                    console.log("容器实例 "+containerConfig.id+" 保存配置失败："+e);
+                                    logger.info("容器实例 "+containerConfig.id+" 保存配置失败："+e);
                                     return createcallback(e);
                                 }
                                 createcallback(null); // 触发下一步
@@ -254,7 +259,7 @@ exports.create = function (appid, servicecallback) {
                     ],function(err, result) {
                         containerCounter ++;
                         if (err) {
-                            console.log(err);
+                            logger.info(err);
                             outcreatecallback(null, "服务 "+app.name+ "第 ["+containerCounter+"/"+app.instance+"] 个实例创建失败");
                             return;
                         }
@@ -273,10 +278,10 @@ exports.create = function (appid, servicecallback) {
                     createContainerArray,
                     function(err, results){
                         if (err) {
-                            console.log(err);
+                            logger.info(err);
                         }
-                        console.log("服务 "+app.name+ " 有 ["+containerSuccessCounter+"/"+app.instance+"] 个实例创建成功");
-                        console.log(results);
+                        logger.info("服务 "+app.name+ " 有 ["+containerSuccessCounter+"/"+app.instance+"] 个实例创建成功");
+                        logger.info(results);
                         callback(null, containerSuccessCounter); // 触发下一步，并传容器实例创建成功个数
                     }
                 );
@@ -290,7 +295,7 @@ exports.create = function (appid, servicecallback) {
                                 throw new Error(err);
                             }
 
-                            console.log("domain result ---> "+JSON.stringify(data));
+                            logger.info("domain result ---> "+JSON.stringify(data));
                         } catch (e) {
                             return callback(e);
                         }
@@ -298,7 +303,7 @@ exports.create = function (appid, servicecallback) {
                     });
                 }
             },function (containerSuccessCounter, callback) { // 根据容器实例创建情况，更新服务配置信息
-                console.log("根据容器实例创建情况，更新服务配置信息 ...");
+                logger.info("根据容器实例创建情况，更新服务配置信息 ...");
                 if (containerSuccessCounter<=0) { // 表示服务启动失败，更新状态为：5.启动失败
                     app.status = 5;
                 } else { // 表示服务启动成功，更新状态为：2.运行中
@@ -312,7 +317,7 @@ exports.create = function (appid, servicecallback) {
                             throw new Error(err);
                         }
 
-                        console.log("update app result ---> "+JSON.stringify(data));
+                        logger.info("update app result ---> "+JSON.stringify(data));
                     } catch (e) {
                         return callback(e);
                     }
@@ -338,10 +343,10 @@ exports.create = function (appid, servicecallback) {
                             throw new Error(err);
                         }
 
-                        console.log("server event result ---> "+JSON.stringify(data));
-                        console.log("服务 "+app.name+" 保存"+serverEventConfig.event+"事件情况："+data.info.script);
+                        logger.info("server event result ---> "+JSON.stringify(data));
+                        logger.info("服务 "+app.name+" 保存"+serverEventConfig.event+"事件情况："+data.info.script);
                     } catch (e) {
-                        console.log("服务 "+app.name+" 保存"+serverEventConfig.event+"事件失败："+e);
+                        logger.info("服务 "+app.name+" 保存"+serverEventConfig.event+"事件失败："+e);
                     }
                 });
 
