@@ -27,6 +27,14 @@ exports.get = function (id, callback){
 };
 
 
+/**
+ * 注册用户
+ * @param user
+ * @param callback
+ */
+exports.regist = function (user, callback) {
+    return userDao.insert(user, callback);
+};
 
 
 
