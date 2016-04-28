@@ -215,7 +215,7 @@ exports.remove = function (id, callback) {
         }
         return callback(null, data);
     });
-}
+};
 
 
 
