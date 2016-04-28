@@ -4,6 +4,9 @@
  */
 
 var log4js = require("log4js");
+var path = require('path');
+
+var logs_dir = path.join(__dirname, "../../logs");
 
 log4js.configure({
     "appenders": [
@@ -12,7 +15,7 @@ log4js.configure({
         },
         {
             "type": "dateFile",
-            "filename": "../logs/azwraith.log",
+            "filename": logs_dir+"/azwraith.log",
             "pattern": "-yyyy-MM-dd",
             "alwaysIncludePattern": true
         }

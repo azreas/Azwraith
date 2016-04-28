@@ -24,7 +24,26 @@ exports.save = function (app, callback) {
         }
         return callback(null, data);
     });
-}
+};
+
+
+/**
+ * 更新服务配置
+ * @param app
+ * @param callback
+ */
+exports.update = function (app, callback) {
+    rest.putJson('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/app', app).on('complete', function(data, response) {
+        try {
+            if (data.result !== true) {
+                throw new Error(data.info.script);
+            }
+        } catch (e) {
+            return callback(e.message, data);
+        }
+        return callback(null, data);
+    });
+};
 
 
 /**

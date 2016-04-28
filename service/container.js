@@ -311,7 +311,7 @@ exports.create = function (appid, servicecallback) {
                 }
                 app.updatetime = new Date().getTime();
                 app.address = app.subdomain+"."+dockerConfig.domain;
-                serveDao.save(app, function (err, data) {
+                serveDao.update(app, function (err, data) {
                     try {
                         if (err) {
                             throw new Error(err);
