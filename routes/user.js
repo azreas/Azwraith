@@ -4,6 +4,7 @@
  */
 
 var user_impl = require('./impl/user_impl');
+var userController = require("../controllers/user");
 var express = require('express');
 var router = express.Router();
 
@@ -13,7 +14,8 @@ module.exports = function(app){
     router.put( '/pwd/:id', user_impl.updatePwd);
 
     // 根据 token 登出
-    router.get( '/logout', user_impl.logout);
+    //router.get( '/logout', user_impl.logout);
+    router.get( '/logout', userController.logout);
 
     // 根据用户 id 更新用户信息
     router.put( '/user/:id', user_impl.update);

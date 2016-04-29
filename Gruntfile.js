@@ -49,7 +49,7 @@ module.exports = function(grunt){
                     quiet: false,
                     clearRequireCache: false
                 },
-                src: ['test/service/user/get.js']
+                src: [/*'test/service/user/regist.js',*/'test/service/user/get.js']
             }
         }/*,
         concat:{

@@ -7,7 +7,7 @@ var userService = require("../../../dao/user");
 
 var user = {
     account: {
-        email:"lyw@qq.com",
+        email:"lyw2@qq.com",
         password: "123456"
     }
 }
@@ -15,6 +15,7 @@ userService.insert(user, function (err, data) {
     console.log("err ---> "+err);
     console.log(data);
     console.log(data.info);
+    console.log(data.token);
 });
 
 

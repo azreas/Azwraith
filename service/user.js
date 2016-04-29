@@ -5,6 +5,7 @@
 
 
 var userDao = require('../dao/user');
+var async = require("async");
 
 
 /**
@@ -36,6 +37,15 @@ exports.regist = function (user, callback) {
     return userDao.insert(user, callback);
 };
 
+
+/**
+ * 登录
+ * @param user
+ * @param callback
+ */
+exports.login = function (user, callback) {
+    return userDao.login(user, callback);
+};
 
 
 

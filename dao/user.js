@@ -66,11 +66,11 @@ exports.get = function (id, callback) {
 
 
 /**
- * 验证是否已登录
+ * 根据 token 获取 uid
  * @param token
  * @param callback
  */
-exports.checkLogin = function (token, callback) {
+exports.getIdByToken = function (token, callback) {
     rest.get('http://' + userservice.host + ':' + userservice.port + '/v1/auth/'+token).on('complete', function(data, response) {
         try {
             if (data.result !== true) {
@@ -84,7 +84,23 @@ exports.checkLogin = function (token, callback) {
 };
 
 
-
+/**
+ * 登录
+ * @param user
+ * @param callback
+ */
+exports.login = function (user, callback) {
+    rest.postJson('http://' + userservice.host + ':' + userservice.port + '/v1/auth', user).on('complete', function(data, response) {
+        try {
+            if (data.result !== true) {
+                throw new Error(data.info.script);
+            }
+        } catch (e) {
+            return callback(e.message, data);
+        }
+        return callback(null, data);
+    });
+}
 
 
 
