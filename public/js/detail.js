@@ -162,8 +162,8 @@
         url:'/container/get/'+containerid,
         type:'get'
     }).done(function(resp){
-        //console.log(resp);
-        //console.log(resp.name);
+        console.log(resp);
+        console.log(resp.iamgeName);
         var update = new Date(resp.updateTime);
         var updateTime = formatDate(update);
         var create = new Date(resp.createTime);
@@ -202,7 +202,9 @@
         $('#updateTime').html(updateTime);
         $('#createTime').html(createTime);
         if(resp.iamgeName == 'alexwhen/docker-2048'){
-            $('#containerImg').attr('src','/images/2048.jpg');
+            $('#containerImg').attr('src','/images/image/2048.png');
+        }else if(resp.iamgeName == 'zerosky/emt'){
+            $('#containerImg').attr('src','/images/image/emt.png');
         }else {
             $('#containerImg').attr('src','https://hub.docker.com/public/images/official/'+resp.iamgeName+'.png');
         }
@@ -254,9 +256,9 @@
             $('#updateTime').html(updateTime);
             $('#createTime').html(createTime);
             if(resp.iamgeName == 'alexwhen/docker-2048'){
-                $('#containerImg').attr('src','/images/2048.jpg');
+                $('#containerImg').attr('src','/images/image/2048.png');
             }else if(resp.iamgeName == 'zerosky/emt'){
-                $('#containerImg').attr('src','http://emt.zerosky.cn/image/emaotong.png');
+                $('#containerImg').attr('src','/images/image/emt.png');
             }else {
                 $('#containerImg').attr('src','https://hub.docker.com/public/images/official/'+resp.iamgeName+'.png');
             }

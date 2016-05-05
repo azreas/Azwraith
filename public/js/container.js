@@ -27,7 +27,6 @@
     //创建容器取容器名
     $('.dialog').on('click','.list-item-description>.pull-deploy',function(){
         var name = $(this).parents('.image-item').find('.container-name').val();  //取镜像名
-        //console.log(name);
 
         $('.host_step1').hide();
         $('.host_step2').show();
@@ -44,7 +43,7 @@
     $('#createButton').click(function(){
         var containerName = $('#containerName').val();
         if ( containerName === "") {
-            alert("服务名称不能为空！");
+            layer.msg("服务名称不能为空！");
         } else {
             var typeX = $('#createContainerForm>li').eq(2).find('.active>.up_style').text().toLowerCase();
             $('#typeX').val(typeX);
@@ -101,18 +100,20 @@
                 url: '/image/search/'+searchName,
                 type: 'GET'
             }).done(function(resp){
-                $('#searchImages').html('');
-                var images = resp.data;
-                for(var i in images){
-                    var imageDiv;
-                    imageDiv = $('<div class="image-item"><span class="img_icon span2"><img src="/images/blue-logo.png"></span><span class="span6 type" type="runtime"><div class="list-item-description"><div class="name h4">'+images[i].name+'<a title="点击查看镜像详情" target="_blank" href=""></a></div><span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">'+images[i].description+'</span></div></span><span class="span2"><div class="list-item-description"><span class="pull-deploy btn btn-primary">部署<i class="fa fa-arrow-circle-o-right margin fa-lg"></i></span></div></span><input class="container-name" type="hidden" value="'+images[i].name+'"></div>');
+                console.log(resp);
+                if(resp.result == false || resp.data.length == 0){
+                    $('#searchImages').html('<div id="nodata"><i>未找到您搜索的镜像，请稍后重试...</i></div>');
+                }else if(resp.result == true){
+                    $('#searchImages').html('');
+                    var images = resp.data;
+                    for(var i in images){
+                        var imageDiv;
+                        imageDiv = $('<div class="image-item"><span class="img_icon span2"><img src="/images/blue-logo.png"></span><span class="span6 type" type="runtime"><div class="list-item-description"><div class="name h4">'+images[i].name+'<a title="点击查看镜像详情" target="_blank" href=""></a></div><span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">'+images[i].description+'</span></div></span><span class="span2"><div class="list-item-description"><span class="pull-deploy btn btn-primary">部署<i class="fa fa-arrow-circle-o-right margin fa-lg"></i></span></div></span><input class="container-name" type="hidden" value="'+images[i].name+'"></div>');
 
-                    imageDiv.appendTo($('#searchImages'));
+                        imageDiv.appendTo($('#searchImages'));
+                    }
                 }
 
-            }).fail(function(err){
-                console.log(err);
-                //$('#searchImages').html('<div id="nodata" class="nodata"><i>镜像服务器正在维护当中，请稍后重试...</i></div>');
             });
         }
     });
@@ -201,6 +202,7 @@
         return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
     }
 
+    //容器配置选择
     $('#createContainerForm>li>section').click(function(){
         $(this).addClass('active').siblings().removeClass('active');
     });

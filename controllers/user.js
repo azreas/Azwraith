@@ -146,17 +146,14 @@ exports.login = function (req, res, next){
                 var errorCode = data.info.code;
                 if(errorCode == '11001'){
                     res.render("login",{
-                        title: '零云 - 登录',
                         status: '当前邮箱未注册,请先注册后登录'
                     });
                 }else if(errorCode == '11002'){
                     res.render("login",{
-                        title: '零云 - 登录',
                         status: '您输入的密码有误，请重新输入'
                     });
                 }else {
                     res.render("login",{
-                        title: '零云 - 登录',
                         status: '抱歉，服务器开小差了，请重新登陆'
                     });
                 }

@@ -1,13 +1,11 @@
 <div class="page-container" style="margin-left: 200px;">
-
   <article>
-    <!-- <link rel="stylesheet" href="/css/console/create.css"> -->
     <div class="contentTitle">
       <div class="dbserver">
         <i class="fa_home"></i>
-        <a href="/servesCenter" class="go" data-permalink=""><span>服务中心</span></a>
+        <a href="/servesCenter" class="go"><span>服务中心</span></a>
         <i class="fa fa-angle-right fa_r"></i>
-        <a class="go" href="/container" data-permalink="" onclick="_permalink(this);">容器服务</a>
+        <a class="go" href="/container">容器服务</a>
         <i class="fa fa-angle-right fa_r"></i>
         <a class="goback page-in">创建服务</a>
       </div>
@@ -25,14 +23,9 @@
               容器配置
               <div class="triangle"></div>
             </div>
-            <!--<div class="radius_step">-->
-              <!--<span>3</span>-->
-              <!--高级设置-->
-            <!--</div>-->
             <div class="hide">
               <span class="STEPS"></span>
               <span class="STEPS"></span>
-              <!--<span class="STEPS"></span>-->
             </div>
           </div>
         </div>
@@ -41,16 +34,10 @@
           <!--创建页面第一部分-->
           <div class="host_step1">
             <section class="info-class">
-              <!--<span class="info-system primary" id="system">常用</span>-->
-              <!--<span class="info-system" id="stack">Stack</span>-->
-              <!--<span class="info-block" id="public">公有</span>-->
-              <!--<span class="info-block" id="private">私有</span>-->
-              <!--<span class="info-block" id="favorites">收藏夹</span>-->
-              <!--<span class="info-block" id="docker">Docker/第三方镜像</span>-->
                 <span class="search container-search" style="margin:0;min-width: 230px;float:right;">
                   <div class="search-group-inner">
-                    <input type="text" id="search-img" placeholder="搜索镜像" style="width:225px;height:36px;"><button type="submit" class="btn btn-primary btn-send" style="height:36px;line-height:22px;position: absolute;top:0px;right: 0;">搜索</button>
-                    <!--<input type="hidden" name="_csrf" value="sbUsSIXJ-0qk2Be7uoT36WQIu8hGWuCZpzz8">-->
+                    <input type="text" id="search-img" placeholder="搜索镜像" style="width:225px;height:36px;">
+                    <button type="submit" class="btn btn-primary btn-send" style="height:36px;line-height:22px;position: absolute;top:0px;right: 0;">搜索</button>
                   </div>
                 </span>
             </section>
@@ -164,112 +151,13 @@
             </ul>
             <div style="height: 80px !important;"></div>
           </div>
-          <!--高级设置-->
-          <!--<div class="host_step3 hide">-->
-            <!--<ul class="advanced">-->
-              <!--<li class="hide-set">-->
-                <!--<span class="ve_top">链接服务：</span>-->
-                <!--<ol class="pull-left" style="width:100%;">-->
-                  <!--<li class="hide-select">-->
-                    <!--<select class="col col-4" id="linkcontainers" style="min-width:100px;height:28px;"><option>test</option></select>-->
-                    <!--<input id="containernickname" type="text" placeholder="value">-->
-                    <!--<a id="addcontainer" class="cursor">添加</a>-->
-                  <!--</li>-->
-
-                  <!--<li>-->
-                    <!--<table id="linkcontainertb" class="table table-hover enabled" style="display:none">-->
-                      <!--<thead>-->
-                      <!--<tr>-->
-                        <!--<th style="width40%">服务</th>-->
-                        <!--<th style="width:40%">名称</th>-->
-                        <!--<th style="width:20%">操作</th>-->
-                      <!--</tr>-->
-                      <!--</thead>-->
-                      <!--<tbody id="linkcontainerbody"></tbody>-->
-                    <!--</table>-->
-                  <!--</li>-->
-                <!--</ol>-->
-              <!--</li>-->
-              <!--<li class="hide-set">-->
-                <!--<span class="ve_top">环境变量：</span>-->
-                <!--<ol class="pull-left" style="width:100%;">-->
-                  <!--<li class="hide-select">-->
-                    <!--<input type="text" placeholder="name" id="Name">-->
-                    <!--<input type="text" placeholder="value" id="Value">-->
-                    <!--<a id="cratePATH">添加</a>-->
-                  <!--</li>-->
-                  <!--<li>-->
-                    <!--<table class="table table-hover enabled" id="Path">-->
-                      <!--<thead>-->
-                      <!--<tr>-->
-                        <!--<th style="width:45%">键</th>-->
-                        <!--<th style="width:45%">值</th>-->
-                        <!--<th style="width:10%">操作</th>-->
-                      <!--</tr>-->
-                      <!--</thead>-->
-                      <!--<tbody id="Path-oper">-->
-                      <!--</tbody>-->
-                    <!--</table>-->
-                  <!--</li>-->
-                <!--</ol>-->
-              <!--</li>-->
-              <!--<li class="hide-set">-->
-                <!--<span class="ve_top">端口配置：</span>-->
-                <!--<table class="table enabled">-->
-                  <!--<thead style="background:#fafafa">-->
-                  <!--<tr><th style="width:35%">容器端口</th>-->
-                    <!--<th style="width:35%">协议</th>-->
-                    <!--<th style="width:15%">映射端口</th>-->
-                    <!--<th style="vertical-align:middle;width:8.9%">操作</th>-->
-                  <!--</tr></thead>-->
-                  <!--<tbody class="BORDER" id="pushPrptpcol">-->
-                  <!--</tbody>-->
-                <!--</table>-->
-                <!--<div class="createPort">-->
-                  <!--<span><i class="fa fa-plus margin"></i></span>-->
-                <!--</div>-->
-              <!--</li>-->
-              <!--<li class="hide-set hosting dropup">-->
-                <!--<span class="ve_hosting">宿主主机：</span>-->
-                <!--<div class="select-versions" data-toggle="dropdown">-->
-                  <!--<span id="hosting-host-1" class="hostingText">加载中...</span>-->
-                  <!--<div class="sign">-->
-                    <!--<i class="fa fa-angle-right"></i>-->
-                  <!--</div>-->
-                <!--</div>-->
-                <!--<ul id="hostingTag1" class="dropdown-menu dropdown-position">-->
-                <!--</ul>-->
-              <!--</li>-->
-              <!--<li class="hide-set hosting dropup">-->
-                <!--<span class="ve_hosting">服务出口：</span>-->
-                <!--<div class="select-versions" data-toggle="dropdown">-->
-                  <!--<span id="hosting-service-out" class="hostingText">加载中...</span>-->
-                  <!--<div class="sign">-->
-                    <!--<i class="fa fa-angle-right"></i>-->
-                  <!--</div>-->
-                <!--</div>-->
-                <!--<ul id="hostingTag2" class="dropdown-menu dropdown-position">-->
-                <!--</ul>-->
-              <!--</li>-->
-            <!--</ul>-->
-            <!--<div style="height: 80px !important;"></div>-->
-          <!--</div>-->
         </div>
       </div>
       <div class="createPadding hide">
         <button class="btn btn-default go_backs01 hide" style="margin-right:30px;">上一步</button>
         <button class="btn btn-default go_backs02 hide" style="margin-right:30px;">上一步</button>
-        <!--<button class="btn btn-success two_step hide">高级设置</button>-->
         <button id="createButton" class="pull-right btn btn-primary pull_confirm hide">创建</button>
-          <!--<span class="pull-right">-->
-            <!--<span>消费预估：</span>-->
-              <!--<span id="consume" style="margin-right: 30px;"><span class="prospect-price">￥ <font id="consumptionEstimate">0.042</font> </span>元/小时</span>-->
-              <!--<span class="small hide" id="consumptionEstimateTips" style="margin-left:50px;">1.01 元/天</span>-->
-          <!--</span>-->
       </div>
     </div>
-    <!--iframe -->
-    <!--<script src="/js/create.js"></script>-->
-    <!--<script src="/js/volume.js"></script>-->
   </article>
 </div>
