@@ -15,7 +15,7 @@ var dockerConfig = require("../settings").dockerConfig;
  * @param callback
  */
 exports.save = function (container, callback) {
-    rest.postJson('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/container', container).on('complete', function(data, response) {
+    rest.postJson('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/container', container).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
@@ -34,7 +34,7 @@ exports.save = function (container, callback) {
  * @param callback
  */
 exports.listByAppid = function (appid, callback) {
-    rest.get('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/containers/'+appid).on('complete', function(data, response) {
+    rest.get('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/containers/' + appid).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
@@ -53,7 +53,7 @@ exports.listByAppid = function (appid, callback) {
  * @param callback
  */
 exports.get = function (id, callback) {
-    rest.get('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/container/'+id).on('complete', function(data, response) {
+    rest.get('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/container/' + id).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
@@ -72,7 +72,7 @@ exports.get = function (id, callback) {
  * @param callback
  */
 exports.update = function (container, callback) {
-    rest.putJson('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/container', container).on('complete', function(data, response) {
+    rest.putJson('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/container', container).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
@@ -91,7 +91,7 @@ exports.update = function (container, callback) {
  * @param callback
  */
 exports.saveEvent = function (event, callback) {
-    rest.postJson('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/containerevent', event).on('complete', function(data, response) {
+    rest.postJson('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/containerevent', event).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
@@ -110,7 +110,7 @@ exports.saveEvent = function (event, callback) {
  * @param callback
  */
 exports.getEvent = function (id, callback) {
-    rest.get('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/containerevent/'+id).on('complete', function(data, response) {
+    rest.get('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/containerevent/' + id).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
@@ -129,7 +129,7 @@ exports.getEvent = function (id, callback) {
  * @param callback
  */
 exports.create = function (containerOpts, callback) {
-    rest.postJson('http://'+dockerConfig.host+':'+dockerConfig.port+'/containers/create', containerOpts).on('complete', function(data, response) {
+    rest.postJson('http://' + dockerConfig.host + ':' + dockerConfig.port + '/containers/create', containerOpts).on('complete', function (data, response) {
         try {
             if (response.statusCode !== 201) {
                 throw new Error(data);
@@ -148,7 +148,7 @@ exports.create = function (containerOpts, callback) {
  * @param callback
  */
 exports.start = function (id, callback) {
-    rest.postJson('http://'+dockerConfig.host+':'+dockerConfig.port+'/containers/'+id+'/start').on('complete', function(data, response) {
+    rest.postJson('http://' + dockerConfig.host + ':' + dockerConfig.port + '/containers/' + id + '/start').on('complete', function (data, response) {
         try {
             if (response.statusCode !== 204) {
                 throw new Error(data);
@@ -167,7 +167,7 @@ exports.start = function (id, callback) {
  * @param callback
  */
 exports.stop = function (id, callback) {
-    rest.postJson('http://'+dockerConfig.host+':'+dockerConfig.port+'/containers/'+id+'/stop').on('complete', function(data, response) {
+    rest.postJson('http://' + dockerConfig.host + ':' + dockerConfig.port + '/containers/' + id + '/stop').on('complete', function (data, response) {
         try {
             if (response.statusCode !== 204) {
                 throw new Error(data);
@@ -186,7 +186,7 @@ exports.stop = function (id, callback) {
  * @param callback
  */
 exports.inspect = function (id, callback) {
-    rest.get('http://'+dockerConfig.host+':'+dockerConfig.port+'/containers/'+id+'/json').on('complete', function(data, response) {
+    rest.get('http://' + dockerConfig.host + ':' + dockerConfig.port + '/containers/' + id + '/json').on('complete', function (data, response) {
         try {
             if (response.statusCode !== 200) {
                 throw new Error(data);
@@ -207,7 +207,7 @@ exports.inspect = function (id, callback) {
 exports.remove = function (id, callback) {
     rest.del('http://' + dockerConfig.host + ':' + dockerConfig.port + '/containers/' + id + '?v=1&force=1').on('complete', function (data, response) {
         try {
-            if (response.statusCode !== 204) {
+            if (response.statusCode !== 204 && response.statusCode !== 404) {
                 throw new Error(data);
             }
         } catch (e) {

@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "prestart": "npm install",
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "test": "grunt"
   },
   "dependencies": {
     "async": "^2.0.0-rc.3",

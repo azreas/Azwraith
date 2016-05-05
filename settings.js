@@ -66,10 +66,14 @@ var dockerservice = {
 }
 /********************* request docker service end *********************/
 
-
+//
 var dockerapitest={
     host:'192.168.1.243',
     port:3375
+}
+var dockerapitest={
+    host:'127.0.0.1',
+    port:8080
 }
 
 module.exports = {

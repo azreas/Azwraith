@@ -26,9 +26,11 @@ log4js.configure({
  * app 配置日志
  * @param app
  */
+var loggerlevel = process.env.loggerlevel || 'DEBUG';
 exports.config = function(app){
     var logger = log4js.getLogger();
-    app.use(log4js.connectLogger(logger, {level:log4js.levels.INFO}));
+    logger.setLevel(loggerlevel);
+    app.use(log4js.connectLogger(logger));
 };
 
 
@@ -43,6 +45,6 @@ exports.logger = function(name) {
     if (name) {
         dateFileLog = log4js.getLogger(name);
     }
-    dateFileLog.setLevel(log4js.levels.INFO);
+    // dateFileLog.setLevel(log4js.levels.ALL);
     return dateFileLog;
 }

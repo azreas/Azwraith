@@ -19,7 +19,7 @@ var dockerConfig = require("../settings").dockerConfig;
  * @param callback
  */
 exports.creat = function (postdata, callback) {
-    rest.postJson('http://'+dockerConfig.host+':'+dockerConfig.port+'/networks/create', postdata).on('complete', function(data, response) {
+    rest.postJson('http://' + dockerConfig.host + ':' + dockerConfig.port + '/networks/create', postdata).on('complete', function (data, response) {
         try {
             if (response.statusCode != 201) { // 创建网络失败
                 throw new Error(data);
@@ -36,14 +36,13 @@ exports.creat = function (postdata, callback) {
  * @param networkid 网络id
  * @param callback
  */
-exports.remove=function(networkid,callback){
-    rest.del('http://'+dockerapitest.host+':'+dockerapitest.port+'/networks/'+networkid+'').on('complete', function(result,response) {
-        console.log(response.statusCode );
-        try{
-            if (response.statusCode != 204 ) { // 删除网络失败
+exports.remove = function (networkid, callback) {
+    rest.del('http://' + dockerConfig.host + ':' + dockerConfig.port + '/networks/' + networkid + '').on('complete', function (data, response) {
+        try {
+            if (response.statusCode != 204 && response.statusCode != 404) { // 删除网络失败
                 throw new Error(data);
             }
-        }catch (e){
+        } catch (e) {
             return callback(e);
         }
         return callback(null, data);
