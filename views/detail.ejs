@@ -10,8 +10,7 @@
     <!--<link rel="icon" type="image/x-icon" href="/images/favicon.ico">-->
     <link rel="stylesheet" href="/stylesheets/dashboard.css?rev=0.1.0">
     <script src="/jquery/dist/jquery.min.js"></script>
-    <meta content="_csrf" name="csrf-param">
-    <meta content="FDs3VXHK-FKQuYYYVhnwDOafqB-hqLoTq2bQ" name="csrf-token">
+    <script type="text/javascript" src="/stylesheets/layer/layer.js"></script>
     <link type="text/css" rel="stylesheet" href="/stylesheets/detail.css">
     <link rel="stylesheet" href="/stylesheets/layer/skin/layer.css">
     <title>零云 - 服务详情</title>
@@ -37,6 +36,20 @@
             background: #4280CB;
             color: #fff;
             cursor: auto;
+        }
+
+        #changeButton {
+            color: #fff;
+            height: 36px;
+            padding: 0 15px;
+            background: #008CD6;
+            display: inline-block;
+            text-align: center;
+            line-height: 36px;
+            border-radius: 2px;
+            float: left;
+            margin: 20px 6px 20px 0;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -174,7 +187,7 @@
                         </tr>
                         <tr>
                             <td style="width: 100%"> 实例个数：
-                                <select>
+                                <select id="instanceNumber">
                                     <option>1</option>
                                     <option>2</option>
                                     <option>3</option>
@@ -190,7 +203,7 @@
                         </tr>
                         <tr>
                             <td style="width: 100%"> 实例类型：
-                                <select>
+                                <select id="instanceType">
                                     <option>1x</option>
                                     <option>2x</option>
                                     <option>4x</option>
@@ -198,6 +211,11 @@
                                     <option>16x</option>
                                     <option>32x</option>
                                 </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 100%">
+                                <a id="changeButton"><span>确认修改</span></a>
                             </td>
                         </tr>
                         </tbody>

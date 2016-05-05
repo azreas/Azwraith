@@ -31,7 +31,6 @@
     });
 
     //根据服务ID更新事件
-
     var containerid = $('#containerId').val();  //获取服务ID
     //console.log(containerid);
     setInterval(function() {
@@ -162,8 +161,8 @@
         url:'/container/get/'+containerid,
         type:'get'
     }).done(function(resp){
-        console.log(resp);
-        console.log(resp.iamgeName);
+        //console.log(resp);
+        //console.log(resp.iamgeName);
         var update = new Date(resp.updateTime);
         var updateTime = formatDate(update);
         var create = new Date(resp.createTime);
@@ -278,5 +277,29 @@
         return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
     }
 
+    //资源控制
+    $("#changeButton").on("click",function(){
+        layer.confirm('确定删除容器', {
+            icon: 3,
+            btn: ['确定', '取消']
+        }, function(index) {
+            layer.close(index);
+
+            var instanceNumber = $("#instanceNumber").val();
+            var instanceType = $("#instanceType").val();
+
+            $.ajax({
+                url:'/serve/updata',
+                type:'post',
+                data:{
+                    appid: containerid,
+                    instance: instanceNumber,
+                    conflevel: instanceType
+                }
+            }).done(function(resp){
+                console.log(resp);
+            });
+        });
+    });
 })();
 
