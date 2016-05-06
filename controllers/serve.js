@@ -5,7 +5,10 @@
 
 var serveService = require('../service/serve');
 var containerService = require('../service/container');
+var containerDao = require('../dao/container');
+var async = require('async');
 var uuid = require('node-uuid');
+var logger = require("../modules/log/log").logger();
 
 /**
  * 服务创建
@@ -17,6 +20,13 @@ var uuid = require('node-uuid');
  */
 exports.create = function (req, res, next) {
     try {
+        var envName = req.body.envName;
+        var envValue = req.body.envVal;
+        var env = [];
+        for (var i = 0; i < envName.length; i++) {
+            env[i] = envName[i] + "=" + envValue[i];
+        }
+
         var serveConfig = {
             id: uuid.v4(), // 服务 id
             owner: "", // 用户 id，通过 token 获取
@@ -27,6 +37,7 @@ exports.create = function (req, res, next) {
             instance: parseInt(req.body.instance, 10), // 实例个数
             expandPattern: 1, // 拓展方式，1表示自动，2表示手动
             command: req.body.command, // 执行命令
+            env: env,//环境变量
             network: "", // 网络名（email-name+appname）
             networkid: "", // 网络 id
             subdomain: "", // 子域名（email-name+appname）
@@ -39,12 +50,11 @@ exports.create = function (req, res, next) {
             try {
                 if (!err) {// 保存服务配置成功，则发异步请求创建实例
                     serveConfig = result;
-                    console.log('==================================保存服务配置成功==================================');
-                    containerService.create(serveConfig.id, function (error, data) {
+                    containerService.create(serveConfig.id, null, function (error, data) {
                         if (!error) {
-                            console.log('==================================实例创建成功==================================');
+                            logger.debug(data);
                         } else {
-                            console.log(error);
+                            logger.info(error);
                         }
                     });
                     res.redirect("/detail/" + serveConfig.id); // 重定向到服务详情页
@@ -60,6 +70,12 @@ exports.create = function (req, res, next) {
     }
 }
 
+/**
+ * 服务删除
+ * @param req
+ * @param res
+ * @param next
+ */
 exports.remove = function (req, res, next) {
     try {
         serveService.remove(req.params.id, function (err, result) {
@@ -75,5 +91,95 @@ exports.remove = function (req, res, next) {
         });
     } catch (e) {
         next(e);
+    }
+}
+
+/**
+ * 服务变更（资源控制）
+ * @param req
+ * @param res
+ * @param next
+ */
+exports.update = function (req, res, next) {
+    try {
+        var resourceParams = {
+            id: req.body.id, // 服务 id
+            owner: "", // 用户 id，通过 token 获取
+            name: "", // 服务名称
+            image: "", // 镜像名称
+            imagetag: "", // 镜像版本
+            conflevel: req.body.conflevel, // 配置级别
+            instance: parseInt(req.body.instance, 10), // 实例个数
+            expandPattern: 1, // 拓展方式，1表示自动，2表示手动
+            command: "", // 执行命令
+            env: "",//环境变量
+            network: "", // 网络名（email-name+appname）
+            networkid: "", // 网络 id
+            subdomain: "", // 子域名（email-name+appname）
+            status: 1, // 服务状态，1.启动中，2.运行中，3.停止中，4.已停止,5.启动失败,6.停止失败
+            createtime: "", // 创建时间
+            updatetime: new Date().getTime(), // 更新时间
+            address: "" // 服务地址
+        };
+        serveService.update(resourceParams, function (err, levelChange, instance) {
+            try {
+                if (!err) {
+                    if (levelChange) {//配置级别变更，重新创建所有容器
+                        containerService.create(resourceParams.id, null, function (error, data) {
+                            try {
+                                if (!error) {
+                                    logger.debug(data);
+                                    res.json({result: true});
+                                } else {
+                                    logger.info(error);
+                                    res.json({result: false});
+                                }
+                            } catch (e) {
+                                logger.info(e);
+                                res.json({result: false});
+                            }
+                        });
+                    } else {//配置级别不变，调整实例个数
+                        if (instance > 0) {//实例增加
+                            containerService.create(resourceParams.id, instance, function (error, data) {
+                                try {
+                                    if (!error) {
+                                        logger.debug(data);
+                                        res.json({result: true});
+                                    } else {
+                                        logger.info(error);
+                                        res.json({result: false});
+                                    }
+                                } catch (e) {
+                                    logger.info(e);
+                                    res.json({result: false});
+                                }
+                            });
+                        } else if (instance < 0) {//实例减少
+                            containerService.removeByAppid(resourceParams.id, Math.abs(instance), function (error, data) {
+                                try {
+                                    if (!error) {
+                                        logger.debug(data);
+                                        res.json({result: true});
+                                    } else {
+                                        logger.info(error);
+                                        res.json({result: false});
+                                    }
+                                } catch (e) {
+                                    logger.info(e);
+                                    res.json({result: false});
+                                }
+                            });
+                        }
+                    }
+                } else {
+                    logger.info(err);
+                }
+            } catch (e) {
+                logger.info(e);
+            }
+        });
+    } catch (e) {
+        logger.info(e);
     }
 }

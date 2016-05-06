@@ -132,24 +132,24 @@ exports.create = function (token, serveConfig, callback) {
 
 /**
  * 根据服务id更新实例个数和实例类型
- * @param req
- * @param res
+ * @param resourceParams
+ * @param callback
  */
-exports.resource = function (resourceParams, token, serveConfig, callback) {
+exports.update = function (resourceParams, callback) {
     // 根据服务id获取服务信息
     // 检查实例类型是否有变
     // 若有变，则删掉之前的实例，更新配置（根据服务id，启动新的实例）
     // 若不变，则直接更新配置（根据服务配置，启动新实例——添加实例）
-    var app = null;
     try {
         async.waterfall([
             function (waterfallCallback) { // 根据服务id获取服务信息
-                serveDao.get(resourceParams.appid, function (err, data) {
+                serveDao.get(resourceParams.id, function (err, data) {
                     try {
                         if (!err) {
                             logger.debug('根据服务id获取服务信息');
-                            app = data.apps[0];
+                            var app = data.apps[0];
                             delete app._id; // 删除 _id 属性
+                            waterfallCallback(null, app);
                         } else {
                             logger.info('根据服务id:' + resourceParams.appid + '获取服务信息失败' + err);
                             waterfallCallback(err);
@@ -159,47 +159,100 @@ exports.resource = function (resourceParams, token, serveConfig, callback) {
                         waterfallCallback(e);
                     }
                 })
-            }, function (waterfallCallback) { // 检查实例类型是否有变
+            }, function (app, waterfallCallback) { //更新服务配置
+                resourceParams.owner = app.owner;
+                resourceParams.name = app.name;
+                resourceParams.image = app.image;
+                resourceParams.imagetag = app.imagetag;
+                resourceParams.expandPattern = app.expandPattern;
+                resourceParams.command = app.command;
+                resourceParams.env = app.env;
+                resourceParams.network = app.network;
+                resourceParams.networkid = app.networkid;
+                resourceParams.subdomain = app.subdomain;
+                resourceParams.status = app.status;
+                resourceParams.createtime = app.createtime;
+                resourceParams.address = app.address;
+                serveDao.update(resourceParams, function (err) {
+                    try {
+                        if (!err) {
+                            logger.debug(moment().format('h:mm:ss') + '   更新服务配置信息');
+                            waterfallCallback(null, app);//触发下一步
+                        } else {
+                            logger.info('更新服务配置失败:' + err);
+                            waterfallCallback(err);
+                        }
+                    } catch (e) {
+                        logger.info('更新服务配置失败:' + e);
+                        waterfallCallback('更新服务配置失败' + e);
+                    }
+                });
+            }, function (app, waterfallCallback) {// 检查实例类型是否有变
+                var levelChange = false;
                 if (resourceParams.conflevel !== app.conflevel) { // 若有变，则删掉之前的实例，更新配置（根据服务id，启动新的实例）
-                    serveDao.save(serveConfig, function (err, result) {
-                        try {
-                            if (!err) {
-                                logger.debug(moment().format('h:mm:ss') + '   更新服务配置信息');
-                                waterfallCallback(null);//触发下一步
-                            } else {
-                                logger.info('更新服务配置失败:' + err);
-                                waterfallCallback(err);
+                    levelChange = true;
+                    async.waterfall([
+                        function (delCallback) {//获取容器列表
+                            containerDao.listByAppid(resourceParams.id, function (err, result) {
+                                try {
+                                    if (!err) {
+                                        logger.debug('获取容器列表成功');
+                                        var containers = result.containers;
+                                        delCallback(null, containers);
+                                    } else {
+                                        logger.info('获取容器列表失败err' + err);
+                                        delCallback('获取容器列表失败err' + err);
+                                    }
+                                } catch (e) {
+                                    logger.info('获取容器列表失败e' + e);
+                                    delCallback('获取容器列表失败e' + e);
+                                }
+                            });
+                        }, function (containers, delCallback) {//删除容器
+                            var containeridList = [];
+                            for (var i = 0; i < containers.length; i++) {
+                                containeridList[i] = containers[i].id;
                             }
-                        } catch (e) {
-                            logger.info('更新服务配置失败:' + e);
-                            waterfallCallback('更新服务配置失败');
+                            containerService.removeByList(containeridList, function (err) {
+                                try {
+                                    if (!err) {
+                                        delCallback(null);
+                                    } else {
+                                        delCallback(err);
+                                    }
+                                } catch (e) {
+                                    delCallback(e);
+                                }
+                            });
+                        }], function (err) {
+                        if (err) {
+                            logger.info('更新配置---删除容器失败' + err);
+                            waterfallCallback('更新配置---删除容器失败' + err);
+                        } else {
+                            waterfallCallback(null, levelChange);
                         }
                     });
                 } else { // 若不变，则直接更新配置（根据服务配置，启动新实例——添加实例）
-
+                    var instance = resourceParams.instance - app.instance;
+                    waterfallCallback(null, levelChange, instance);
                 }
             }
-
-        ], function (error, result) {
-
-        });
-
-
-    } catch (e) {
-        logger.info("根据服务 " + req.body.id + " 更新资源失败：" + e);
-        res.json({
-            result: false,
-            info: {
-                code: "00000",
-                script: "根据服务 " + req.body.id + " 更新资源失败"
+        ], function (error, levelChange, instance) {
+            if (!error) {
+                return callback(null, levelChange, instance);
+            } else {
+                return callback(error);
             }
         });
+    } catch (e) {
+        logger.info(e);
+        return callback(e);
     }
 }
 
 /**
  * 删除服务
- *1.
+ *1.获取容器列表
  *
  * @param serveid
  * @param callback

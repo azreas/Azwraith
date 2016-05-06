@@ -16,10 +16,11 @@ var moment = require('moment');
 
 /**
  * 根据服务 id 获取服务配置信息，并创建容器实例
- * @param appid
- * @param callback
+ * @param appid 服务ID
+ * @param creatCount 创建个数，传null则根据数据库创建
+ * @param servicecallback
  */
-exports.create = function (appid, servicecallback) {
+exports.create = function (appid, creatCount, servicecallback) {
     /****************************** 步骤开始 *********************************/
     // 1.根据服务 id 获取服务信息
     // 2.根据配置级别 conflevel 获取配置
@@ -49,9 +50,7 @@ exports.create = function (appid, servicecallback) {
                         if (err) {
                             throw new Error(err);
                         }
-
                         logger.info("app result ---> " + JSON.stringify(data));
-
                         app = data.apps[0];
                         delete app._id; // 删除 _id 属性
                     } catch (e) {
@@ -65,9 +64,7 @@ exports.create = function (appid, servicecallback) {
                         if (err) {
                             throw new Error(err);
                         }
-
                         logger.info("level result ---> " + JSON.stringify(data));
-
                         level.memory = data.setneal.memory * 1024 * 1024;
                         level.cpu = data.setneal.cpu;
                     } catch (e) {
@@ -85,6 +82,7 @@ exports.create = function (appid, servicecallback) {
                 var createContainerFun = function (outcreatecallback) {
                     var containerOpts = {
                         Image: app.image + ":" + app.imagetag,
+                        Env: app.env,
                         Labels: {
                             "interlock.hostname": app.subdomain,
                             "interlock.domain": dockerConfig.domain
@@ -106,7 +104,6 @@ exports.create = function (appid, servicecallback) {
                                     if (err) {
                                         throw new Error(err);
                                     }
-
                                     logger.info("容器实例 " + data.Id + " 创建成功");
                                 } catch (e) {
                                     return createcallback(e);
@@ -125,8 +122,7 @@ exports.create = function (appid, servicecallback) {
                                     if (err) {
                                         throw new Error(err);
                                     }
-
-                                    logger.info("create containerEvent result ---> " + JSON.stringify(data));
+                                    logger.debug("create containerEvent result ---> " + JSON.stringify(data));
                                     logger.info("容器实例 " + containerEventConfig.containerid + " 保存创建事件情况：" + data.info.script);
                                 } catch (e) {
                                     logger.info("容器实例 " + containerEventConfig.containerid + " 保存创建事件失败：" + e);
@@ -162,7 +158,7 @@ exports.create = function (appid, servicecallback) {
                                 containerEventConfig.script = script;
                                 containerDao.saveEvent(containerEventConfig, function (err, data) {
                                     try {
-                                        logger.info("start containerEvent result ---> " + JSON.stringify(data));
+                                        logger.debug("start containerEvent result ---> " + JSON.stringify(data));
 
                                         logger.info("容器实例 " + containerEventConfig.containerid + " 保存" + eventTitle + "事件情况：" + data.info.script);
                                     } catch (e) {
@@ -198,7 +194,6 @@ exports.create = function (appid, servicecallback) {
                                     if (err) {
                                         throw new Error(err);
                                     }
-
                                     var instanceProtocol; // 实例协议
                                     var instancePort; // 实例端口
                                     var serverHost; // 服务ip
@@ -211,13 +206,13 @@ exports.create = function (appid, servicecallback) {
                                         break;
                                     }
                                     serverHost = data.Node.IP;
-                                    logger.info("serverAddress ---> " + serverHost + ":" + serverPort);
+                                    logger.debug("serverAddress ---> " + serverHost + ":" + serverPort);
                                     var networkName = app.network;
 
                                     var instanceHost = data.NetworkSettings.Networks[networkName].IPAddress; // 实例ip
-                                    logger.info("instanceAddress ---> " + instanceHost + ":" + instancePort);
+                                    logger.debug("instanceAddress ---> " + instanceHost + ":" + instancePort);
 
-                                    logger.info("instanceProtocol ---> " + instanceProtocol);
+                                    logger.debug("instanceProtocol ---> " + instanceProtocol);
 
                                     var containerConfig = {
                                         id: containerid,
@@ -260,17 +255,17 @@ exports.create = function (appid, servicecallback) {
                         containerCounter++;
                         if (err) {
                             logger.info(err);
-                            outcreatecallback(null, "服务 " + app.name + "第 [" + containerCounter + "/" + app.instance + "] 个实例创建失败");
+                            outcreatecallback(null, "服务 " + app.name + "第 [" + containerCounter + "/" + (creatCount || app.instance) + "] 个实例创建失败");
                             return;
                         }
                         containerSuccessCounter++;
-                        outcreatecallback(null, "服务 " + app.name + "第 [" + containerCounter + "/" + app.instance + "] 个实例创建成功");
+                        outcreatecallback(null, "服务 " + app.name + "第 [" + containerCounter + "/" + (creatCount || app.instance) + "] 个实例创建成功");
                     });
                 };
 
                 var createContainerArray = [];
                 // 根据实例个数，得到创建实例数组
-                for (var i = 0; i < app.instance; i++) {
+                for (var i = 0; i < (creatCount || app.instance ); i++) {
                     createContainerArray[i] = createContainerFun;
                 }
 
@@ -280,7 +275,7 @@ exports.create = function (appid, servicecallback) {
                         if (err) {
                             logger.info(err);
                         }
-                        logger.info("服务 " + app.name + " 有 [" + containerSuccessCounter + "/" + app.instance + "] 个实例创建成功");
+                        logger.info("服务 " + app.name + " 有 [" + containerSuccessCounter + "/" + (creatCount || app.instance) + "] 个实例创建成功");
                         logger.info(results);
                         callback(null, containerSuccessCounter); // 触发下一步，并传容器实例创建成功个数
                     }
@@ -316,7 +311,6 @@ exports.create = function (appid, servicecallback) {
                         if (err) {
                             throw new Error(err);
                         }
-
                         logger.info("update app result ---> " + JSON.stringify(data));
                     } catch (e) {
                         return callback(e);
@@ -335,7 +329,12 @@ exports.create = function (appid, servicecallback) {
                     serverEventConfig.script = "启动服务 " + app.name + "失败";
                 } else { // 表示服务启动成功，存储服务运行中事件
                     serverEventConfig.event = "运行中";
-                    serverEventConfig.script = "启动服务 " + app.name + "成功，共有 [" + containerSuccessCounter + "/" + app.instance + "] 个实例启动成功";
+                    if (creatCount) {
+                        serverEventConfig.script = "资源调整 " + app.name + "成功，共有 [" + containerSuccessCounter + "/" + creatCount + "] 个实例增加成功";
+                    } else {
+                        serverEventConfig.script = "启动服务 " + app.name + "成功，共有 [" + containerSuccessCounter + "/" + app.instance + "] 个实例启动成功";
+                    }
+
                 }
                 serveDao.saveEvent(serverEventConfig, function (err, data) {
                     try {
@@ -365,7 +364,13 @@ exports.create = function (appid, servicecallback) {
 };
 
 
-exports.removeByList = function (containeridList, callback) {
+/**
+ * 根据容器ID列表删除容器
+ * @param containeridList
+ * @param callback
+ */
+exports.removeByList = removeByList;
+function removeByList(containeridList, callback) {
     var count = 0; //删除容器计数器
     var delcontainerFun = function (calldelback) {//创建异步方程组
         var containerid = containeridList[count];
@@ -399,6 +404,63 @@ exports.removeByList = function (containeridList, callback) {
 }
 
 
+/**
+ * 根据服务id移除容器
+ * @param appid  服务ID
+ * @param removeCount  移除数，传null全部移除
+ * @param callback
+ */
+exports.removeByAppid = function (appid, removeCount, callback) {
+    async.waterfall([
+        function (waterfallCallback) {//根据Appid获取容器列表
+            containerDao.listByAppid(appid, function (err, data) {
+                try {
+                    if (!err) {
+                        logger.debug('根据Appid获取容器列表');
+                        var containerId = [];
+                        for (var i = 0; i < (removeCount || data.containers.length); i++) {
+                            containerId[i] = data.containers[i].id;
+                        }
+                        waterfallCallback(null, containerId);
+                    } else {
+                        logger.info('根据Appid获取容器列表失败' + err);
+                    }
+                } catch (e) {
+                    logger.info('根据Appid获取容器列表失败' + e);
+                }
+            });
+        }, function (containerId, waterfallCallback) {//移除容器
+            removeByList(containerId, function (err) {
+                try {
+                    if (!err) {
+                        logger.debug('移除容器成功');
+                        waterfallCallback(null);
+                    } else {
+                        logger.info('移除容器失败' + err);
+                        waterfallCallback(err);
+                    }
+                } catch (e) {
+                    logger.info('移除容器失败' + e);
+                    waterfallCallback(e);
+                }
+            });
+        }
+    ], function (err) {
+        if (!err) {
+            return callback(null);
+        } else {
+            return callback(err);
+        }
+    })
+
+}
+
+
+/**
+ * 获取当前用户服务列表
+ * @param token
+ * @param callback
+ */
 exports.listByUid = function (token, callback) {
     async.waterfall([
         function (waterfallCallback) { // 根据 token 获取当前用户id
