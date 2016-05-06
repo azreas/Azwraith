@@ -30,9 +30,30 @@
         return false;
     });
 
-    //根据服务ID更新事件
+
     var containerid = $('#containerId').val();  //获取服务ID
     //console.log(containerid);
+
+    //根据服务ID更新事件
+    $.ajax({
+        url: '/container/instance/event/list/'+containerid,
+        type: 'GET'
+    }).done(function(resp){
+        var events = resp.appEvents;
+        //console.log(events);
+        var html = '';
+        for(var i in events){
+            var titme = new Date(events[i].titme);
+            var date = formatDate(titme);
+            //console.log(date);
+
+            html += '<div class="event"><div class="event-line"><div class="event-status success"><i class="fa fa-check note"></i></div><div class="time-line-content"><div class="time-line-reason event-title"><div class="title-name success">'+events[i].event+'</div><div class="time-line-time"><div class="event-sign"><i class="fa fa-angle-right fa_caret"></i></div><div class="datetimes">'+date+'</div></div><div class="time-line-message" style="display: none;"><p class="list-times">时间：'+date+'</p><p class="list-conent">信息：'+events[i].script+'</p></div></div></div></div></div>';
+
+            $('.containerEvent').html(html);
+        }
+
+
+    });
     setInterval(function() {
         $.ajax({
             url: '/container/instance/event/list/'+containerid,
@@ -56,54 +77,6 @@
     }, 5000);
 
     //根据服务ID更新实例列表
-    $.ajax({
-        url:'/container/list/'+containerid,
-        type:'get'
-    }).done(function(resp){
-        //console.log(resp);
-        //console.log(resp.containers[0]);
-        var containers = resp.containers;
-        var html = '';
-        for(var i in containers){
-            var containerCreat = new Date(containers[i].createtime);
-            var containerCreatTime = formatDate(containerCreat);
-            var status = "";
-            switch (containers[i].status)
-            {
-                //1.启动中，2.运行中，3.停止中，4.已停止,5.启动失败,6.停止失败
-                case 1:
-                    status = "启动中";
-                    break;
-                case 2:
-                    status = "运行中";
-                    break;
-                case 3:
-                    status = "停止中";
-                    break;
-                case 4:
-                    status = "已停止";
-                    break;
-                case 5:
-                    status = "启动失败";
-                    break;
-                case 6:
-                    status = "停止失败";
-                    break;
-            }
-            html += "<tr>";
-            html += "<td><a href='/container/instance/"+containers[i].appid+"/"+containers[i].id+"'><span id='containerName'>"+containers[i].name+"</span></a></td>";
-            html += "<td><span id='containerStatus'>"+status+"</span></td>";
-            html += "<td><span class='imageName'></span></td>";
-            html += "<td><a href='http://"+containers[i].inaddress.ip+":"+containers[i].inaddress.port+"' target='_blank'><span id='inaddress'>"+containers[i].inaddress.ip+":"+containers[i].inaddress.port+"</span></a></td>";
-            html += "<td><a href='http://"+containers[i].outaddress.ip+":"+containers[i].outaddress.port+"' target='_blank'><span id='outaddress'>"+containers[i].outaddress.ip+":"+containers[i].outaddress.port+"</span></a></td>";
-            html += "<td><span id='containerCreatTime'>"+containerCreatTime+"</span></td>";
-            html += "</tr>";
-
-            $(".BORDER-TR").html(html);
-        }
-    }).fail(function(err){
-        console.log(err);
-    });
     setInterval(function() {
         $.ajax({
             url:'/container/list/'+containerid,
@@ -142,19 +115,21 @@
                 html += "<tr>";
                 html += "<td><a href='/container/instance/"+containers[i].appid+"/"+containers[i].id+"'><span id='containerName'>"+containers[i].name+"</span></a></td>";
                 html += "<td><span id='containerStatus'>"+status+"</span></td>";
-                html += "<td><span class='imageName'></span></td>";
+                html += "<td><span class='image-name'></span></td>";
                 html += "<td><a href='http://"+containers[i].inaddress.ip+":"+containers[i].inaddress.port+"' target='_blank'><span id='inaddress'>"+containers[i].inaddress.ip+":"+containers[i].inaddress.port+"</span></a></td>";
                 html += "<td><a href='http://"+containers[i].outaddress.ip+":"+containers[i].outaddress.port+"' target='_blank'><span id='outaddress'>"+containers[i].outaddress.ip+":"+containers[i].outaddress.port+"</span></a></td>";
                 html += "<td><span id='containerCreatTime'>"+containerCreatTime+"</span></td>";
                 html += "</tr>";
 
                 $(".BORDER-TR").html(html);
+
+                $('.image-name').text($('.imageName').text());
             }
         }).fail(function(err){
             console.log(err);
         });
 
-    }, 5000);
+    }, 3000);
 
     //根据服务ID实时更新服务详情数据
     $.ajax({
