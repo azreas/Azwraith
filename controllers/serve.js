@@ -23,8 +23,17 @@ exports.create = function (req, res, next) {
         var envName = req.body.envName;
         var envValue = req.body.envVal;
         var env = [];
-        for (var i = 0; i < envName.length; i++) {
-            env[i] = envName[i] + "=" + envValue[i];
+        var envCount = 0;
+        if ((typeof envName == 'object') && envName.constructor == Array) {
+            for (var i = 0; i < envName.length; i++) {
+                if (envName[i] != '' && envValue[i] != '') {
+                    env[envCount++] = envName[i] + "=" + envValue[i];
+                }
+            }
+        } else if (envName.length > 0) {
+            if (envName != '' && envValue != '') {
+                env[0] = envName + "=" + envValue
+            }
         }
 
         var serveConfig = {
