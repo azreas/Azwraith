@@ -63,6 +63,21 @@
         //console.log(imageName);
     });
 
+    //添加环境变量
+    $('.editEnv').on('click','.addEnv',function(){
+        envDiv = $('<div class="envRow"><div style="width: 35%"><input placeholder="name" class="envName" type="text" name="envName"></div><div style="width: 35%;margin-left:4px"><input placeholder="value" class="envVal" type="text" name="envVal"></div><div style="width: 10%;margin-left:4px"><span class="addEnv cursor" data-toggle="tooltip" data-placement="top" title="" data-original-title="添加"><i class="fa fa-plus"></i></span>&nbsp;&nbsp;<span class="removeEnv cursor" style="margin-left: 8px" data-toggle="tooltip" data-placement="top" title="" data-original-title="删除"><i class="fa fa-times"></i></span></div></div>');
+
+        envDiv.appendTo($('.editEnv'));
+    });
+    $('.editEnv').on('click','.removeEnv',function(){
+        var envlength = $('.editEnv .envRow').length;
+        if(envlength == 1){
+            layer.msg('最后一条不能删除')
+        }else {
+            $(this).parents('.envRow').remove();
+        }
+    });
+
     //创建
     $('.host_step1').hide();
     $('.host_step2').show();

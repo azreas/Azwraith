@@ -130,7 +130,6 @@
                   <span id="instanceTip" style="color:rgba(102, 102, 102, 0.63);margin-left: 40px;"></span>
                 </div>
               </li>
-              </form>
               <li class="line-h-3 param_form">
                 <span class="paramSet">参数设置</span>
                 <ol id="param_list"></ol>
@@ -148,6 +147,33 @@
                 <span class="ve_top">执行命令：</span>
                 <span class="update-mi"><input id="execmd" type="text" style="width:230px;height:27px;cursor:no-drop;padding:0px;margin:0px;" class="cmdtext" disabled="">&nbsp;&nbsp; <input type="radio" class="execmd" name="defaultcmd" value="default" checked=""> 镜像默认&nbsp;&nbsp; <input type="radio" class="execmd" name="defaultcmd" value="self"> 自定义 </span>
               </li>
+              <li class="line-h-3">
+                <span class="ve_top">环境变量：</span>
+                <div class="editEnv">
+                  <div class="editEnv-title">
+                    <div style="width: 35%"> 变量名</div>
+                    <div style="width: 35%"> 变量值</div>
+                    <div style="width: 10%"> 操作</div>
+                  </div>
+                  <div class="envRow">
+                    <div style="width: 35%">
+                      <input placeholder="name" class="envName" type="text" name="envName">
+                    </div>
+                    <div style="width: 35%">
+                      <input placeholder="value" class="envVal" type="text" name="envVal">
+                    </div>
+                    <div style="width: 10%">
+                      <span class="addEnv cursor" data-toggle="tooltip" data-placement="top" title="" data-original-title="添加">
+                        <i class="fa fa-plus"></i>
+                      </span>&nbsp;&nbsp;
+                      <span class="removeEnv cursor" data-toggle="tooltip" data-placement="top" title="" data-original-title="删除">
+                        <i class="fa fa-times"></i>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              </form>
             </ul>
             <div style="height: 80px !important;"></div>
           </div>
