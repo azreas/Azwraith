@@ -14,7 +14,7 @@ var userservice = require('../settings').userservice;
  * @param callback
  */
 exports.insert = function (user, callback) {
-    rest.postJson('http://' + userservice.host + ':' + userservice.port + '/v1/user', user).on('complete', function(data, response) {
+    rest.postJson('http://' + userservice.host + ':' + userservice.port + '/v1/people/', user).on('complete', function(data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
@@ -52,7 +52,7 @@ exports.logout = function (token, callback) {
  * @param callback
  */
 exports.get = function (id, callback) {
-    rest.get('http://' + userservice.host + ':' + userservice.port + '/v1/user/'+id).on('complete', function(data, response) {
+    rest.get('http://' + userservice.host + ':' + userservice.port + '/v1/people/'+id).on('complete', function(data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
@@ -90,7 +90,7 @@ exports.getIdByToken = function (token, callback) {
  * @param callback
  */
 exports.login = function (user, callback) {
-    rest.postJson('http://' + userservice.host + ':' + userservice.port + '/v1/auth', user).on('complete', function(data, response) {
+    rest.postJson('http://' + userservice.host + ':' + userservice.port + '/v1/auth/', user).on('complete', function(data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
