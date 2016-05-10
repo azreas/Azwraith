@@ -57,7 +57,7 @@ body {
   background-size: 70%;
   background-position: 0 0;
   position: relative;
-  top: 12px;
+  top: 20px;
   left: 10px;
   display: inline-block;
   width: 160px;
@@ -126,23 +126,33 @@ header ul.user-navbar li a.font-size {
 }
 
 .screen1 {
-  height: 700px;
-  background: url("/images/home-backgroundimg.jpg") no-repeat center center;
   display: table;
   table-layout: fixed;
   position: relative;
   width: 100%;
 }
 
-.screen1 .sc-span {
+.background-video-wrapper{
+  background: #27273E;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
   width: 100%;
+  height: 100%;
+  opacity: 1;
+}
+
+.screen1 .sc-span {
+  width:100%;
   vertical-align: middle;
   display: table-cell;
   overflow: hidden;
   color: #fff;
   border: 0;
   z-index: 3;
-  position: relative;
+  position: absolute;
+  top:35%;
 }
 
 .screen1 .sourehan {

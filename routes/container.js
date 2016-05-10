@@ -25,7 +25,7 @@ module.exports = function (app) {
     // 根据服务 id 创建容器实例
     router.get('/create/:appid', container_impl.create);
 
-    // 根据appid 获取指定容器信息
+    // 根据appid 获取指定服务信息
     router.get('/get/:id', container_impl.get);
 
     // 根据服务 id 获取所属容器实例列表

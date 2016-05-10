@@ -1088,6 +1088,12 @@ exports.get = function (req, res) {
             result = JSON.parse(result);
             console.log("get result.result ---> " + result.result);
 
+            var env = result.apps[0].env;
+            var envSplit = [];
+            for(var i in env){
+                envSplit[i] = env[i].split("=");
+            }
+            console.log("test>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+envSplit);
             // 获取成功，则返回 json 数据
             if (result.result === true) {
                 // 根据配置级别 conflevel 获取配置，然后根据配置创建容器实例

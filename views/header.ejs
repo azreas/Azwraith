@@ -1,10 +1,12 @@
 <header>
-  <div class="container fixed-row">
+  <div class="container">
     <div class="row">
       <div class="col-xs-12 col-sm-12">
-        <!--<div class="foldingpad">-->
-          <!--<i class="fa fa-dedent"></i>-->
-        <!--</div>-->
+          <div class="log" >
+            <a href="/" target="_blank" class="zerocloud">
+              <span class="logo"></span>
+            </a>
+          </div>
         <ul class="nav-bar">
           <li class="use">
             <a class="cursor nav-t">
@@ -12,105 +14,92 @@
             </a>
             <div class="userList">
               <div class="rows"></div>
-              <a href="" class="li"><i class="fa_baseinfo"></i><span>基本信息</span></a>
-              <a href="" class="li"><i class="fa_ihone"></i><span>手机号码</span></a>
-              <a href="" class="li"><i class="fa_lock"></i><span>修改密码</span></a>
+              <a href="javascript:void(0)" class="li"><i class="fa_baseinfo"></i><span>基本信息</span></a>
+              <a href="javascript:void(0)" class="li"><i class="fa_ihone"></i><span>手机号码</span></a>
+              <a href="javascript:void(0)" class="li"><i class="fa_lock"></i><span>修改密码</span></a>
               <!--<a href="" class="li"><i class="fa_cube"></i><span>其他账户</span></a>-->
               <a href="/logout" id="logout" class="li hr"><i class="fa_out"></i><span>退出登录</span></a>
             </div>
           </li>
           <li class="work">
-            <a href="" class="nav-t" target="_blank">社区</a>
+            <a href="javascript:void(0)" class="nav-t" target="_blank">社区</a>
             <div class="nav-list">
               <div class="rows"></div>
-              <a href="" class="li" target="_blank"><i class="fa_open"></i><span>社区</span></a>
-              <a href="" class="li" target="_blank"><i class="fa_wordpress"></i><span>博客</span></a>
-              <a href="" class="li" target="_blank"><i class="fa_update"></i><span>最近更新</span></a>
+              <a href="javascript:void(0)" class="li" target="_blank"><i class="fa_open"></i><span>社区</span></a>
+              <a href="javascript:void(0)" class="li" target="_blank"><i class="fa_wordpress"></i><span>博客</span></a>
+              <a href="javascript:void(0)" class="li" target="_blank"><i class="fa_update"></i><span>最近更新</span></a>
             </div>
           </li>
           <li class="work">
-            <a href="" class="nav-t" target="_blank">文档</a>
+            <a href="javascript:void(0)" class="nav-t" target="_blank">文档</a>
             <div class="nav-list">
               <div class="rows"></div>
-              <a href="" class="li" target="_blank"><i class="fa_doc"></i><span>产品文档</span></a>
-              <a href="" class="li" target="_blank"><i class="fa_quick_icon"></i><span>API 文档</span></a>
-              <a href="" class="li" target="_blank"><i class="fa_video"></i><span>视频教程</span></a>
-              <a href="" class="li" target="_blank"><i class="fa_club"></i><span>客户端</span></a>
+              <a href="javascript:void(0)" class="li" target="_blank"><i class="fa_doc"></i><span>产品文档</span></a>
+              <a href="javascript:void(0)" class="li" target="_blank"><i class="fa_quick_icon"></i><span>API 文档</span></a>
+              <a href="javascript:void(0)" class="li" target="_blank"><i class="fa_video"></i><span>视频教程</span></a>
+              <a href="javascript:void(0)" class="li" target="_blank"><i class="fa_club"></i><span>客户端</span></a>
             </div>
           </li>
           <!--<li class="work">-->
             <!--<a href="" class="nav-t" target="_blank">镜像广场</a>-->
           <!--</li>-->
           <li class="consume">
-            <a href="" class="nav-t">消费记录</a>
-            <ul class="nav-consume">
-              <div class="rows"></div>
-              <li class="ont-top">
-                <span class="pull-left">账户余额：</span>
-                <a id="refreshBalance" class="pull-right" href="" title="刷新余额"><i class="fa fa-refresh margin"></i></a>
-                <a href="" class="pull-right"><i class="fa fa-yen margin"></i><span id="balcance"></span></a>
-              </li>
-              <li class="bi_primary"><a href="">现在充值</a></li>
-              <li>
-                <i style="color:#4280cb" class="fa fa-angle-double-right margin"></i><a href="">消费记录</a>&nbsp;&nbsp;&nbsp;&nbsp;
-                <i style="color:#4280cb" class="fa fa-angle-double-right margin"></i><a href="">充值记录</a>
-              </li>
-            </ul>
-          </li>
-          <!--<li class="ticket">-->
-            <!--<a href="" class="nav-t">工单<h id="ticketsNum" class="badge"></h></a>-->
-            <!--<ul class="nav-tickets">-->
+            <a href="/container" class="nav-t">服务中心</a>
+            <!--<ul class="nav-consume">-->
               <!--<div class="rows"></div>-->
-              <!--<li class="only">当前未解决的工单<a href=""><span class="numbers">0</span>个</a></li>-->
-              <!--<li class="last">-->
-                <!--<a href=""><i class="fa_create_icon"></i>新建工单</a>-->
-                <!--<a href="" class="my_ticket"><i class="fa_my_ticket"></i>我的工单</a>-->
+              <!--<li class="ont-top">-->
+                <!--<span class="pull-left">账户余额：</span>-->
+                <!--<a id="refreshBalance" class="pull-right" href="" title="刷新余额"><i class="fa fa-refresh margin"></i></a>-->
+                <!--<a href="" class="pull-right"><i class="fa fa-yen margin"></i><span id="balcance"></span></a>-->
+              <!--</li>-->
+              <!--<li class="bi_primary"><a href="">现在充值</a></li>-->
+              <!--<li>-->
+                <!--<i style="color:#4280cb" class="fa fa-angle-double-right margin"></i><a href="">消费记录</a>&nbsp;&nbsp;&nbsp;&nbsp;-->
+                <!--<i style="color:#4280cb" class="fa fa-angle-double-right margin"></i><a href="">充值记录</a>-->
               <!--</li>-->
             <!--</ul>-->
-          <!--</li>-->
+          </li>
         </ul>
       </div>
     </div>
   </div>
 </header>
 
-<div class="page-sidebar">
-  <div class="log">
-    <a href="/" target="_blank" class="zerocloud">
-      <span class="logo"></span>
-    </a>
-  </div>
-  <ul class="nav-menu">
-    <li class="nav-li">
-      <a href="/servesCenter">
-        <i class="nav-icon-dashboard nav-icon"></i>
-        <span class="nav-title">服务中心</span>
-      </a>
-    </li>
-    <!-- container -->
-    <li class="nav-li  live-hover">
-      <a href="/container">
-        <i class="nav-icon-container nav-icon"></i>
-        <span class="nav-title">容器服务</span>
-      </a>
-    </li>
-    <li class="nav-li">
-      <a href="/build">
-        <i class="nav-icon-build nav-icon"></i>
-        <span class="nav-title">代码构建</span>
-      </a>
-    </li>
-    <li class="nav-li">
-      <a href="/square">
-        <i class="nav-icon-speed nav-icon"></i>
-        <span class="nav-title">服务广场</span>
-      </a>
-    </li>
-    <li class="nav-li">
-      <a href="">
-        <i class="nav-icon-extend nav-icon"></i>
-        <span class="nav-title">服务整合</span>
-      </a>
-    </li>
-  </ul>
+<div class="navbar-fixed-bottom" style="display: none">
+  <section class="screen2">
+    <div class="container" style="width:916px">
+      <div class="col-xs-12">
+        <ul class="porduct">
+          <li>产品</li>
+          <li>容器服务</li>
+          <li>代码构建</li>
+        </ul>
+        <ul class="solutions">
+          <li>社交媒体</li>
+          <li>微博</li>
+          <li>Facebook</li>
+        </ul>
+        <ul class="resoure">
+          <li>资源</li>
+          <li>价格</li>
+          <li>文档</li>
+        </ul>
+        <ul class="about">
+          <li>关于我们</li>
+          <li>关于我们</li>
+          <li>加入我们</li>
+        </ul>
+        <ul class="contactus" style="width:222px">
+          <li>联系方式</li>
+          <li>邮箱：zerocloud@zerosky.cn</li>
+          <li>电话：020-85475121</li>
+          <li>地址：广州市天河区建工路9号308</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  <section class="screen3">
+    <p>广州市零空信息技术有限公司Copyright © 2016 版权所有</p>
+    <p>粤ICP备15024287号-2</p>
+  </section>
 </div>

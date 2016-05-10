@@ -1,15 +1,5 @@
-<div class="page-container" style="margin-left: 200px;">
+<div class="page-container">
   <article>
-    <div class="contentTitle">
-      <div class="dbserver">
-        <i class="fa_home"></i>
-        <a href="/servesCenter" class="go"><span>服务中心</span></a>
-        <i class="fa fa-angle-right fa_r"></i>
-        <a class="go" href="/container">容器服务</a>
-        <i class="fa fa-angle-right fa_r"></i>
-        <a class="goback page-in">创建服务</a>
-      </div>
-    </div>
     <div id="home-main" class="modalCrealApp" style="background:#fff;min-height:100%;">
       <div class="steps-main">
         <div class="progre">
@@ -33,28 +23,48 @@
 
           <!--创建页面第一部分-->
           <div class="host_step1">
-            <section class="info-class">
-                <span class="search container-search" style="margin:0;min-width: 230px;float:right;">
-                  <div class="search-group-inner">
-                    <input type="text" id="search-img" placeholder="搜索镜像" style="width:225px;height:36px;">
-                    <button type="submit" class="btn btn-primary btn-send" style="height:36px;line-height:22px;position: absolute;top:0px;right: 0;">搜索</button>
-                  </div>
-                </span>
-            </section>
-
+            <div class="progre">
+              <div>
+                <div class="choose radius_step action select-img" style="width: 33.33%;cursor:pointer">
+                  推荐镜像
+                </div>
+                <div class="choose radius_step" style="width: 33.33%;cursor:pointer">
+                  我的镜像
+                </div>
+                <div class="choose radius_step" style="width: 33.33%;cursor:pointer">
+                  镜像仓库
+                </div>
+                <div class="hide">
+                  <span class="STEPS"></span>
+                  <span class="STEPS"></span>
+                  <span class="STEPS"></span>
+                </div>
+              </div>
+            </div>
             <ul class="dialog">
               <li class="blankApp">
-                <!-- <span>操作系统</span> -->
                 <ul class="select_ul" style="width:100%;">
-                  <!-- <li id="defaultImages" class="list-wrapper">
-                    <div class="loadimages"><i>正在加载...</i></div>
-                  </li> -->
-                  <li id="systemImages" class="list-wrapper">
-
-                  </li>
-                  <li id="searchImages" class="list-wrapper hideimage">
-
-                  </li>
+                  <li id="systemImages" class="list-wrapper"></li>
+                </ul>
+              </li>
+              <li class="blankApp hidden">
+                <div class="create-my-image">
+                  <button class="btn btn-info">创建镜像</button>
+                </div>
+              </li>
+              <li class="blankApp hidden">
+                <section class="info-class" style="text-align: center">
+                  <span class="search container-search" style="margin:0;width: 250px">
+                  <div class="search-group-inner">
+                    <input type="text" id="search-img" placeholder="搜索镜像" style="width:225px;height:36px;">
+                    <button type="submit" class="btn btn-primary btn-send"
+                            style="height:36px;line-height:22px;position: absolute;top:0px;right: 0;">搜索
+                    </button>
+                  </div>
+                  </span>
+                </section>
+                <ul class="select_ul" style="width:100%;margin-top: 30px">
+                  <li id="searchImages" class="list-wrapper hideimage"></li>
                 </ul>
               </li>
             </ul>

@@ -17,7 +17,8 @@ exports.listByUid = function (req, res, next) {
                 if (!err) {
                     res.json(result);
                 } else {
-                    next(err);
+                    var listresult = '0';
+                    res.json(listresult);
                 }
             } catch (e) {
                 next(e);

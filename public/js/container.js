@@ -101,6 +101,14 @@
         $('.createPadding .go_backs02').addClass('hide');
         $('.createPadding .go_backs01').removeClass('hide');
     });
+
+    //选择镜像来源
+    $('.choose').click(function(){
+        $(this).addClass('action').siblings().removeClass('action');
+        var index = $(this).index();
+        $('.dialog .blankApp').eq(index).removeClass('hidden').siblings().addClass('hidden');
+    });
+
     //获取本地镜像
     $.ajax({
         url: '/image/list/label/kind',
@@ -108,9 +116,11 @@
     }).done(function(resp){
         var images = resp.images;
         //console.log(images);
+        var cDate = new Date();
+        var date = formatDate(cDate);
         for(var i in images){
             var imageDiv;
-            imageDiv = $('<div class="image-item"><span class="img_icon span2"><img src="'+images[i].icon+'"></span><span class="span6 type" type="runtime"><div class="list-item-description"><div class="name h4">'+images[i].name+'<a title="点击查看镜像详情" target="_blank" href="'+images[i].detail+'"><i class="fa fa-external-link-square"></i></a></div><span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">'+images[i].tag+'</span></div></span><span class="span2"><div class="list-item-description"><span class="pull-deploy btn btn-primary">部署<i class="fa fa-arrow-circle-o-right margin fa-lg"></i></span></div></span><input class="container-name" type="hidden" value="'+images[i].name+'"></div>');
+            imageDiv = $('<div class="image-item col-xs-6 col-sm-6"><span class="img_icon span5"><img src="'+images[i].icon+'"></span><span class="span5 type" type="runtime"><div class="list-item-description"><div class="name h4">镜像名称：'+images[i].name+'<a title="点击查看镜像详情" target="_blank" href="'+images[i].detail+'"><i class="fa fa-external-link-square"></i></a></div><span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">版本：'+images[i].tag+'</span><span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">'+date+'</span></div></span><span class="span2"><div class="list-item-description"><span class="pull-deploy btn btn-primary">部署<i class="fa fa-arrow-circle-o-right margin fa-lg"></i></span></div></span><input class="container-name" type="hidden" value="'+images[i].name+'"></div>');
 
             imageDiv.appendTo($('#systemImages'));
 
@@ -119,12 +129,11 @@
 
     //搜索dockerhub镜像
     $('button[type="submit"]').click(function(){
-        $('#systemImages').hide().siblings().show();
-
         var searchName = $('#search-img').val();
         if(searchName == ''){
-            alert('请输入您想要搜索的镜像名称');
+            layer.msg('请输入您想要搜索的镜像名称');
         }else {
+            $('#searchImages').removeClass('hideimage');
             $('#searchImages').html('<i class="fa_createing"></i><span style="color: #FF9C00">搜索中<img class="margin" src="/images/loading4.gif"></span>');
             $.ajax({
                 url: '/image/search/'+searchName,
@@ -135,10 +144,13 @@
                     $('#searchImages').html('<div id="nodata"><i>未找到您搜索的镜像，请稍后重试...</i></div>');
                 }else if(resp.result == true){
                     $('#searchImages').html('');
+                    var cDate = new Date();
+                    var date = formatDate(cDate);
                     var images = resp.data;
                     for(var i in images){
                         var imageDiv;
-                        imageDiv = $('<div class="image-item"><span class="img_icon span2"><img src="/images/blue-logo.png"></span><span class="span6 type" type="runtime"><div class="list-item-description"><div class="name h4">'+images[i].name+'<a title="点击查看镜像详情" target="_blank" href=""></a></div><span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">'+images[i].description+'</span></div></span><span class="span2"><div class="list-item-description"><span class="pull-deploy btn btn-primary">部署<i class="fa fa-arrow-circle-o-right margin fa-lg"></i></span></div></span><input class="container-name" type="hidden" value="'+images[i].name+'"></div>');
+
+                        imageDiv = $('<div class="image-item col-xs-6 col-sm-6"><span class="img_icon span5"><img src="/images/blue-large.png"></span><span class="span5 type" type="runtime"><div class="list-item-description"><div class="name h4">镜像名称：'+images[i].name+'<a title="点击查看镜像详情" target="_blank"><i class="fa fa-external-link-square"></i></a></div><span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">描述：'+images[i].description+'</span><span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">'+date+'</span></div></span><span class="span2"><div class="list-item-description"><span class="pull-deploy btn btn-primary">部署<i class="fa fa-arrow-circle-o-right margin fa-lg"></i></span></div></span><input class="container-name" type="hidden" value="'+images[i].name+'"></div>');
 
                         imageDiv.appendTo($('#searchImages'));
                     }
@@ -148,58 +160,79 @@
         }
     });
 
-    //添加已创建容器列表
+    $('#dbtable').html('<img style="position:absolute;top:40%;left:4%" src="/images/loading-little.gif">');
+
+    //添加已创建服务列表
     $.ajax({
         url: '/container/list',
         type: 'GET'
 
     }).done(function(resp){
         var servers = resp.servers;
-        //console.log(servers);
-        for(var i in servers){
-            //console.log(servers[i].address.ip);
-            var time = new Date(servers[i].createtime);
-            var date = formatDate(time);
-            var status = "";
-            var deleteFlag = servers[i].deleteFlag;
-            if(deleteFlag == '1'){
+        console.log(servers);
+        if(resp == 0){
+            $('#dbtable').html('');
+            //var tips = '<div id="nodata" class="nodata" style="display: block;padding-top:20px">服务列表加载失败，请刷新页面</div>';
+            var tips = '<div id="nodata" class="nodata" style="display: block;padding-top:20px">提示：点击上方"+创建"按钮创建容器应用。</div><div style="color:#FF9900;margin: 15px 30px;"><i class="fa fa-hand-o-right"></i> Tips: <span style="color:#FF9900;font-size:20px">您当前还未创建服务，您可以新建一个服务</span></div>';
+            $('#dbtable').html(tips);
+        }else{
+            $('#dbtable').html('');
+            for(var i in servers){
+                //console.log(servers[i].address.ip);
+                var time = new Date(servers[i].createtime);
+                var date = formatDate(time);
+                var status = "";
+                var deleteFlag = servers[i].deleteFlag;
+                if(deleteFlag == '1'){
 
-            }else{
-                switch (servers[i].status)
-                {
-                    //1.启动中，2.运行中，3.停止中，4.已停止,5.启动失败,6.停止失败
-                    case 1:
-                        status = "启动中";
-                        break;
-                    case 2:
-                        status = "运行中";
-                        break;
-                    case 3:
-                        status = "停止中";
-                        break;
-                    case 4:
-                        status = "已停止";
-                        break;
-                    case 5:
-                        status = "启动失败";
-                        break;
-                    case 6:
-                        status = "停止失败";
-                        break;
+                }else{
+                    switch (servers[i].status)
+                    {
+                        //1.启动中，2.运行中，3.停止中，4.已停止,5.启动失败,6.停止失败
+                        case 1:
+                            status = "启动中";
+                            break;
+                        case 2:
+                            status = "运行中";
+                            break;
+                        case 3:
+                            status = "停止中";
+                            break;
+                        case 4:
+                            status = "已停止";
+                            break;
+                        case 5:
+                            status = "启动失败";
+                            break;
+                        case 6:
+                            status = "停止失败";
+                            break;
+                    }
+
+                    var imageName;
+                    if(servers[i].image == 'alexwhen/docker-2048'){
+                        imageName = '2048';
+                    }else if(servers[i].image == 'zerosky/emt'){
+                        imageName = 'emt';
+                    }
+
+              var dbtr = $('<div class="image-item col-xs-6 col-sm-6"> <span style="position: absolute;top: 25px;right: 25px;"> <input type="checkbox" name="chkItem" value="'+servers[i].name+'" aria-expanded="false" val="'+servers[i].id+'" status="'+servers[i].status+'"> </span> <span class="img_icon span4" style="text-align: inherit;width:34%"> <img src="/images/image/'+imageName+'.png"> </span> <span class="span6 type" type="runtime"> <div class="list-item-description"> <div class="name h4"> 服务名称：'+servers[i].name+' </div> <span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"> 镜像名：'+servers[i].image+' </span> <span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"> 状态：'+status+' </span> <span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"> 地址：<a  target="_blank" href="http://'+servers[i].address+'" class="cluster_mirrer_name">'+servers[i].address+'</a><span class="span9">查看二维码：<a target="'+servers[i].address+'" class="showCode" title="点击查看二维码" style="cursor: pointer"><i class="fa fa-external-link-square"></i></a></span> </span> </div> </span> <span class="span2"><div class="list-item-description" style="margin-top: 14px"> <a class="btn btn-info" href="/detail/'+servers[i].id+'">查看服务详情</a> </div> </span></div>');
+
+                    dbtr.appendTo($('#dbtable'));
+
                 }
-                var dbtr=$('<tr class="show-tr"><td><div class="contents-table"><table class="table"><tr class="clusterId">\
-        <td style="width:5%;text-indent: 30px;"><input type="checkbox" name="chkItem" value="'+servers[i].name+'" aria-expanded="false" val="'+servers[i].id+'" status="'+servers[i].status+'"/></td>\
-        <td style="width:20%;white-space:nowrap;"><a href="/detail/'+servers[i].id+'" class="cluster_mirrer_name">' + servers[i].name + '</a></td>\
-        <td style="width:10%" id="'+servers[i].name+'status">'+status+'</td>\
-        <td style="width:20%;"><span class="cluster_mirrer">' + servers[i].image + '</span></td>\
-        <td style="width:34%" id="'+servers[i].name+'id"><a  target="_blank" href="http://'+servers[i].address+'" class="cluster_mirrer_name">'+servers[i].address+'</a>&nbsp;<a target="'+servers[i].address+'" class="showCode" title="点击查看二维码" style="cursor: pointer"><i class="fa fa-external-link-square"></i></a></td>\
-        <td style="width:10%" class="tdTimeStrap">'+date+'<i class="fa_time"></i><span></span></td></tr></td></div></table></tr>');
-
-                dbtr.appendTo($('#dbtable'));
-
             }
         }
     });
+
+    //选择服务
+    //$("#dbtable").on('click','.image-item',function(){
+    //    if($(this).find('input[name="chkItem"]').prop('checked') == true){
+    //        $(this).find('input[name="chkItem"]').prop('checked',false);
+    //    }else if($(this).find('input[name="chkItem"]').prop('checked') == false){
+    //        $(this).find('input[name="chkItem"]').prop('checked',true);
+    //    }
+    //});
 
     //显示二维码
     $("#dbtable").on('click','.showCode',function(){
@@ -278,7 +311,7 @@
     });
 
     //单选chkItem
-    $('#iframe').on('click','input[name="chkItem"]',function(){
+    $('#dbtable').on('click','input[name="chkItem"]',function(){
         if($(this).prop('checked') == true){
             var status = $(this).attr('status');
             if(status == '1' || status =='2'){

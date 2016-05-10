@@ -1,15 +1,14 @@
-<div class="page-container" style="margin-left: 200px;">
+<div class="page-container">
   <article>
     <div class="rightNav">
-      <div class="contentTitle">
-        <div class="dbserver">
-          <i class="fa_home"></i>
-          <a href="/servesCenter" class="go" data-permalink=""><span>服务中心</span></a>
-          <i class="fa fa-angle-right fa_r"></i>
-          <a href="/container" class="page-in">容器服务</a>
-        </div>
-      </div>
       <div id="iframe">
+        <aside class="aside-info">
+          <div class="main-info">
+            <h3>欢迎来到服务中心</h3>
+            <!--<h4>在这里，您可以点击创建按钮进行创建一个新的服务</h4>-->
+            这里是服务中心,中心里汇聚了您创建的所有服务的详情信息，当然，您也可以创建一个新的服务
+          </div>
+        </aside>
         <div class="caption dropdown">
           <a href="/container" id="refreshDB"><i class="fa_refresh"></i></a>
           <a class="btn create pushContaienrs"><i class="fa_btn_plus"></i><span>创建</span></a>
@@ -42,33 +41,34 @@
             <i class="fa fa-search" id="searchs"></i>
           </div>
         </div>
-        <div class="aside-info">服务状态</div>
-        <div class="content">
+        <div class="aside-info">已创建的服务</div>
+        <div class="content" style="position:relative;padding-top: 30px">
           <table class="table">
-            <thead>
-            <tr>
-              <th>
-                <div class="table-heade">
-                  <table class="table">
-                    <thead style="background: #F5F6F6;">
-                    <tr><th style="width:5%;text-indent: 30px;"><input id="btnCheckAll" type="checkbox" aria-expanded="false"></th>
-                      <th style="width:20%;padding-left: 5px;">名 称</th>
-                      <th style="width:10%;text-indent: 8px;">运行状态</th>
-                      <th style="width:20%;">镜 像</th>
+            <!--<thead>-->
+            <!--<tr>-->
+              <!--<th>-->
+                <!--<div class="table-heade">-->
+                  <!--<table class="table">-->
+                    <!--<thead style="background: #F5F6F6;">-->
+                    <!--<tr><th style="width:5%;text-indent: 30px;"><input id="btnCheckAll" type="checkbox" aria-expanded="false"></th>-->
+                      <!--<th style="width:20%;padding-left: 5px;">名 称</th>-->
+                      <!--<th style="width:10%;text-indent: 8px;">运行状态</th>-->
+                      <!--<th style="width:20%;">镜 像</th>-->
 
-                      <th style="width:34%">服务地址
-                        <a role="button" data-trigger="focus" tabindex="0" data-container="article" data-toggle="popover" data-placement="bottom" class="hint-info" data-original-title="" title="">
-                          <!--<i class="fa fa-question-circle"></i>-->
-                        </a>
-                      </th>
-                      <th style="width:10%">创建于</th>
-                    </tr></thead>
-                  </table>
-                </div>
-              </th>
-            </tr>
-            </thead>
-            <tbody id="dbtable" class="tenx_district3">
+                      <!--<th style="width:34%">服务地址-->
+                        <!--<a role="button" data-trigger="focus" tabindex="0" data-container="article" data-toggle="popover" data-placement="bottom" class="hint-info" data-original-title="" title="">-->
+                          <!--&lt;!&ndash;<i class="fa fa-question-circle"></i>&ndash;&gt;-->
+                        <!--</a>-->
+                      <!--</th>-->
+                      <!--<th style="width:10%">创建于</th>-->
+                    <!--</tr>-->
+                    <!--</thead>-->
+                  <!--</table>-->
+                <!--</div>-->
+              <!--</th>-->
+            <!--</tr>-->
+            <!--</thead>-->
+            <tbody id="dbtable" style="margin-top: 30px">
 
             </tbody>
           </table>

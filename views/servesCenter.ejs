@@ -3,9 +3,11 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="UTF-8">
+    <link rel="icon" type="image/z-icon" href="/images/favicon.ico">
     <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css?rev=0.1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/stylesheets/dashboard.css?rev=0.1.0">
+    <link id="console_main_css" rel="stylesheet" href="/stylesheets/container/main.css?rev=0.1.0">
     <script src="/jquery/dist/jquery.min.js"></script>
     <title>零云 - 服务中心</title>
   </head>
@@ -13,27 +15,42 @@
 
     <% include header.ejs %>
 
-    <div class="page-container" style="margin-left: 200px;">
-      <article>
-        <div class="rightNav">
-          <div class="contentTitle">
-            <div class="dbserver">
-              <i class="fa_home"></i>
-              <a href="" class="go" data-permalink=""><span class="page-in">服务中心</span></a>
 
+
+    <div class="part01">
+      <div class="page-container">
+        <article>
+          <div class="rightNav">
+            <div id="iframe">
+              <aside class="aside-info">
+                <div class="main-info">
+                  <h3>欢迎来到服务中心</h3>
+                  <!--<h4>在这里，您可以点击创建按钮进行创建一个新的服务</h4>-->
+                  这里是服务中心,中心里汇聚了您创建的所有服务的详情信息，当然，您也可以创建一个新的服务
+                </div>
+                <div class="caption dropdown">
+                  <a class="btn create pushContaienrs" style="margin-left: 20px"><i class="fa_btn_plus"></i><span>创建</span>
+                  </a>
+                  <div class="searchs">
+                    <form class="search-group-inner">
+                      <input class="start-search" type="text" placeholder="搜索">
+                    </form>
+                    <i class="fa fa-search" id="searchs"></i>
+                  </div>
+                </div>
+                <div class="content">
+
+                </div>
+
+              </aside>
             </div>
           </div>
-          <div id="iframe">
+        </article>
+      </div>
+    </div>
 
-          </div>
-        </div>
-      </article>
-
-
-
-
-
-
+    <div class="part02" style="display: none">
+      <% include create.ejs %>
     </div>
 
   <script src="/js/header.js"></script>

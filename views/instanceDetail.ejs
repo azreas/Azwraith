@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css?rev=0.1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <!--浏览器窗口图标-->
-    <!--<link rel="icon" type="image/x-icon" href="/images/favicon.ico">-->
+    <link rel="icon" type="image/z-icon" href="/images/favicon.ico">
     <link rel="stylesheet" href="/stylesheets/dashboard.css?rev=0.1.0">
     <script src="/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="/highcharts/highcharts.js"></script>
@@ -45,20 +45,12 @@
 
 <% include header.ejs %>
 
-<div class="page-container" style="margin-left: 200px">
+<div class="page-container container">
     <div class="container-right">
         <div class="contentTitle">
             <div class="dbserver">
-                <i class="fa_home"></i>
-                <a class="go" href="/servesCenter">服务中心</a>
-                <i class="fa fa-angle-right fa_r"></i>
-                <a class="go" href="/container">容器服务</a>
-                <i class="fa fa-angle-right fa_r"></i>
-                <a class="go page-in" href="">实例详情</a>
             </div>
         </div>
-
-
         <section class="detail-succeed">
             <div class="icon-img">
                 <div class="type-icon">
@@ -127,12 +119,11 @@
                     </thead>
                     <tbody class="BORDER">
                     <tr>
-                        <td> 带宽：10MB（公有网络）</td>
-                        <td> 数据盘：10GB</td>
-                    </tr>
-                    <tr>
                         <td> cpu：<%= cpu %></td>
                         <td> 内存：<%= memory %></td>
+                    </tr>
+                    <tr>
+                        <td> 带宽：10MB（公有网络）</td>
                     </tr>
                     </tbody>
                 </table>
@@ -148,21 +139,6 @@
                     <tr>
                         <td> 变量名</td>
                         <td> 变量值</td>
-                    </tr>
-
-                    </tbody>
-                </table>
-                <table class="table basicInfo w50">
-                    <thead>
-                    <tr>
-                        <th>数据存储卷</th>
-                        <th>&nbsp;</th>
-                    </tr>
-                    </thead>
-                    <tbody class="BORDER">
-
-                    <tr>
-                        <td colspan="2">无</td>
                     </tr>
 
                     </tbody>

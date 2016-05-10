@@ -136,7 +136,7 @@
         url:'/container/get/'+containerid,
         type:'get'
     }).done(function(resp){
-        //console.log(resp);
+        console.log(resp);
         //console.log(resp.iamgeName);
         var update = new Date(resp.updateTime);
         var updateTime = formatDate(update);
