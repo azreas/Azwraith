@@ -38,9 +38,9 @@ var dockerConfig = {
     /*host : '192.168.1.241',
      port : 3375*//*,
      timeout: 6000*/
-    host: '192.168.1.243',
-    port: 3375,
-    domain: "zerocloud.club"
+    host: process.env.swarmhost || '192.168.1.243',
+    port: process.env.swarmport || 3375,
+    domain: process.env.domain || "zerocloud.club"
 }
 /********************* docker end *********************/
 
