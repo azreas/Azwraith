@@ -31,7 +31,7 @@ exports.create = function (token, serveConfig, callback) {
             userDao.getIdByToken(token, function (err, result) {
                 try {
                     if (!err) {
-                        logger.debug(moment().format('h:mm:ss') + '   获取用户ID成功');
+                        logger.debug(moment().format('h:mm:ss') + '   根据token  ' + token + '  获取用户id');
                         serveConfig.owner = result.id;
                         waterfallCallback(null);//触发下一步
                     } else {
@@ -144,6 +144,28 @@ exports.update = function (resourceParams, callback) {
     // 若不变，则直接更新配置（根据服务配置，启动新实例——添加实例）
     try {
         async.waterfall([
+            function (waterfallCallback) {//保存资源调整事件
+                var containerEventConfig = {
+                    appid: resourceParams.id,
+                    event: "资源调整",
+                    titme: new Date().getTime(),
+                    script: "update app resource：" + resourceParams.id
+                }
+                serveDao.saveEvent(containerEventConfig, function (err, result) {
+                    try {
+                        if (!err) {
+                            logger.debug(moment().format('h:mm:ss') + '   存储服务事件');
+                            waterfallCallback(null);//触发下一步
+                        } else {
+                            logger.info('存储服务事件失败:' + err);
+                            waterfallCallback(err);
+                        }
+                    } catch (e) {
+                        logger.info('存储服务事件失败:' + e);
+                        waterfallCallback('存储服务事件失败');
+                    }
+                });
+            },
             function (waterfallCallback) { // 根据服务id获取服务信息
                 serveDao.get(resourceParams.id, function (err, data) {
                     try {
@@ -334,8 +356,8 @@ exports.remove = function (appId, callback) {
                 try {
                     if (!err) {
                         logger.debug('获取网络id');
-                        var app = result.apps[0];
-                        var networkid = result.apps[0].networkid;
+                        var app = result.app;
+                        var networkid = result.app.networkid;
                         // 删除网络
                         networkDao.remove(networkid, function (error, data) {
                             try {

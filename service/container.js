@@ -425,7 +425,13 @@ function removeByList(containeridList, callback) {
         count++;
         containerDao.remove(containerid, function (err, reselt) {
             if (!err) {
-                containerDao.delete(containerid);//删除数据库记录
+                //删除数据库记录
+                containerDao.delete(containerid, function (err, data) {
+                    if (!err) {
+                    } else {
+                        logger.info('删除容器数据库记录失败 ' + err);
+                    }
+                });
                 logger.debug("删除容器 " + containerid + " 成功");
                 calldelback(null, "删除容器 " + containerid + "成功");
             }

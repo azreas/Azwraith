@@ -148,6 +148,7 @@ exports.update = function (req, res, next) {
                         containerService.create(resourceParams.id, null, function (error, data) {
                             try {
                                 if (!error) {
+                                    
                                     logger.debug(data);
                                     res.json({result: true});
                                 } else {
