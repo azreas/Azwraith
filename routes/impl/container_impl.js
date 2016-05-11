@@ -1545,7 +1545,7 @@ exports.start = function (req, res) {
                 httpUtil.get({
                     host: dockerservice.host,
                     port: dockerservice.port,
-                    path: "/v1/containers/" + req.params.id
+                    path: "/v1/container/list/" + req.params.id
                 }, function (result) {
                     try {
                         console.log("get containers result ---> " + result);
@@ -1850,7 +1850,7 @@ exports.stop = function (req, res) {
                         if (result.result !== true) {
                             throw new Error(result.info.script);
                         }
-                        app = result.apps[0];
+                        app = result.app;
                         delete app._id;
                         callback(null); // 触发下一步
                     } catch (e) {
@@ -1861,7 +1861,7 @@ exports.stop = function (req, res) {
                 httpUtil.get({
                     host: dockerservice.host,
                     port: dockerservice.port,
-                    path: "/v1/containers/" + req.params.id
+                    path: "/v1/container/list/" + req.params.id
                 }, function (result) {
                     try {
                         console.log("get containers result ---> " + result);
