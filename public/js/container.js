@@ -114,7 +114,7 @@
         url: '/image/list/label/kind',
         type: 'GET'
     }).done(function(resp){
-        var images = resp.images;
+        var images = resp.data;
         //console.log(images);
         var cDate = new Date();
         var date = formatDate(cDate);
@@ -168,7 +168,7 @@
         type: 'GET'
 
     }).done(function(resp){
-        var servers = resp.servers;
+        var servers = resp.apps;
         console.log(servers);
         if(resp == 0){
             $('#dbtable').html('');

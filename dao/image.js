@@ -5,22 +5,25 @@
 
 
 var rest = require('restler');
+var http = require('http');
 var dockerservice = require('../settings').dockerservice;
-
+var dockerConfig = require('../settings').dockerConfig;
+var logger = require("../modules/log/log").logger();
 
 /**
- * 查询全部镜像
+ * 根据条件查询镜像 （数据库）
+ * @param queryParameters
  * @param callback
  */
-exports.listAll = function (callback) {
-    rest.get('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/image').on('complete', function (data, response) {
-        try {
-            if (data.result !== true) {
-                throw new Error(data.info.script);
-            }
-        } catch (e) {
-            return callback(e.message, data);
-        }
+exports.list = function (queryParameters, callback) {
+    rest.get('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/image?' + queryParameters).on('complete', function (data, response) {
+        // try {
+        //     if (data.result !== true) {
+        //         throw new Error(data.info.script);
+        //     }
+        // } catch (e) {
+        //     return callback(e.message, data);
+        // }
         return callback(null, data);
     });
 }
@@ -31,17 +34,10 @@ exports.listAll = function (callback) {
  * @param callback
  */
 exports.inspect = function (imagesName, callback) {
-    rest.get('http://' + dockerapitest.host + ':' + dockerapitest.port + '/images/' + imagesName + '/json').on('complete', function (data, response) {
-        if (result instanceof Error) {
-            console.log('Error:', result.message);
-            this.retry(5000); // try again after 5 sec
-        } else {
-            console.log(response.statusCode);
-            console.log(result);
-        }
+    rest.get('http://' + dockerConfig.host + ':' + dockerConfig.port + '/images/' + imagesName + '/json').on('complete', function (data, response) {
         try {
             if (response.statusCode === 200) {
-                return callback(null, 200);
+                return callback(null, data);
             } else {
                 return callback(response.statusCode);
             }
@@ -52,25 +48,58 @@ exports.inspect = function (imagesName, callback) {
 }
 
 
-
-
-exports.pullImage = function (imagesName, callback) {
-    rest.get('http://' + dockerapitest.host + ':' + dockerapitest.port + '/images/' + imagesName + '/json').on('complete', function (data, response) {
-        if (result instanceof Error) {
-            console.log('Error:', result.message);
-            this.retry(5000); // try again after 5 sec
-        } else {
-            console.log(response.statusCode);
-            console.log(result);
+/**
+ * 从DockerHub 拉取镜像
+ * @param imagesName
+ * @param callback(err,data)  err: 1-拉取失败
+ */
+exports.pullImage = function (imageName, tag, callback) {
+    var options = {
+        hostname: dockerConfig.host,
+        port: 3375,
+        path: '/images/create?fromImage=' + imageName + '&tag=' + tag,
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
         }
-        try {
-            if (response.statusCode === 200) {
-                return callback(null, 200);
-            } else {
-                return callback(response.statusCode);
-            }
-        } catch (e) {
-            return callback(e);
+    };
+    var req = http.request(options, function (res) {
+        logger.debug('pull image STATUS: ' + res.statusCode);
+        res.setEncoding('utf8');
+        if (res.statusCode === 200) {
+            var nodeCount = 0;//记录节点数
+            var pullSuccessCount = 0;//记录镜像拉取成功数
+            var nodeID = [];//节点ID
+            var pullStatus = false;//拉取状态
+            res.on('data', function (chunk) {
+                chunk = JSON.parse(chunk);
+                logger.debug(chunk);
+                // logger.debug(chunk.status);
+                //记录文件层数和对应id
+                if (chunk.status === 'Pulling ' + imageName + ':' + tag + '...') {
+                    nodeID[nodeCount] = chunk.id;
+                    nodeCount++;
+                }
+                if (chunk.status === 'Pulling ' + imageName + ':' + tag + '... : downloaded') {
+                    pullSuccessCount++;
+                }
+            });
+            res.on('end', function () {
+                if (nodeCount === pullSuccessCount) {
+                    logger.debug('拉取镜像成功');
+                    callback(null);
+                } else {
+                    logger.info('拉取镜像失败');
+                    callback(1);
+                }
+            });
+        } else {
+            callback(1);
         }
     });
+    req.on('error', function (e) {
+        logger.info('problem with request: ' + e.message);
+        callback(e.message);
+    });
+    req.end();
 }

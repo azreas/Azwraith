@@ -6,6 +6,7 @@
 
 var rest = require('restler');
 var dockerservice = require('../settings').dockerservice;
+var domainService = require('../settings').domainservice;
 
 
 /**
@@ -14,7 +15,7 @@ var dockerservice = require('../settings').dockerservice;
  * @param callback
  */
 exports.save = function (app, callback) {
-    rest.postJson('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/app', app).on('complete', function(data, response) {
+    rest.postJson('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/app', app).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
@@ -33,7 +34,7 @@ exports.save = function (app, callback) {
  * @param callback
  */
 exports.update = function (app, callback) {
-    rest.putJson('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/app', app).on('complete', function(data, response) {
+    rest.putJson('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/app', app).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
@@ -52,7 +53,7 @@ exports.update = function (app, callback) {
  * @param callback
  */
 exports.get = function (id, callback) {
-    rest.get('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/app/'+id).on('complete', function(data, response) {
+    rest.get('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/app/' + id).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
@@ -64,6 +65,23 @@ exports.get = function (id, callback) {
     });
 };
 
+/**
+ * 根据服务 id 删除服务信息
+ * @param id
+ * @param callback
+ */
+exports.delete = function (id, callback) {
+    rest.del('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/app/' + id.on('complete', function (data) {
+            try {
+                if (data.result !== true) {
+                    throw new Error(data.info.script);
+                }
+            } catch (e) {
+                return callback(e.message, data);
+            }
+            return callback(null, data);
+        }));
+};
 
 /**
  * 保存服务事件
@@ -71,7 +89,7 @@ exports.get = function (id, callback) {
  * @param callback
  */
 exports.saveEvent = function (event, callback) {
-    rest.postJson('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/appevent', event).on('complete', function(data, response) {
+    rest.postJson('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/appevent', event).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
@@ -90,7 +108,7 @@ exports.saveEvent = function (event, callback) {
  * @param callback
  */
 exports.getEvent = function (id, callback) {
-    rest.get('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/appevent/'+id).on('complete', function(data, response) {
+    rest.get('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/appevent/' + id).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
@@ -109,7 +127,9 @@ exports.getEvent = function (id, callback) {
  * @param callback
  */
 exports.createDomain = function (domain, callback) {
-    rest.postJson('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/domain', domain).on('complete', function(data, response) {
+    //todo 映射域名暂时使用JAVA版  'http://' + dockerservice.host + ':' + dockerservice.port + '/v1/domain'
+
+    rest.postJson('http://' + domainService.host + ':' + domainService.port + '/v1/domain', domain).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
@@ -128,7 +148,8 @@ exports.createDomain = function (domain, callback) {
  * @param callback
  */
 exports.distoryDomain = function (domain, callback) {
-    rest.del('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/domain/'+domain).on('complete', function(data, response) {
+    //TODO
+    rest.del('http://' + domainService.host + ':' + domainService.port + '/v1/domain/' + domain).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
@@ -147,14 +168,15 @@ exports.distoryDomain = function (domain, callback) {
  * @param callback
  */
 exports.listByUid = function (uid, callback) {
-    rest.get('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/server/'+uid).on('complete', function(data, response) {
-        try {
-            if (data.result !== true) {
-                throw new Error(data.info.script);
-            }
-        } catch (e) {
-            return callback(e.message, data);
-        }
+    rest.get('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/app?owner=' + uid).on('complete', function (data, response) {
+        //TODO 当前没有数据返回false，需要修改
+        /*        try {
+         if (data.result !== true) {
+         throw new Error(data.info.script);
+         }
+         } catch (e) {
+         return callback(e.message, data);
+         }*/
         return callback(null, data);
     });
 };
@@ -166,7 +188,7 @@ exports.listByUid = function (uid, callback) {
  * @param callback
  */
 exports.getSetmealByConflevel = function (conflevel, callback) {
-    rest.get('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/setmeal/'+conflevel).on('complete', function(data, response) {
+    rest.get('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/setmeal/' + conflevel).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);

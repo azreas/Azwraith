@@ -12,10 +12,17 @@ var imageDao = require('../dao/image');
  * @param condition
  * @param callback
  */
-exports.listByLabelAndKind = function (condition, callback) {
-    // 若 label 和 kind 为 空
-    if (!condition || (!condition.label && !condition.kind)) {
-        return imageDao.listAll(callback);
+exports.listByCondition = function (condition, callback) {
+    var queryParameters = '';
+    if (condition.type) {
+        queryParameters += 'type=' + condition.type;
     }
+    if (condition.kind) {
+        queryParameters += 'kind=' + condition.kind;
+    }
+    if (condition.label) {
+        queryParameters += 'label=' + condition.label;
+    }
+    return imageDao.list(queryParameters, callback);
     // TODO
 }

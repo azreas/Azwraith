@@ -1088,19 +1088,19 @@ exports.get = function (req, res) {
             result = JSON.parse(result);
             console.log("get result.result ---> " + result.result);
 
-            var env = result.apps[0].env;
+            var env = result.app.env;
             var envSplit = [];
-            for(var i in env){
+            for (var i in env) {
                 envSplit[i] = env[i].split("=");
             }
-            console.log("test>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+envSplit);
+            console.log("test>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + envSplit);
             // 获取成功，则返回 json 数据
             if (result.result === true) {
                 // 根据配置级别 conflevel 获取配置，然后根据配置创建容器实例
                 httpUtil.get({
                     host: dockerservice.host,
                     port: dockerservice.port,
-                    path: "/v1/setmeal/" + result.apps[0].conflevel
+                    path: "/v1/setmeal/" + result.app.conflevel
                 }, function (levelResult) {
                     try {
                         console.log("level result ---> " + levelResult);
@@ -1108,16 +1108,16 @@ exports.get = function (req, res) {
                         console.log("level result.result ---> " + levelResult.result);
                         if (levelResult.result === true) {
                             var resultData = {
-                                memory: levelResult.setneal.memory + "MB",
-                                cpu: levelResult.setneal.cpu + "个",
-                                name: result.apps[0].name,
-                                iamgeName: result.apps[0].image,
-                                image: result.apps[0].image + ':' + result.apps[0].imagetag,
-                                id: result.apps[0].id,
-                                status: result.apps[0].status,
-                                address: result.apps[0].address,
-                                updateTime: result.apps[0].updatetime,
-                                createTime: result.apps[0].createtime
+                                memory: levelResult.data.memory + "MB",
+                                cpu: levelResult.data.cpu + "个",
+                                name: result.app.name,
+                                iamgeName: result.app.image,
+                                image: result.app.image + ':' + result.app.imagetag,
+                                id: result.app.id,
+                                status: result.app.status,
+                                address: result.app.address,
+                                updateTime: result.app.updatetime,
+                                createTime: result.app.createtime
                             };
                             res.json(resultData);
                         } else {

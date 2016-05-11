@@ -6,6 +6,7 @@
 var userDao = require('../dao/user');
 var networkDao = require('../dao/network');
 var containerDao = require('../dao/container');
+var imageDao = require('../dao/image');
 var serveDao = require('../dao/serve');
 var containerService = require('../service/container');
 var async = require('async');
@@ -30,7 +31,7 @@ exports.create = function (token, serveConfig, callback) {
             userDao.getIdByToken(token, function (err, result) {
                 try {
                     if (!err) {
-                        logger.debug(moment().format('h:mm:ss') + '   获取用户ID');
+                        logger.debug(moment().format('h:mm:ss') + '   获取用户ID成功');
                         serveConfig.owner = result.id;
                         waterfallCallback(null);//触发下一步
                     } else {
@@ -46,17 +47,18 @@ exports.create = function (token, serveConfig, callback) {
             userDao.get(serveConfig.owner, function (err, result) {
                 try {
                     if (!err) {
-                        logger.debug(moment().format('h:mm:ss') + '   获取用户基本信息');
-                        var networkAndSubdomain = result.account.profile.subdomain + "." + serveConfig.name + ".app";
+                        logger.debug(moment().format('h:mm:ss') + '   获取用户基本信息成功');
+                        //todo result.people.profile.sub_domain
+                        var networkAndSubdomain = result.people.profile.sub_domain + "." + serveConfig.name + ".app";
                         serveConfig.network = networkAndSubdomain;
                         serveConfig.subdomain = networkAndSubdomain;
                         waterfallCallback(null);//触发下一步
                     } else {
-                        logger.info("根据id " + serveConfig.owner + " 获取用户基本信息失败：" + err);
+                        logger.info("根据id " + serveConfig.owner + " 获取用户基本信息失败err：" + err);
                         waterfallCallback(err);
                     }
                 } catch (e) {
-                    logger.info("根据id " + serveConfig.owner + " 获取用户基本信息失败：" + e);
+                    logger.info("根据id " + serveConfig.owner + " 获取用户基本信息失败e：" + e);
                     waterfallCallback("据id获取用户信息失败");
                 }
             });
@@ -147,7 +149,7 @@ exports.update = function (resourceParams, callback) {
                     try {
                         if (!err) {
                             logger.debug('根据服务id获取服务信息');
-                            var app = data.apps[0];
+                            var app = data.app;
                             delete app._id; // 删除 _id 属性
                             waterfallCallback(null, app);
                         } else {
@@ -252,8 +254,10 @@ exports.update = function (resourceParams, callback) {
 
 /**
  * 删除服务
- *1.获取容器列表
- *
+ * 1.获取容器列表
+ * 2.根据列表删除容器
+ * 3.删除容器相关网络
+ * 4.删除数据库
  * @param serveid
  * @param callback
  */
@@ -268,12 +272,12 @@ exports.remove = function (appId, callback) {
                         containers = result.containers;
                         waterfullCallback(null, containers);
                     } else {
-                        logger.info('获取容器列表失败err' + err);
-                        waterfullCallback('获取容器列表失败err' + err);
+                        logger.info('根据APPID' + appId + '获取容器列表失败err' + err);
+                        waterfullCallback('根据APPID' + appId + '获取容器列表失败err' + err);
                     }
                 } catch (e) {
-                    logger.info('获取容器列表失败e' + e);
-                    waterfullCallback('获取容器列表失败e' + e);
+                    logger.info('根据APPID' + appId + '获取容器列表失败e' + e);
+                    waterfullCallback('根据APPID' + appId + '获取容器列表失败e' + e);
                 }
             });
         }, function (containers, waterfullCallback) {//删除容器
@@ -356,43 +360,60 @@ exports.remove = function (appId, callback) {
                     waterfullCallback(e);
                 }
             });
-        }, function (app, waterfullCallback) {//数据库APP标记为已删除
-            var app = {
-                "id": app.id,
-                "owner": app.owner,
-                "name": app.name,
-                "image": app.image,
-                "imagetag": app.imagetag,
-                "conflevel": app.conflevel,
-                "instance": app.instance,
-                "expandPattern": app.expandPattern,
-                "command": app.command,
-                "network": app.network,
-                "networkid": app.networkid,
-                "subdomain": app.subdomain,
-                "status": app.status,
-                "createtime": app.createtime,
-                "updatetime": new Date().getTime(),
-                "deleteFlag": 1
-            };
-            serveDao.update(app, function (err, result) {
+        }, function (app, waterfullCallback) {//数据库APP删除
+            serveDao.delete(app.id, function (err) {
                 try {
                     if (!err) {
-                        logger.debug("数据库APP标记为已删除成功");
+                        logger.debug('数据库APP删除成功');
                         waterfullCallback(null);
                     } else {
-                        logger.info("数据库APP标记为已删除失败" + err);
-                        waterfullCallback("数据库APP标记为已删除失败" + err);
+                        logger.info('数据库APP删除失败err' + err);
+                        waterfullCallback('数据库APP删除失败err' + err);
                     }
                 } catch (e) {
-                    logger.info("数据库APP标记为已删除失败" + e);
-                    waterfullCallback("数据库APP标记为已删除失败" + e);
+                    logger.info('数据库APP删除失败e' + e);
+                    waterfullCallback('数据库APP删除失败e' + e);
                 }
-            });
+            })
         }
     ], function (err, result) {
-        if (err) {
-            return callback(err);
+        if (err) {//出现错误，数据库APP标记为已删除
+            logger.info('出现错误，数据库APP标记为已删除');
+            serveDao.get(appId, function (err, result) {
+                var app = result.app;
+                if (!err) {
+                    var server = {
+                        "id": app.id,
+                        "owner": app.owner,
+                        "name": app.name,
+                        "image": app.image,
+                        "imagetag": app.imagetag,
+                        "conflevel": app.conflevel,
+                        "instance": app.instance,
+                        "expandPattern": app.expandPattern,
+                        "command": app.command,
+                        "network": app.network,
+                        "networkid": app.networkid,
+                        "subdomain": app.subdomain,
+                        "status": app.status,
+                        "createtime": app.createtime,
+                        "updatetime": new Date().getTime(),
+                        "deleteFlag": 1
+                    };
+                    serveDao.update(server, function (err, result) {
+                        try {
+                            if (!err) {
+                                logger.debug("数据库APP标记为已删除成功");
+                            } else {
+                                logger.error("数据库APP标记为已删除失败" + err);
+                            }
+                        } catch (e) {
+                            logger.error("数据库APP标记为已删除失败" + e);
+                        }
+                    });
+                }
+                return callback(err);
+            });
         } else {
             return callback(null, result);
         }

@@ -8,6 +8,7 @@ var containerDao = require('../dao/container');
 var serveDao = require('../dao/serve');
 var userDao = require('../dao/user');
 var networkDao = require('../dao/network');
+var imageDao = require('../dao/image');
 var async = require("async");
 var dockerConfig = require("../settings").dockerConfig;
 var stringUtil = require("../modules/util/stringUtil");
@@ -51,7 +52,7 @@ exports.create = function (appid, creatCount, servicecallback) {
                             throw new Error(err);
                         }
                         logger.info("app result ---> " + JSON.stringify(data));
-                        app = data.apps[0];
+                        app = data.app;
                         delete app._id; // 删除 _id 属性
                     } catch (e) {
                         return callback(e); // 直接跳到返回结果函数，进行异常处理
@@ -65,16 +66,63 @@ exports.create = function (appid, creatCount, servicecallback) {
                             throw new Error(err);
                         }
                         logger.info("level result ---> " + JSON.stringify(data));
-                        level.memory = data.setneal.memory * 1024 * 1024;
-                        level.cpu = data.setneal.cpu;
+                        level.memory = data.data.memory * 1024 * 1024;
+                        level.cpu = data.data.cpu;
                     } catch (e) {
                         return callback(e); // 直接跳到返回结果函数，进行异常处理
                     }
                     callback(null); // 触发下一步
                 });
             }, function (callback) { // 检查镜像是否已存在，若不存在，则先 pull 一个
-                logger.info("检查镜像是否已存在，若不存在，则先 pull 一个 ...");
-                callback(null); // 触发下一步
+                logger.debug("检查镜像是否已存在，若不存在，则先 pull 一个 ...");
+                imageDao.inspect(app.image + ":" + app.imagetag, function (err) {
+                    if (!err) {
+                        callback(null); // 触发下一步
+                    } else {
+                        logger.debug('镜像不存在，pull镜像');
+                        var serverEventConfig = {
+                            appid: app.id,
+                            event: "拉取镜像中",
+                            titme: new Date().getTime(),
+                            script: "pull image " + app.image + ":" + app.imagetag
+                        };
+                        //保存拉取镜像事件
+                        serveDao.saveEvent(serverEventConfig, function (err, data) {
+                            try {
+                                logger.info("服务 " + app.name + " 保存" + serverEventConfig.event + "事件情况：" + data.info.script);
+                            } catch (e) {
+                                logger.info("服务 " + app.name + " 保存" + serverEventConfig.event + "事件失败：" + e);
+                            }
+                        });
+                        imageDao.pullImage(app.image, app.imagetag, function (err) {
+                            serverEventConfig.titme = new Date().getTime();
+                            if (!err) {
+                                serverEventConfig.event = "拉取镜像成功";
+                                serverEventConfig.script = "pull image " + app.image + ":" + app.imagetag + " success"
+                                serveDao.saveEvent(serverEventConfig, function (err, data) {
+                                    try {
+                                        logger.info("服务 " + app.name + " 保存" + serverEventConfig.event + "事件情况：" + data.info.script);
+                                    } catch (e) {
+                                        logger.info("服务 " + app.name + " 保存" + serverEventConfig.event + "事件失败：" + e);
+                                    }
+                                });
+                                callback(null);
+                            } else {
+                                serverEventConfig.event = "拉取镜像失败";
+                                serverEventConfig.script = "pull image " + app.image + ":" + app.imagetag + " fail"
+                                serveDao.saveEvent(serverEventConfig, function (err, data) {
+                                    try {
+                                        logger.info("服务 " + app.name + " 保存" + serverEventConfig.event + "事件情况：" + data.info.script);
+                                    } catch (e) {
+                                        logger.info("服务 " + app.name + " 保存" + serverEventConfig.event + "事件失败：" + e);
+                                    }
+                                });
+                                callback('拉取镜像失败');
+                            }
+                        });
+
+                    }
+                });
             }, function (callback) { // 循环创建容器实例
                 var containerCounter = 0; // 创建容器实例计数器
                 var containerSuccessCounter = 0; // 创建容器实例成功计数器
@@ -365,7 +413,7 @@ exports.create = function (appid, creatCount, servicecallback) {
 
 
 /**
- * 根据容器ID列表删除容器
+ * 根据容器ID列表删除容器和数据库
  * @param containeridList
  * @param callback
  */
@@ -377,6 +425,7 @@ function removeByList(containeridList, callback) {
         count++;
         containerDao.remove(containerid, function (err, reselt) {
             if (!err) {
+                containerDao.delete(containerid);//删除数据库记录
                 logger.debug("删除容器 " + containerid + " 成功");
                 calldelback(null, "删除容器 " + containerid + "成功");
             }
@@ -483,7 +532,7 @@ exports.listByUid = function (token, callback) {
             serveDao.listByUid(uid, function (err, result) {
                 try {
                     if (!err) {
-                        logger.debug(moment().format('h:mm:ss') + '   获取服务列表信息');
+                        logger.debug(moment().format('h:mm:ss') + "  根据uid " + uid + '获取服务列表信息');
                         waterfallCallback(null, result);
                     } else {
                         logger.info("根据uid " + uid + " 获取服务列表信息失败：" + err);
@@ -507,7 +556,9 @@ exports.listByUid = function (token, callback) {
 }
 
 
-
+exports.listByAppid = function (appid, callback) {
+    return containerDao.listByAppid(appid, callback)
+}
 
 
 

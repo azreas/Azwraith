@@ -29,7 +29,7 @@ module.exports = function (app) {
     router.get('/get/:id', container_impl.get);
 
     // 根据服务 id 获取所属容器实例列表
-    router.get('/list/:appid', container_impl.listByAppid);
+    router.get('/list/:appid', containerController.listByAppid);
 
     // 根据服务id获取事件列表
     router.get('/app/event/list/:id', container_impl.listAppEventById);

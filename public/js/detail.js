@@ -39,8 +39,9 @@
         url: '/container/instance/event/list/'+containerid,
         type: 'GET'
     }).done(function(resp){
-        var events = resp.appEvents;
-        //console.log(events);
+        var events = resp.appevents;
+        // console.log(events);
+        // console.log(resp);
         var html = '';
         for(var i in events){
             var titme = new Date(events[i].titme);

@@ -87,17 +87,28 @@ exports.create = function (req, res, next) {
  */
 exports.remove = function (req, res, next) {
     try {
-        serveService.remove(req.params.id, function (err, result) {
-            try {
-                if (!err) {
-                    res.json({result: true});
-                } else {
-                    res.json({result: false});
+        var ids = req.params.id.split(',');
+        var errorCount = 0;
+        for (var i in ids) {
+            console.log(ids[i]);
+            var id = ids[i];
+            serveService.remove(id, function (err, result) {
+                try {
+                    if (!err) {
+
+                    } else {
+                        errorCount++;
+                    }
+                } catch (e) {
+                    next(e);
                 }
-            } catch (e) {
-                next(e);
-            }
-        });
+            });
+        }
+        if (errorCount !== 0) {
+            res.json({result: false});
+        } else {
+            res.json({result: true});
+        }
     } catch (e) {
         next(e);
     }
@@ -112,7 +123,7 @@ exports.remove = function (req, res, next) {
 exports.update = function (req, res, next) {
     try {
         var resourceParams = {
-            id: req.body.id, // 服务 id
+            id: req.body.appid, // 服务 id
             owner: "", // 用户 id，通过 token 获取
             name: "", // 服务名称
             image: "", // 镜像名称
@@ -183,6 +194,7 @@ exports.update = function (req, res, next) {
                     }
                 } else {
                     logger.info(err);
+                    next(err);
                 }
             } catch (e) {
                 logger.info(e);

@@ -36,3 +36,26 @@ exports.listByUid = function (req, res, next) {
         // });
     }
 }
+
+/**
+ * 根据APPID获取容器列表
+ * @param req
+ * @param res
+ * @param next
+ */
+exports.listByAppid = function (req, res, next) {
+    containerService.listByAppid(req.params.appid, function (err, data) {
+        if (!err) {
+            res.json(data);
+        } else {
+            logger.info(err);
+            res.json({
+                result: false,
+                info: {
+                    code: "00000",
+                    script: "根据服务 " + req.params.appid + " 获取所属容器实例列表失败"
+                }
+            });
+        }
+    });
+}

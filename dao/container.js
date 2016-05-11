@@ -34,7 +34,7 @@ exports.save = function (container, callback) {
  * @param callback
  */
 exports.listByAppid = function (appid, callback) {
-    rest.get('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/containers/' + appid).on('complete', function (data, response) {
+    rest.get('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/container/list/' + appid).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
@@ -48,7 +48,7 @@ exports.listByAppid = function (appid, callback) {
 
 
 /**
- * 根基containerid读取container详细信息
+ * 根据containerid读取container详细信息
  * @param id
  * @param callback
  */
@@ -67,12 +67,31 @@ exports.get = function (id, callback) {
 
 
 /**
- * 更新container信息
+ * 更新数据库container信息
  * @param container
  * @param callback
  */
 exports.update = function (container, callback) {
     rest.putJson('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/container', container).on('complete', function (data, response) {
+        try {
+            if (data.result !== true) {
+                throw new Error(data.info.script);
+            }
+        } catch (e) {
+            return callback(e.message, data);
+        }
+        return callback(null, data);
+    });
+};
+
+
+/**
+ * 根据containerid删除数据库
+ * @param container
+ * @param callback
+ */
+exports.delete = function (id, callback) {
+    rest.del('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/container/' + id).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
