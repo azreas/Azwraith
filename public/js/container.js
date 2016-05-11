@@ -114,8 +114,9 @@
         url: '/image/list/label/kind',
         type: 'GET'
     }).done(function(resp){
+        //console.log(resp);
+
         var images = resp.data;
-        //console.log(images);
         var cDate = new Date();
         var date = formatDate(cDate);
         for(var i in images){
@@ -168,9 +169,10 @@
         type: 'GET'
 
     }).done(function(resp){
+        //console.log(resp);
+
         var servers = resp.apps;
-        console.log(servers);
-        if(resp == 0){
+        if(resp.info.code == 11){
             $('#dbtable').html('');
             //var tips = '<div id="nodata" class="nodata" style="display: block;padding-top:20px">服务列表加载失败，请刷新页面</div>';
             var tips = '<div id="nodata" class="nodata" style="display: block;padding-top:20px">提示：点击上方"+创建"按钮创建容器应用。</div><div style="color:#FF9900;margin: 15px 30px;"><i class="fa fa-hand-o-right"></i> Tips: <span style="color:#FF9900;font-size:20px">您当前还未创建服务，您可以新建一个服务</span></div>';
@@ -212,14 +214,19 @@
                     var imageName;
                     if(servers[i].image == 'alexwhen/docker-2048'){
                         imageName = '2048';
+                        var dbtr = $('<div class="image-item col-xs-6 col-sm-6"> <span style="position: absolute;top: 25px;right: 25px;"> <input type="checkbox" name="chkItem" value="'+servers[i].name+'" aria-expanded="false" val="'+servers[i].id+'" status="'+servers[i].status+'"> </span> <span class="img_icon span4" style="text-align: inherit;width:34%"> <img src="/images/image/'+imageName+'.png"> </span> <span class="span6 type" type="runtime"> <div class="list-item-description"> <div class="name h4"> 服务名称：'+servers[i].name+' </div> <span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"> 镜像名：'+servers[i].image+' </span> <span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"> 状态：'+status+' </span> <span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"> 地址：<a  target="_blank" href="http://'+servers[i].address+'" class="cluster_mirrer_name">'+servers[i].address+'</a><span class="span9">查看二维码：<a target="'+servers[i].address+'" class="showCode" title="点击查看二维码" style="cursor: pointer"><i class="fa fa-external-link-square"></i></a></span> </span> </div> </span> <span class="span2"><div class="list-item-description" style="margin-top: 14px"> <a class="btn btn-info" href="/detail/'+servers[i].id+'">查看服务详情</a> </div> </span></div>');
+
+                        dbtr.appendTo($('#dbtable'));
                     }else if(servers[i].image == 'zerosky/emt'){
                         imageName = 'emt';
+                        var dbtr = $('<div class="image-item col-xs-6 col-sm-6"> <span style="position: absolute;top: 25px;right: 25px;"> <input type="checkbox" name="chkItem" value="'+servers[i].name+'" aria-expanded="false" val="'+servers[i].id+'" status="'+servers[i].status+'"> </span> <span class="img_icon span4" style="text-align: inherit;width:34%"> <img src="/images/image/'+imageName+'.png"> </span> <span class="span6 type" type="runtime"> <div class="list-item-description"> <div class="name h4"> 服务名称：'+servers[i].name+' </div> <span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"> 镜像名：'+servers[i].image+' </span> <span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"> 状态：'+status+' </span> <span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"> 地址：<a  target="_blank" href="http://'+servers[i].address+'" class="cluster_mirrer_name">'+servers[i].address+'</a><span class="span9">查看二维码：<a target="'+servers[i].address+'" class="showCode" title="点击查看二维码" style="cursor: pointer"><i class="fa fa-external-link-square"></i></a></span> </span> </div> </span> <span class="span2"><div class="list-item-description" style="margin-top: 14px"> <a class="btn btn-info" href="/detail/'+servers[i].id+'">查看服务详情</a> </div> </span></div>');
+
+                        dbtr.appendTo($('#dbtable'));
+                    }else{
+                        var dbtr = $('<div class="image-item col-xs-6 col-sm-6"> <span style="position: absolute;top: 25px;right: 25px;"> <input type="checkbox" name="chkItem" value="'+servers[i].name+'" aria-expanded="false" val="'+servers[i].id+'" status="'+servers[i].status+'"> </span> <span class="img_icon span4" style="text-align: inherit;width:34%"> <img src="/images/image/'+imageName+'.svg"> </span> <span class="span6 type" type="runtime"> <div class="list-item-description"> <div class="name h4"> 服务名称：'+servers[i].name+' </div> <span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"> 镜像名：'+servers[i].image+' </span> <span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"> 状态：'+status+' </span> <span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"> 地址：<a  target="_blank" href="http://'+servers[i].address+'" class="cluster_mirrer_name">'+servers[i].address+'</a><span class="span9">查看二维码：<a target="'+servers[i].address+'" class="showCode" title="点击查看二维码" style="cursor: pointer"><i class="fa fa-external-link-square"></i></a></span> </span> </div> </span> <span class="span2"><div class="list-item-description" style="margin-top: 14px"> <a class="btn btn-info" href="/detail/'+servers[i].id+'">查看服务详情</a> </div> </span></div>');
+
+                        dbtr.appendTo($('#dbtable'));
                     }
-
-              var dbtr = $('<div class="image-item col-xs-6 col-sm-6"> <span style="position: absolute;top: 25px;right: 25px;"> <input type="checkbox" name="chkItem" value="'+servers[i].name+'" aria-expanded="false" val="'+servers[i].id+'" status="'+servers[i].status+'"> </span> <span class="img_icon span4" style="text-align: inherit;width:34%"> <img src="/images/image/'+imageName+'.png"> </span> <span class="span6 type" type="runtime"> <div class="list-item-description"> <div class="name h4"> 服务名称：'+servers[i].name+' </div> <span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"> 镜像名：'+servers[i].image+' </span> <span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"> 状态：'+status+' </span> <span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"> 地址：<a  target="_blank" href="http://'+servers[i].address+'" class="cluster_mirrer_name">'+servers[i].address+'</a><span class="span9">查看二维码：<a target="'+servers[i].address+'" class="showCode" title="点击查看二维码" style="cursor: pointer"><i class="fa fa-external-link-square"></i></a></span> </span> </div> </span> <span class="span2"><div class="list-item-description" style="margin-top: 14px"> <a class="btn btn-info" href="/detail/'+servers[i].id+'">查看服务详情</a> </div> </span></div>');
-
-                    dbtr.appendTo($('#dbtable'));
-
                 }
             }
         }
@@ -536,7 +543,7 @@
                 layer.open({
                     content: '删除成功'
                 });
-                $('input[name="chkItem"]:checked').parents('.show-tr').remove();
+                $('input[name="chkItem"]:checked').parents('.image-item').remove();
 
             }).fail(function (err) {
                 alert('删除失败，请重新删除');

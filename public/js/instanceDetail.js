@@ -267,7 +267,7 @@
                         socket.on('monitor', function(data){
                             //console.log("cpu ---> "+data.cpu);
                             //console.log("memory ---> "+data.memory);
-                            console.log("netRx ---> "+data.netRx);
+                            //console.log("netRx ---> "+data.netRx);
                             //console.log("netTx ---> "+data.netTx);
                             var x = (new Date()).getTime();
                             var y = data.netRx;

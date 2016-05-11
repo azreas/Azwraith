@@ -52,15 +52,13 @@
 
             $('.containerEvent').html(html);
         }
-
-
     });
     setInterval(function() {
         $.ajax({
             url: '/container/instance/event/list/'+containerid,
             type: 'GET'
         }).done(function(resp){
-            var events = resp.appEvents;
+            var events = resp.appevents;
             //console.log(events);
             var html = '';
             for(var i in events){
@@ -72,8 +70,6 @@
 
                 $('.containerEvent').html(html);
             }
-
-
         });
     }, 5000);
 
@@ -182,6 +178,13 @@
             $('#containerImg').attr('src','/images/image/emt.png');
         }else {
             $('#containerImg').attr('src','https://hub.docker.com/public/images/official/'+resp.iamgeName+'.png');
+        }
+        for(var k in resp.environment){
+                console.log(resp.environment[k][0]);
+                console.log(resp.environment[k][1]);
+            var elem = $('<tr class="envRow new"><td id="envName">'+resp.environment[k][0]+'</td><td id="envVal">'+resp.environment[k][1]+'</td></tr>');
+
+            elem.appendTo($('#envList .BORDER'));
         }
 
     }).fail(function(err){

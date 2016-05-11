@@ -1093,7 +1093,6 @@ exports.get = function (req, res) {
             for (var i in env) {
                 envSplit[i] = env[i].split("=");
             }
-            console.log("test>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + envSplit);
             // 获取成功，则返回 json 数据
             if (result.result === true) {
                 // 根据配置级别 conflevel 获取配置，然后根据配置创建容器实例
@@ -1117,7 +1116,8 @@ exports.get = function (req, res) {
                                 status: result.app.status,
                                 address: result.app.address,
                                 updateTime: result.app.updatetime,
-                                createTime: result.app.createtime
+                                createTime: result.app.createtime,
+                                environment: envSplit
                             };
                             res.json(resultData);
                         } else {
@@ -1208,7 +1208,7 @@ exports.getInstance = function (req, res) {
                     if (result.result !== true) {
                         throw new Error(result.info.script);
                     }
-                    var app = result.apps[0];
+                    var app = result.app; //服务相关信息
                     callback(null, app); // 触发下一步，并传 app
                 } catch (e) {
                     callback(e);
@@ -1222,7 +1222,7 @@ exports.getInstance = function (req, res) {
             }, function (levelResult) {
                 try {
                     console.log("level result ---> " + levelResult);
-                    levelResult = JSON.parse(levelResult);
+                    levelResult = JSON.parse(levelResult);  //配置级别相关信息
                     if (levelResult.result === true) {
                         // 返回 json 数据
                         callback(null, app, levelResult);
@@ -1249,7 +1249,7 @@ exports.getInstance = function (req, res) {
             }, function (containerResult) {
                 try {
                     console.log("containerResult  ---> " + containerResult);
-                    containerResult = JSON.parse(containerResult);
+                    containerResult = JSON.parse(containerResult);  //容器实例相关信息
                     if (containerResult.result === true) {
                         // 返回 json 数据
                         callback(null, app, levelresult, containerResult);
@@ -1275,10 +1275,15 @@ exports.getInstance = function (req, res) {
             }, function (containerEventResult) {
                 try {
                     console.log("containerEventResult  ---> " + containerEventResult);
-                    containerEventResult = JSON.parse(containerEventResult);
+                    containerEventResult = JSON.parse(containerEventResult);  //容器实例事件相关信息
 
                     var time = new Date(containerResult.container.createtime);
                     var date = formatDate(time);
+                    var env = app.env;
+                    var envSplit = [];
+                    for (var i in env) {
+                        envSplit[i] = env[i].split("=");
+                    }
 
                     function formatDate(now) {
                         var year = now.getFullYear();
@@ -1316,8 +1321,8 @@ exports.getInstance = function (req, res) {
                         }
                         res.render('instanceDetail', {
                             containerId: req.params.instanceid,
-                            memory: levelresult.setneal.memory + "MB",
-                            cpu: levelresult.setneal.cpu,
+                            memory: levelresult.data.memory + "MB",
+                            cpu: levelresult.data.cpu,
                             image: app.image,
                             imagetag: app.imagetag,
                             date: date,
@@ -1325,7 +1330,8 @@ exports.getInstance = function (req, res) {
                             status: status,
                             httpout: 'http://' + containerResult.container.outaddress.ip + ':' + containerResult.container.outaddress.port,
                             httpin: 'http://' + containerResult.container.inaddress.ip + ':' + containerResult.container.inaddress.port,
-                            containerEvents: containerEventResult.containerEvents
+                            containerEvents: containerEventResult.containerevents,
+                            environment: envSplit
                         });
                     } else {
                         throw new Error(result.info.script);

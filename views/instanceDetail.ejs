@@ -140,7 +140,12 @@
                         <td> 变量名</td>
                         <td> 变量值</td>
                     </tr>
-
+                    <% for(var k in environment){ %>
+                    <tr class="envRow new">
+                        <td id="envName">environment[k][0]</td>
+                        <td id="envVal">environment[k][1]</td>
+                    </tr>
+                    <% } %>
                     </tbody>
                 </table>
             </div>

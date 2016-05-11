@@ -144,11 +144,11 @@ exports.login = function (req, res, next){
                 logger.error(e);
                 // 登录失败，返回 登录页面 带着提示信息和回显信息
                 var errorCode = data.info.code;
-                if(errorCode == '11001'){
+                if(errorCode == '12'){
                     res.render("login",{
                         status: '当前邮箱未注册,请先注册后登录'
                     });
-                }else if(errorCode == '11002'){
+                }else if(errorCode == '13'){
                     res.render("login",{
                         status: '您输入的密码有误，请重新输入'
                     });
