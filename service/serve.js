@@ -188,7 +188,7 @@ exports.update = function (resourceParams, callback) {
                 resourceParams.name = app.name;
                 resourceParams.image = app.image;
                 resourceParams.imagetag = app.imagetag;
-                resourceParams.expandPattern = app.expandPattern;
+                resourceParams.autoscale = app.autoscale;
                 resourceParams.command = app.command;
                 resourceParams.env = app.env;
                 resourceParams.network = app.network;
@@ -318,38 +318,6 @@ exports.remove = function (appId, callback) {
                     waterfullCallback(e);
                 }
             });
-            // var count = 0; //删除容器计数器
-            // var delcontainerFun = function (calldelback) {//创建异步方程组
-            //     var containerid = containers[count].id;
-            //     count++;
-            //     containerDao.remove(containerid, function (err, result) {
-            //         try {
-            //             if (!err) {
-            //                 logger.debug("删除容器 " + containerid + " 成功");
-            //                 calldelback(null);
-            //             } else {
-            //                 logger.info("删除容器 " + containerid + " 失败" + err);
-            //                 calldelback("删除容器 " + containerid + "失败" + err);
-            //             }
-            //         } catch (e) {
-            //             logger.info("删除容器 " + containerid + " 失败" + e);
-            //             calldelback("删除容器 " + containerid + "失败" + e);
-            //         }
-            //     });
-            // }
-            // var delcontainerFus = [];
-            // for (var i = 0; i < containers.length; i++) {
-            //     delcontainerFus[i] = delcontainerFun;
-            // }
-            // async.parallel(//调用异步方程组
-            //     delcontainerFus
-            //     , function (err, datas) {
-            //         if (err) {
-            //             waterfullCallback(err);
-            //         } else {
-            //             waterfullCallback(null);
-            //         }
-            //     });
         }, function (waterfullCallback) {//删除容器相关网络
             //获取网络ID
             serveDao.get(appId, function (err, result) {

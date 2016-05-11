@@ -44,7 +44,7 @@ exports.create = function (req, res, next) {
             imagetag: req.body.imagetag ? req.body.imagetag : "latest", // 镜像版本
             conflevel: req.body.conflevel, // 配置级别
             instance: parseInt(req.body.instance, 10), // 实例个数
-            expandPattern: 1, // 拓展方式，1表示自动，2表示手动
+            autoscale: true, // 拓展方式，true表示自动，false表示手动
             command: req.body.command, // 执行命令
             env: env,//环境变量
             network: "", // 网络名（email-name+appname）
@@ -130,7 +130,7 @@ exports.update = function (req, res, next) {
             imagetag: "", // 镜像版本
             conflevel: req.body.conflevel, // 配置级别
             instance: parseInt(req.body.instance, 10), // 实例个数
-            expandPattern: 1, // 拓展方式，1表示自动，2表示手动
+            autoscale: true, // 拓展方式，1表示自动，2表示手动
             command: "", // 执行命令
             env: "",//环境变量
             network: "", // 网络名（email-name+appname）
@@ -148,7 +148,7 @@ exports.update = function (req, res, next) {
                         containerService.create(resourceParams.id, null, function (error, data) {
                             try {
                                 if (!error) {
-                                    
+
                                     logger.debug(data);
                                     res.json({result: true});
                                 } else {

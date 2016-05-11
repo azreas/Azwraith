@@ -71,16 +71,16 @@ exports.get = function (id, callback) {
  * @param callback
  */
 exports.delete = function (id, callback) {
-    rest.del('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/app/' + id.on('complete', function (data) {
-            try {
-                if (data.result !== true) {
-                    throw new Error(data.info.script);
-                }
-            } catch (e) {
-                return callback(e.message, data);
+    rest.del('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/app/' + id).on('complete', function (data) {
+        try {
+            if (data.result !== true) {
+                throw new Error(data.info.script);
             }
-            return callback(null, data);
-        }));
+        } catch (e) {
+            return callback(e.message, data);
+        }
+        return callback(null, data);
+    });
 };
 
 /**
