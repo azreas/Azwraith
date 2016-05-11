@@ -129,7 +129,7 @@ exports.getEvent = function (id, callback) {
 exports.createDomain = function (domain, callback) {
     //todo 映射域名暂时使用JAVA版  'http://' + dockerservice.host + ':' + dockerservice.port + '/v1/domain'
 
-    rest.postJson('http://' + domainService.host + ':' + domainService.port + '/v1/domain', domain).on('complete', function (data, response) {
+    rest.postJson('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/domain', domain).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
@@ -149,7 +149,7 @@ exports.createDomain = function (domain, callback) {
  */
 exports.distoryDomain = function (domain, callback) {
     //TODO
-    rest.del('http://' + domainService.host + ':' + domainService.port + '/v1/domain/' + domain).on('complete', function (data, response) {
+    rest.del('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/domain/' + domain).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
