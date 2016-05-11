@@ -1540,7 +1540,7 @@ exports.start = function (req, res) {
                         if (result.result !== true) {
                             throw new Error(result.info.script);
                         }
-                        app = result.apps[0];
+                        app = result.app;
                         delete app._id;
                         callback(null); // 触发下一步
                     } catch (e) {

@@ -556,23 +556,6 @@ exports.scale = function (appid, creatCount, servicecallback) {
                                 createcallback(null, data.Id); // 触发下一步，并传容器实例id
                             });
                         }, function (containerid, createcallback) { // 存储容器实例创建成功事件（不管事件保存成功与否都进行下一步）
-                            var containerEventConfig = {
-                                containerid: containerid,
-                                title: "创建成功",
-                                titme: new Date().getTime(),
-                                script: "create container:" + containerid
-                            };
-                            containerDao.saveEvent(containerEventConfig, function (err, data) {
-                                try {
-                                    if (err) {
-                                        throw new Error(err);
-                                    }
-                                    logger.debug("create containerEvent result ---> " + JSON.stringify(data));
-                                    logger.info("容器实例 " + containerEventConfig.containerid + " 保存创建事件情况：" + data.info.script);
-                                } catch (e) {
-                                    logger.info("容器实例 " + containerEventConfig.containerid + " 保存创建事件失败：" + e);
-                                }
-                            });
                             createcallback(null, containerid); // 触发下一步，不管事件保存成功与否
                         }, function (containerid, createcallback) { // 启动实例
                             containerDao.start(containerid, function (err, data) {
@@ -587,51 +570,6 @@ exports.scale = function (appid, creatCount, servicecallback) {
                                 createcallback(null, containerid, null);
                             });
                         }, function (containerid, err, createcallback) { // 存储容器实例启动成功或失败事件，若失败，则直接结束“这条线”
-                            var eventTitle = "";
-                            var script;
-                            var time = new Date().getTime();
-                            var containerEventConfig = {
-                                containerid: containerid,
-                                title: "",
-                                titme: time,
-                                script: ""
-                            };
-                            if (!err) {
-                                eventTitle = "启动成功";
-                                script = "start container " + containerid + " success";
-                                containerEventConfig.title = eventTitle;
-                                containerEventConfig.script = script;
-                                containerDao.saveEvent(containerEventConfig, function (err, data) {
-                                    try {
-                                        logger.debug("start containerEvent result ---> " + JSON.stringify(data));
-
-                                        logger.info("容器实例 " + containerEventConfig.containerid + " 保存" + eventTitle + "事件情况：" + data.info.script);
-                                    } catch (e) {
-                                        logger.info("容器实例 " + containerEventConfig.containerid + " 保存" + eventTitle + "事件失败：" + e);
-                                    }
-                                });
-                            } else {
-                                eventTitle = "启动失败";
-                                script = "start container " + containerid + " error";
-                            }
-                            var serverEventConfig = {
-                                appid: app.id,
-                                event: eventTitle,
-                                titme: time,
-                                script: script
-                            };
-                            serveDao.saveEvent(serverEventConfig, function (err, data) {
-                                try {
-                                    logger.info("server event result ---> " + JSON.stringify(data));
-
-                                    logger.info("服务 " + app.name + " 保存" + serverEventConfig.event + "事件情况：" + data.info.script);
-                                } catch (e) {
-                                    logger.info("服务 " + app.name + " 保存" + serverEventConfig.event + "事件失败：" + e);
-                                }
-                            });
-                            if (err) { // 若启动失败，则直接结束“这条线”
-                                return createcallback(err);
-                            }
                             createcallback(null, containerid); // 触发下一步，并传容器实例id
                         }, function (containerid, createcallback) { // 获取实例信息
                             containerDao.inspect(containerid, function (err, data) {
@@ -682,19 +620,7 @@ exports.scale = function (appid, creatCount, servicecallback) {
                                 createcallback(null, containerConfig); // 触发下一步，并传容器配置对象
                             });
                         }, function (containerConfig, createcallback) { // 存储容器配置对象
-                            containerDao.save(containerConfig, function (err, data) {
-                                try {
-                                    if (err) {
-                                        throw new Error(err);
-                                    }
-
-                                    logger.info("save container result ---> " + JSON.stringify(data));
-                                } catch (e) {
-                                    logger.info("容器实例 " + containerConfig.id + " 保存配置失败：" + e);
-                                    return createcallback(e);
-                                }
-                                createcallback(null); // 触发下一步
-                            });
+                            createcallback(null); // 触发下一步
                         }
                     ], function (err, result) {
                         containerCounter++;
@@ -707,13 +633,11 @@ exports.scale = function (appid, creatCount, servicecallback) {
                         outcreatecallback(null, "服务 " + app.name + "第 [" + containerCounter + "/" + (creatCount || app.instance) + "] 个实例创建成功");
                     });
                 };
-
                 var createContainerArray = [];
                 // 根据实例个数，得到创建实例数组
                 for (var i = 0; i < (creatCount || app.instance ); i++) {
                     createContainerArray[i] = createContainerFun;
                 }
-
                 async.parallel(
                     createContainerArray,
                     function (err, results) {
@@ -734,66 +658,13 @@ exports.scale = function (appid, creatCount, servicecallback) {
                             if (err) {
                                 throw new Error(err);
                             }
-
-                            logger.info("domain result ---> " + JSON.stringify(data));
                         } catch (e) {
                             return callback(e);
                         }
                         callback(null, containerSuccessCounter); // 触发下一步，并传容器实例创建成功个数
                     });
                 }
-            }, function (containerSuccessCounter, callback) { // 根据容器实例创建情况，更新服务配置信息
-                logger.info("根据容器实例创建情况，更新服务配置信息 ...");
-                if (containerSuccessCounter <= 0) { // 表示服务启动失败，更新状态为：5.启动失败
-                    app.status = 5;
-                } else { // 表示服务启动成功，更新状态为：2.运行中
-                    app.status = 2;
-                }
-                app.updatetime = new Date().getTime();
-                app.address = app.subdomain + "." + dockerConfig.domain;
-                serveDao.update(app, function (err, data) {
-                    try {
-                        if (err) {
-                            throw new Error(err);
-                        }
-                        logger.info("update app result ---> " + JSON.stringify(data));
-                    } catch (e) {
-                        return callback(e);
-                    }
-                    callback(null, containerSuccessCounter); // 触发下一步，并传容器实例创建成功个数
-                });
             }, function (containerSuccessCounter, callback) { // 存储服务事件（运行事件，异步，不管成功与否）
-                var serverEventConfig = {
-                    appid: app.id,
-                    event: "",
-                    titme: new Date().getTime(),
-                    script: ""
-                }
-                if (containerSuccessCounter <= 0) { // 表示服务启动失败，存储服务启动失败事件
-                    serverEventConfig.event = "服务启动失败";
-                    serverEventConfig.script = "启动服务 " + app.name + "失败";
-                } else { // 表示服务启动成功，存储服务运行中事件
-                    serverEventConfig.event = "运行中";
-                    if (creatCount) {
-                        serverEventConfig.script = "资源调整 " + app.name + "成功，共有 [" + containerSuccessCounter + "/" + creatCount + "] 个实例增加成功";
-                    } else {
-                        serverEventConfig.script = "启动服务 " + app.name + "成功，共有 [" + containerSuccessCounter + "/" + app.instance + "] 个实例启动成功";
-                    }
-
-                }
-                serveDao.saveEvent(serverEventConfig, function (err, data) {
-                    try {
-                        if (err) {
-                            throw new Error(err);
-                        }
-
-                        logger.info("server event result ---> " + JSON.stringify(data));
-                        logger.info("服务 " + app.name + " 保存" + serverEventConfig.event + "事件情况：" + data.info.script);
-                    } catch (e) {
-                        logger.info("服务 " + app.name + " 保存" + serverEventConfig.event + "事件失败：" + e);
-                    }
-                });
-
                 if (containerSuccessCounter <= 0) { // 服务启动失败
                     callback("没有实例启动成功");
                 } else { // 表示服务启动成功，触发下一步

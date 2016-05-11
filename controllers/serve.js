@@ -204,4 +204,59 @@ exports.update = function (req, res, next) {
     } catch (e) {
         logger.info(e);
     }
+};
+
+/**
+ * 实例自动扩展接口
+ * @param req
+ * @param res
+ * @param next
+ */
+exports.autoscale = function (req, res, next) {
+    var instance = req.body.instance;
+    var appid = req.body.appid;
+    if (instance > 0) {//实例增加
+        containerService.scale(appid, instance, function (error, data) {
+            try {
+                if (!error) {
+                    logger.debug(data);
+                    res.json({result: true});
+                } else {
+                    logger.info(error);
+                    res.json({result: false});
+                }
+            } catch (e) {
+                logger.info(e);
+                res.json({result: false});
+            }
+        });
+    } else if (instance < 0) {//实例减少
+        containerService.removeByList(containerList, function (err, result) {
+            try {
+                if (!err) {
+                    res.json({result: true});
+                } else {
+                    res.json({result: false});
+                }
+            } catch (e) {
+
+                logger.info(e);
+                res.json({result: false});
+            }
+        })
+        containerService.removeByAppid(appid, Math.abs(instance), function (error, data) {
+            try {
+                if (!error) {
+                    logger.debug(data);
+                    res.json({result: true});
+                } else {
+                    logger.info(error);
+                    res.json({result: false});
+                }
+            } catch (e) {
+                logger.info(e);
+                res.json({result: false});
+            }
+        });
+    }
 }
