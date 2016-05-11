@@ -8,7 +8,7 @@ clean:
 
 media:
 	@npm install
-	@bower install
+
 
 image: media
 	@echo Building $(Author)/$(Repository):$(TAG) image use $(Dockerfile)
