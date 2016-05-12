@@ -236,10 +236,41 @@ exports.remove = function (id, callback) {
     });
 };
 
+/**
+ * 根据appid查找scalecontainer
+ * @param appid 
+ * @param callback
+ */
+exports.findscalecontainer = function (appid, callback) {
+    rest.get('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/scalecontainer/list/' + appid).on('complete', function (data, response) {
+        try {
+            if (data.result !== true) {
+                throw new Error(data.info.script);
+            }
+        } catch (e) {
+            return callback(e.message, data);
+        }
+        return callback(null, data);
+    });
+};
 
-
-
-
+/**
+ * 保存scalecontainer
+ * @param scalecontainer 对象
+ * @param callback
+ */
+exports.scalecontainersave = function (scalecontainer, callback) {
+    rest.postJson('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/scalecontainer', scalecontainer).on('complete', function (data, response) {
+        try {
+            if (data.result !== true) {
+                throw new Error(data.info.script);
+            }
+        } catch (e) {
+            return callback(e.message, data);
+        }
+        return callback(null, data);
+    });
+};
 
 
 

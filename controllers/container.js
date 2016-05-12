@@ -59,3 +59,26 @@ exports.listByAppid = function (req, res, next) {
         }
     });
 }
+
+/**
+ * 根据appid查找scalecontainer
+ * @param req
+ * @param res
+ * @param next
+ */
+exports.findscalecontainer = function (req, res, next) {
+    containerService.findscalecontainer(req.params.appid, function (err, data) {
+        if (!err) {
+            res.json(data);
+        } else {
+            logger.info(err);
+            res.json({
+                result: false,
+                info: {
+                    code: "00000",
+                    script: "根据服务 " + req.params.appid + " 获取所属容器实例列表失败"
+                }
+            });
+        }
+    });
+}

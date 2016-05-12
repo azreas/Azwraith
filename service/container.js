@@ -834,6 +834,14 @@ exports.listByAppid = function (appid, callback) {
     return containerDao.listByAppid(appid, callback)
 }
 
+/**
+ * 根据appid查找scalecontainer
+ * @param appid
+ * @param callback
+ */
+exports.findscalecontainer = function (appid, callback) {
+    return containerDao.findscalecontainer(appid, callback)
+}
 
 
 
