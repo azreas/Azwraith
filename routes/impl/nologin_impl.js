@@ -13,7 +13,27 @@ var cookieUtil = require("../../modules/util/cookieUtil");
  * @param res
  */
 exports.home = function(req, res) {
-    res.render('index', { });
+    var token = req.cookies.token;
+    //console.log(token);
+    //首页加入是否已登录验证
+    if (token !== undefined) {
+        httpUtil.get("/v1/auth/"+token, function(tokenResult){
+            try {
+                console.log("token result ---> "+tokenResult);
+                tokenResult = JSON.parse(tokenResult);
+
+                if (tokenResult.result == true) {
+                    res.render('index', { active: '1' });
+                }else if(tokenResult.result !== true){
+                    res.render('index', { active: '0' });
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        });
+    } else if(token == undefined) {
+        res.render('index', { active: '0' });
+    }
 };
 
 /**
