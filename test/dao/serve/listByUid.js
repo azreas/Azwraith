@@ -5,7 +5,7 @@
 
 var serveService = require("../../../dao/serve");
 
-var uid = "893d6cc5-17cd-45ba-957a-e89e64097429";
+var uid = "39ccf9c0-1678-11e6-9b14-b1d7a88afb92";
 serveService.listByUid(uid, function (err, data) {
     console.log("err ---> "+err);
     console.log(data);
