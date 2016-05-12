@@ -82,9 +82,15 @@
             <div class="sourehan animated fadeInDown">ZeroCloud,量子云平台改变世界</div>
             <div class="h3 animated fadeInDown text-center">便捷操作的一站式云平台服务商</div>
             <div class="ban2-experience text-center animated fadeInDown">
-              <a class="btn proceed" href="/login">
-                立刻体验
+              <% if(active == '0'){ %>
+              <a href="/login">
+                <span class="btn proceed">立刻体验</span>
               </a>
+              <% }else if(active == '1'){ %>
+              <a href="/container">
+                <span class="btn proceed">回服务中心</span>
+              </a>
+              <% } %>
             </div>
           </div>
         </div>
