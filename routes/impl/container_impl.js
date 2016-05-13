@@ -1117,7 +1117,8 @@ exports.get = function (req, res) {
                                 address: result.app.address,
                                 updateTime: result.app.updatetime,
                                 createTime: result.app.createtime,
-                                environment: envSplit
+                                environment: envSplit,
+                                autoscale: result.app.autoscale
                             };
                             res.json(resultData);
                         } else {
