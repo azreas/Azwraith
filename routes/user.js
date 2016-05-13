@@ -29,6 +29,9 @@ module.exports = function(app){
     // 根据用户 id 获取用户操作日志
     router.get( '/user/log/:id', user_impl.getLog);
 
+    // 根据用户 id 修改用户信息
+    router.put( '/user/', userController.changeinfo());
+    
     // router 命名空间
     app.use('/', router);
 };

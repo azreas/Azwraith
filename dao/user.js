@@ -102,10 +102,66 @@ exports.login = function (user, callback) {
     });
 }
 
+/**
+ * 修改people信息
+ * @param uid
+ * @param profile
+ * @param callback
+ */
+exports.changeinfo = function (putdata, callback) {
+    rest.putJson('http://' + userservice.host + ':' + userservice.port + '/v1/people/', putdata).on('complete', function(data, response) {
+        try {
+            if (data.result !== true) {
+                throw new Error(data.info.script);
+            }
+        } catch (e) {
+            return callback(e.message, data);
+        }
+        return callback(null, data);
+    });
+}
+
+/**
+ * 修改用戶密碼
+ * @param putdata
+ * @param callback
+ */
+exports.changepassword = function (putdata, callback) {
+    rest.putJson('http://' + userservice.host + ':' + userservice.port + '/v1/people/passwd/', putdata).on('complete', function(data, response) {
+        try {
+            if (data.result !== true) {
+                throw new Error(data.info.script);
+            }
+        } catch (e) {
+            return callback(e.message, data);
+        }
+        return callback(null, data);
+    });
+}
+
+exports.mailverify = function (postdata, callback) {
+    rest.postJson('http://' + userservice.host + ':' + userservice.port + '/v1/people/mailverify/', postdata).on('complete', function(data, response) {
+        try {
+            if (data.result !== true) {
+                throw new Error(data.info.script);
+            }
+        } catch (e) {
+            return callback(e.message, data);
+        }
+        return callback(null, data);
+    });
+}
 
 
-
-
-
-
-
+exports.SNSverify = function (uid,tophone, callback) {
+    rest.get('http://' + userservice.host + ':' + userservice.port + '/v1/people/'+uid+'?tophone='+tophone).on('complete', function(data, response) {
+        try {
+            if (data.result !== true) {
+                throw new Error(data.info.script);
+            }
+        } catch (e) {
+            return callback(e.message, data);
+        }
+        return callback(null, data);
+    });
+};

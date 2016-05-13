@@ -165,13 +165,183 @@ exports.login = function (req, res, next){
     }
 };
 
+/**
+ * 修改用户信息
+ * @param req
+ * @param res
+ * @param next
+ */
+exports.changeinfo= function (req, res, next){
+    try {
+        var uid = req.body.uid;
+        var profile = {
+            name : req.body.name,
+            sub_domain :req.body.sub_domain
+        };
+        var putdata={
+            "uid":uid,
+            "profile":profile
+        };
+        userService.changeinfo(putdata, function (err, data) {
+            try {
+                if (err) {
+                    throw new Error(err);
+                }
+                logger.info("用户修改成功");
+                // 设置 cookie token
+                // cookieUtil.set(res, "token", data.token);
+                // 进入重定向页面
+                // res.redirect('container');
+            } catch (e) {
+                logger.info("用户修改失败");
+                logger.error(e);
+                // 登录失败，返回 登录页面 带着提示信息和回显信息
+                var errorCode = data.info.code;
+                // if(errorCode == '12'){
+                //     res.render("login",{
+                //         status: '当前邮箱未注册,请先注册后登录'
+                //     });
+                // }else if(errorCode == '13'){
+                //     res.render("login",{
+                //         status: '您输入的密码有误，请重新输入'
+                //     });
+                // }else {
+                //     res.render("login",{
+                //         status: '抱歉，服务器开小差了，请重新登陆'
+                //     });
+                // }
+            }
+        })
+    } catch (e) {
+        logger.error(e);
+        next(e);
+    }
+};
 
+/**
+ * 修改密碼
+ * @param req
+ * @param res
+ * @param next
+ */
+exports.changepassword= function (req, res, next){
+    try {
+        var uid = req.body.uid;
+        var oldpasswd = req.body.oldpasswd;
+        var newpasswd = req.body.newpasswd;
+        var putdata={
+            "uid":uid,
+            "oldpasswd":oldpasswd,
+            "newpasswd":newpasswd
+        };
+        userService.changepassword(putdata, function (err, data) {
+            try {
+                if (err) {
+                    throw new Error(err);
+                }
+                logger.info("用户修改密碼成功");
+                // 设置 cookie token
+                // cookieUtil.set(res, "token", data.token);
+                // 进入重定向页面
+                // res.redirect('container');
+            } catch (e) {
+                logger.info("用户修改密碼失败");
+                logger.error(e);
+                // 登录失败，返回 登录页面 带着提示信息和回显信息
+                var errorCode = data.info.code;
+                // if(errorCode == '12'){
+                //     res.render("login",{
+                //         status: '当前邮箱未注册,请先注册后登录'
+                //     });
+                // }else if(errorCode == '13'){
+                //     res.render("login",{
+                //         status: '您输入的密码有误，请重新输入'
+                //     });
+                // }else {
+                //     res.render("login",{
+                //         status: '抱歉，服务器开小差了，请重新登陆'
+                //     });
+                // }
+            }
+        })
+    } catch (e) {
+        logger.error(e);
+        next(e);
+    }
+};
 
+/**
+ * 发送邮箱验证连接
+ * @param req
+ * @param res
+ * @param next
+ */
+exports.mailverify = function (req, res, next){
+    try {
+        var postdata = {
+            uid : req.body.uid,
+            toEmail : req.body.toEmail
+        };
+        userService.mailverify(postdata, function (err, data) {
+            try {
+                if (err) {
+                    throw new Error(err);
+                }
+                logger.info("发送邮件成功");
+                // 注册成功，跳到 登录 页面
+                // res.redirect("/login");
+            } catch (e) {
+                logger.info("邮件发送失败");
+                logger.error(e);
+                // 注册失败，返回 注册页面 带着提示信息和回显信息
+                res.render('regist',{
+                    status : data.info.script ? data.info.script : "邮件发送失败"
+                });
+            }
+        });
+    } catch (e) {
+        logger.error(e);
+        next(e);
+    }
+};
 
-
-
-
-
+/**
+ * 发送短信验证码
+ * @param req
+ * @param res
+ */
+exports.SNSverify = function (req, res){
+    try {
+        userService.get(req.params.id, function (err, data) {
+            try {
+                if (err) {
+                    throw new Error(err);
+                }
+                logger.info("获取用户信息成功，返回 "+JSON.stringify(data));
+                res.json(data);
+            } catch (e) {
+                logger.info("根据用户 id["+req.params.id+"] 获取用户信息失败");
+                logger.error(e);
+                res.json({
+                    result: false,
+                    info: {
+                        code: "00000",
+                        script: "获取用户信息失败"
+                    }
+                });
+            }
+        });
+    } catch (e) {
+        logger.error(e);
+        res.json({
+            result: false,
+            info: {
+                code: "00000",
+                script: "参数有误"
+            }
+        });
+    }
+};
 
 
 
