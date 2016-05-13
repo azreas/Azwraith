@@ -76,7 +76,7 @@ exports.findscalecontainer = function (req, res, next) {
                 result: false,
                 info: {
                     code: "00000",
-                    script: "根据服务 " + req.params.appid + " 获取所属容器实例列表失败"
+                    script: err
                 }
             });
         }
