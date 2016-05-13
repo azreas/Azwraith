@@ -85,7 +85,7 @@ exports.create = function (appid, creatCount, servicecallback) {
                             event: "拉取镜像中",
                             titme: new Date().getTime(),
                             script: "pull image " + app.image + ":" + app.imagetag,
-                            status:1//1,success;2,failed
+                            status: 1//1,success;2,failed
                         };
                         //保存拉取镜像事件
                         serveDao.saveEvent(serverEventConfig, function (err, data) {
@@ -226,7 +226,7 @@ exports.create = function (appid, creatCount, servicecallback) {
                                 event: eventTitle,
                                 titme: time,
                                 script: script,
-                                status:1//1:success;2:failed
+                                status: 1//1:success;2:failed
                             };
                             serveDao.saveEvent(serverEventConfig, function (err, data) {
                                 try {
@@ -297,7 +297,7 @@ exports.create = function (appid, creatCount, servicecallback) {
                                         throw new Error(err);
                                     }
 
-                                    logger.info("save container result ---> " + JSON.stringify(data));
+                                    logger.debug("save container result ---> " + JSON.stringify(data));
                                 } catch (e) {
                                     logger.info("容器实例 " + containerConfig.id + " 保存配置失败：" + e);
                                     return createcallback(e);
@@ -344,6 +344,7 @@ exports.create = function (appid, creatCount, servicecallback) {
                             return callback(err);
                         }
                         else {
+                            logger.debug('映射子域名成功');
                             callback(null, containerSuccessCounter); // 触发下一步，并传容器实例创建成功个数
                         }
                     });
@@ -374,7 +375,7 @@ exports.create = function (appid, creatCount, servicecallback) {
                     event: "",
                     titme: new Date().getTime(),
                     script: "",
-                    status:1//1:success;2:failed
+                    status: 1//1:success;2:failed
                 }
                 if (containerSuccessCounter <= 0) { // 表示服务启动失败，存储服务启动失败事件
                     serverEventConfig.event = "服务启动失败";
@@ -519,12 +520,14 @@ exports.scale = function (appid, creatCount, servicecallback) {
                                 try {
                                     if (err) {
                                         throw new Error(err);
+                                    } else {
+                                        createcallback(null, containerid);
                                     }
                                 } catch (e) {
                                     logger.info("启动容器实例 " + containerid + " 失败：" + e);
                                     createcallback(e);
                                 }
-                                createcallback(null, containerid);
+
                             });
                         }
                     ], function (err, containerid) {
