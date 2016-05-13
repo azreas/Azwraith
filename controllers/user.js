@@ -47,7 +47,7 @@ exports.logout = function (req, res, next) {
  */
 exports.get = function (req, res) {
     try {
-        userService.get(req.params.id, function (err, data) {
+        userService.get(req.cookies.token, function (err, data) {
             try {
                 if (err) {
                     throw new Error(err);
@@ -173,7 +173,7 @@ exports.login = function (req, res, next) {
  */
 exports.changeinfo = function (req, res, next) {
     try {
-        var token = req.body.token;
+        var token = req.cookies.token;
         var profile = {
             name: req.body.name,
             sub_domain: req.body.sub_domain
@@ -224,7 +224,7 @@ exports.changeinfo = function (req, res, next) {
  */
 exports.changepassword = function (req, res, next) {
     try {
-        var token = req.body.token;
+        var token = req.cookies.token;
         var oldpasswd = req.body.oldpasswd;
         var newpasswd = req.body.newpasswd;
         var putdata = {
@@ -281,7 +281,7 @@ exports.mailverify = function (req, res, next) {
             uid: "",
             toEmail: req.body.toEmail
         };
-        userService.mailverify(token, postdata, function (err, data) {
+        userService.mailverify(req.cookies.token, postdata, function (err, data) {
             try {
                 if (err) {
                     throw new Error(err);
@@ -311,7 +311,7 @@ exports.mailverify = function (req, res, next) {
  */
 exports.sendSNSverify = function (req, res) {
     try {
-        var token = req.body.token;
+        var token = req.cookies.token;
         var tophone = req.body.tophone;
         userService.sendSNSverify(token, tophone, function (err, data) {
             try {
@@ -341,7 +341,7 @@ exports.sendSNSverify = function (req, res) {
 exports.verifySNS = function (req, res, next) {
 
     try {
-        var token = req.body.token;
+        var token = req.cookies.token;
         var phonecode = req.body.phonecode;
         userService.verifySNS(token, phonecode, function (err, data) {
             if (!err) {

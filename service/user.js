@@ -37,10 +37,24 @@ exports.get = function (id, callback) {
                 } catch (e) {
 
                 }
-            })
+            });
+        }, function (uid, waterfallCallback) {
+            userDao.get(uid, function (err, data) {
+                try {
+                    if (!err) {
+                        waterfallCallback(null, data);
+                    } else {
+                        logger.error('get   uid  ' + uid + '   err   ' + err);
+                        waterfallCallback(err);
+                    }
+                } catch (e) {
+                    logger.error('get   uid  ' + uid + '   e   ' + e);
+                    waterfallCallback(e);
+                }
+            });
         }
-    ], function (err) {
-
+    ], function (err, data) {
+        return callback(err, data);
     });
 
 
