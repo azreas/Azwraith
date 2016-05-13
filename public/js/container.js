@@ -172,6 +172,12 @@
         console.log(resp);
 
         var servers = resp.apps;
+        if(resp == 0){
+            layer.msg("请求超时，请重新登录。");
+            setTimeout(function(){
+                location.href='/login';
+            },2000);
+        }
         if(resp.info.code == 11){
             $('#dbtable').html('');
             //var tips = '<div id="nodata" class="nodata" style="display: block;padding-top:20px">服务列表加载失败，请刷新页面</div>';
@@ -244,16 +250,20 @@
     //显示二维码
     $("#dbtable").on('click','.showCode',function(){
         var code = $(this).attr('target');
-        $("#qrcode").addClass("show");
-        $("#codeBox").addClass("show");
-        var qrcode = new QRCode("qrcode", {
-            text: "http://"+code,
-            width: 300,
-            height: 300,
-            colorDark : "#000000",
-            colorLight : "#ffffff",
-            correctLevel : QRCode.CorrectLevel.H
-        });
+        if(code == "-"){
+            return;
+        }else{
+            $("#qrcode").addClass("show");
+            $("#codeBox").addClass("show");
+            var qrcode = new QRCode("qrcode", {
+                text: "http://"+code,
+                width: 400,
+                height: 400,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        }
     });
     $("#codeBox").click(function(){
         $("#qrcode").removeClass("show");

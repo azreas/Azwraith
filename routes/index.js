@@ -25,6 +25,8 @@ module.exports = function(app){
   // 服务详情界面
   router.get('/detail/:id',index_impl.detail);
 
+  //进入用户信息页面
+  router.get('/account/:id',index_impl.account);
 
   // 测试界面
   router.get('/test', index_impl.test);

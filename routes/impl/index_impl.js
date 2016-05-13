@@ -62,3 +62,14 @@ exports.test = function(req, res) {
 exports.detail = function(req,res) {
     res.render('detail',{id : req.params.id})
 };
+
+/**
+ * 用户详情界面
+ * @param req
+ * @param res
+ */
+exports.account = function(req,res) {
+    res.render('account',{
+        value: req.params.id
+    })
+};
