@@ -132,7 +132,7 @@ exports.createDomain = function (domain, callback) {
     rest.postJson('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/domain', domain).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
-                throw new Error(data.info.script);
+                throw new Error(data.info.msg);
             }
         } catch (e) {
             return callback(e.message, data);
@@ -149,6 +149,7 @@ exports.createDomain = function (domain, callback) {
  */
 exports.distoryDomain = function (domain, callback) {
     //TODO
+
     rest.del('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/domain/' + domain).on('complete', function (data, response) {
         try {
             if (data.result !== true) {

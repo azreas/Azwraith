@@ -16,6 +16,7 @@ module.exports = function (app) {
     // 根据服务id更新实例个数和实例类型
     router.post('/updata', serveController.update);
 
+    router.post('/autoscale', serveController.autoscale)
     // router 命名空间
     app.use('/serve', router);
 }

@@ -44,7 +44,7 @@ exports.create = function (req, res, next) {
             imagetag: req.body.imagetag ? req.body.imagetag : "latest", // 镜像版本
             conflevel: req.body.conflevel, // 配置级别
             instance: parseInt(req.body.instance, 10), // 实例个数
-            autoscale: true, // 拓展方式，true表示自动，false表示手动
+            autoscale: req.body.autoscale, // 拓展方式，true表示自动，false表示手动
             command: req.body.command, // 执行命令
             env: env,//环境变量
             network: "", // 网络名（email-name+appname）
@@ -54,7 +54,7 @@ exports.create = function (req, res, next) {
             createtime: new Date().getTime(), // 创建时间
             updatetime: new Date().getTime(), // 更新时间
             address: "-" // 服务地址
-            
+
         };
         serveService.create(req.cookies.token, serveConfig, function (err, result) {
             try {
@@ -93,6 +93,17 @@ exports.remove = function (req, res, next) {
         for (var i in ids) {
             console.log(ids[i]);
             var id = ids[i];
+            serveService.removeDomainByAppid(id, function (err) {
+                try {
+                    if (!err) {
+
+                    } else {
+                        errorCount++;
+                    }
+                } catch (e) {
+                    next(e);
+                }
+            });
             serveService.remove(id, function (err, result) {
                 try {
                     if (!err) {
@@ -131,7 +142,7 @@ exports.update = function (req, res, next) {
             imagetag: "", // 镜像版本
             conflevel: req.body.conflevel, // 配置级别
             instance: parseInt(req.body.instance, 10), // 实例个数
-            autoscale: true, // 拓展方式，1表示自动，2表示手动
+            autoscale: req.body.autoscale, // 拓展方式，true表示自动，false表示手动
             command: "", // 执行命令
             env: "",//环境变量
             network: "", // 网络名（email-name+appname）
@@ -146,11 +157,9 @@ exports.update = function (req, res, next) {
             try {
                 if (!err) {
                     if (levelChange) {//配置级别变更，重新创建所有容器
-                        containerService.create(resourceParams.id, null, function (error, data) {
+                        containerService.create(resourceParams.id, null, function (error) {
                             try {
                                 if (!error) {
-
-                                    logger.debug(data);
                                     res.json({result: true});
                                 } else {
                                     logger.info(error);
@@ -163,10 +172,9 @@ exports.update = function (req, res, next) {
                         });
                     } else {//配置级别不变，调整实例个数
                         if (instance > 0) {//实例增加
-                            containerService.create(resourceParams.id, instance, function (error, data) {
+                            containerService.create(resourceParams.id, instance, function (error) {
                                 try {
                                     if (!error) {
-                                        logger.debug(data);
                                         res.json({result: true});
                                     } else {
                                         logger.info(error);
@@ -216,15 +224,15 @@ exports.update = function (req, res, next) {
 exports.autoscale = function (req, res, next) {
     var instance = req.body.instance;
     var appid = req.body.appid;
+    var containerList = req.body.containerList;
     if (instance > 0) {//实例增加
         containerService.scale(appid, instance, function (error, data) {
             try {
                 if (!error) {
-                    logger.debug(data);
-                    res.json({result: true});
+                    res.json({result: true, "containerid": data});
                 } else {
                     logger.info(error);
-                    res.json({result: false});
+                    res.json({result: false, "containerid": data});
                 }
             } catch (e) {
                 logger.info(e);
@@ -237,21 +245,6 @@ exports.autoscale = function (req, res, next) {
                 if (!err) {
                     res.json({result: true});
                 } else {
-                    res.json({result: false});
-                }
-            } catch (e) {
-
-                logger.info(e);
-                res.json({result: false});
-            }
-        })
-        containerService.removeByAppid(appid, Math.abs(instance), function (error, data) {
-            try {
-                if (!error) {
-                    logger.debug(data);
-                    res.json({result: true});
-                } else {
-                    logger.info(error);
                     res.json({result: false});
                 }
             } catch (e) {

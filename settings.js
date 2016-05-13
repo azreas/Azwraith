@@ -6,25 +6,25 @@
 
 /********************* appConfig start *********************/
 var appConfig = {
-    port : 3001
+    port: process.env.appport || 3000
 }
 /********************* appConfig end *********************/
 
 
 /********************* redis start *********************/
 var redis = {
-    host : '127.0.1.1',
-    port : 6379,
-    options : {}
+    host: '127.0.1.1',
+    port: 6379,
+    options: {}
 }
 /********************* redis end *********************/
 
 
 /********************* mongodb start *********************/
 var mongodb = {
-    host : '127.0.1.1',
-    port : 27017,
-    dbname : 'myblog'
+    host: '127.0.1.1',
+    port: 27017,
+    dbname: 'myblog'
 }
 /********************* mongodb end *********************/
 
@@ -32,15 +32,15 @@ var mongodb = {
 /********************* docker start *********************/
 var dockerConfig = {
     /*host : '192.168.1.240',
-    port : 2375,*/
+     port : 2375,*/
     /*host : '192.168.1.238',
-    port : 2375,*/
+     port : 2375,*/
     /*host : '192.168.1.241',
-    port : 3375*//*,
-    timeout: 6000*/
-    host:'192.168.1.243',
-    port:3375,
-    domain:"zerocloud.club"
+     port : 3375*//*,
+     timeout: 6000*/
+    host: process.env.swarmhost || '192.168.1.243',
+    port: process.env.swarmport || 3375,
+    domain: process.env.domain || "zerocloud.club"
 }
 /********************* docker end *********************/
 
@@ -48,46 +48,47 @@ var dockerConfig = {
 /********************* request docker service start *********************/
 var userservice = {
     /*host : '192.168.1.253',
-    port : 9000*/
+     port : 9000*/
     /*host : '192.168.1.236',
-    port : 9000*/
-    // host : '192.168.1.240',
-    // port : 9002
-    // host : '192.168.1.196',
-    // port : 3000
-    host : '192.168.1.184',
-    port : 3000
-}
+     port : 9000*/
+    host: process.env.userservicehost || '192.168.1.253',
+    port: process.env.userserviceport || 3001
+    // host: '127.0.0.1',
+    // port: 9000
+};
 var dockerservice = {
     /*host : '192.168.1.253',
-    port : 9000*/
+     port : 9000*/
     /*host : '192.168.1.236',
-    port : 9001*/
+     port : 9001*/
     /*host : 'zerocloud.daoapp.io',
-    port : 80*/
-    host : '192.168.1.253',
-    port : 3000
-}
-var domainservice={
-    host : '192.168.1.240',
-    port : 9001
-}
+     port : 80*/
+    host: process.env.dockerservicehost || '192.168.1.253',
+    port: process.env.dockerserviceport || 3000
+};
+var domainservice = {
+    host: process.env.PORT || '192.168.1.253',
+    port: 3000
+};
 /********************* request docker service end *********************/
 
 //
-var dockerapitest={
-    host:'192.168.1.243',
-    port:3375
+var dockerapitest = {
+    host: '192.168.1.243',
+    port: 3375
 }
-
+// var dockerapitest={
+//     host:'127.0.0.1',
+//     port:8080
+// }
 module.exports = {
-    appConfig : appConfig,
-    redis : redis,
-    mongodb : mongodb,
-    dockerConfig : dockerConfig,
-    userservice : userservice,
-    dockerservice : dockerservice,
-    dockerapitest:dockerapitest,
-    domainservice:domainservice
+    appConfig: appConfig,
+    redis: redis,
+    mongodb: mongodb,
+    dockerConfig: dockerConfig,
+    userservice: userservice,
+    dockerservice: dockerservice,
+    dockerapitest: dockerapitest,
+    domainservice: domainservice
 }
 

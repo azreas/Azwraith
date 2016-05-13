@@ -29,7 +29,7 @@ exports.create = function (token, serveConfig, callback) {
     async.waterfall([
         function (waterfallCallback) {
             var status = serveConfig.status;
-            if (status==7) {
+            if (status == 7) {
                 logger.info("服务创建失败");
                 waterfallCallback("服务创建失败");
             } else {
@@ -114,7 +114,7 @@ exports.create = function (token, serveConfig, callback) {
                 event: "创建成功",
                 titme: new Date().getTime(),
                 script: "create app ：" + serveConfig.id,
-                status:1//1:success;2:failed
+                status: 1//1:success;2:failed
             }
             serveDao.saveEvent(containerEventConfig, function (err, result) {
                 try {
@@ -364,6 +364,7 @@ exports.remove = function (appId, callback) {
                 }
             });
         }, function (app, waterfullCallback) {//数据库APP删除
+            waterfullCallback(null, app);
             serveDao.delete(app.id, function (err) {
                 try {
                     if (!err) {
@@ -377,46 +378,59 @@ exports.remove = function (appId, callback) {
                     logger.info('数据库APP删除失败e' + e);
                     waterfullCallback('数据库APP删除失败e' + e);
                 }
-            })
+            });
         }
-    ], function (err, result) {
+    ], function (err) {
         if (err) {//出现错误，数据库APP标记为已删除
             logger.info('出现错误，数据库APP标记为已删除');
-            serveDao.get(appId, function (err, result) {
-                var app = result.app;
-                if (!err) {
-                    var server = {
-                        "id": app.id,
-                        "owner": app.owner,
-                        "name": app.name,
-                        "image": app.image,
-                        "imagetag": app.imagetag,
-                        "conflevel": app.conflevel,
-                        "instance": app.instance,
-                        "expandPattern": app.expandPattern,
-                        "command": app.command,
-                        "network": app.network,
-                        "networkid": app.networkid,
-                        "subdomain": app.subdomain,
-                        "status": app.status,
-                        "createtime": app.createtime,
-                        "updatetime": new Date().getTime(),
-                        "deleteFlag": 1
-                    };
-                    serveDao.update(server, function (err, result) {
-                        try {
-                            if (!err) {
-                                logger.debug("数据库APP标记为已删除成功");
-                            } else {
-                                logger.error("数据库APP标记为已删除失败" + err);
-                            }
-                        } catch (e) {
-                            logger.error("数据库APP标记为已删除失败" + e);
-                        }
-                    });
+            serveDao.delete(appId, function (err) {
+                try {
+                    if (!err) {
+                        logger.debug('数据库APP删除成功');
+                    } else {
+                        logger.info('数据库APP删除失败err' + err);
+                    }
+                } catch (e) {
+                    logger.info('数据库APP删除失败e' + e);
+                    return callback(e);
                 }
                 return callback(err);
             });
+            /*         serveDao.get(appId, function (err, result) {
+             var app = result.app;
+             if (!err) {
+             var server = {
+             "id": app.id,
+             "owner": app.owner,
+             "name": app.name,
+             "image": app.image,
+             "imagetag": app.imagetag,
+             "conflevel": app.conflevel,
+             "instance": app.instance,
+             "expandPattern": app.expandPattern,
+             "command": app.command,
+             "network": app.network,
+             "networkid": app.networkid,
+             "subdomain": app.subdomain,
+             "status": app.status,
+             "createtime": app.createtime,
+             "updatetime": new Date().getTime(),
+             "deleteFlag": 1
+             };
+             serveDao.update(server, function (err, result) {
+             try {
+             if (!err) {
+             logger.debug("数据库APP标记为已删除成功");
+             } else {
+             logger.error("数据库APP标记为已删除失败" + err);
+             }
+             } catch (e) {
+             logger.error("数据库APP标记为已删除失败" + e);
+             }
+             });
+             }
+             return callback(err);
+             });*/
         } else {
             return callback(null, result);
         }
@@ -425,11 +439,45 @@ exports.remove = function (appId, callback) {
 }
 
 
+exports.removeDomainByAppid = function (appid, callback) {
 
-
-
-
-
+    async.waterfall([
+        function (waterfallCallback) {//根据APPID获取域名
+            serveDao.get(appid, function (err, result) {
+                try {
+                    if (!err) {
+                        logger.debug('根据APPID ' + appid + '获取域名:' + result.app.subdomain);
+                        waterfallCallback(null, result.app.subdomain);
+                    } else {
+                        logger.debug('根据APPID ' + appid + '获取域名err' + err);
+                        waterfallCallback(err);
+                    }
+                } catch (e) {
+                    logger.debug('根据APPID ' + appid + '获取域名e', e);
+                    waterfallCallback(e);
+                }
+            });
+        },
+        function (subdomain, waterfallCallback) {//删除域名
+            serveDao.distoryDomain(subdomain, function (err, result) {
+                try {
+                    if (!err) {
+                        logger.debug('删除域名' + subdomain + '成功');
+                        waterfallCallback(null);
+                    } else {
+                        logger.debug('删除域名' + subdomain + '失败 err', err);
+                        waterfallCallback(err);
+                    }
+                } catch (e) {
+                    logger.debug('删除域名' + subdomain + '失败 e', e);
+                    waterfallCallback(e);
+                }
+            })
+        }
+    ], function (err) {
+        return callback(err);
+    })
+}
 
 
 
