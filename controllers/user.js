@@ -310,36 +310,38 @@ exports.mailverify = function (req, res, next){
  * @param req
  * @param res
  */
-exports.SNSverify = function (req, res){
+exports.sendSNSverify = function (req, res){
     try {
-        userService.get(req.params.id, function (err, data) {
+        var uid = req.body.uid;
+        var phonecode = req.body.phonecode;
+        userService.SNSverify(uid,phonecode, function (err, data) {
             try {
                 if (err) {
                     throw new Error(err);
                 }
-                logger.info("获取用户信息成功，返回 "+JSON.stringify(data));
+                logger.info("发送短信验证码成功");
                 res.json(data);
             } catch (e) {
-                logger.info("根据用户 id["+req.params.id+"] 获取用户信息失败");
+                logger.info("发送短信验证码失败");
                 logger.error(e);
-                res.json({
-                    result: false,
-                    info: {
-                        code: "00000",
-                        script: "获取用户信息失败"
-                    }
-                });
+                // res.json({
+                //     result: false,
+                //     info: {
+                //         code: "00000",
+                //         script: "获取用户信息失败"
+                //     }
+                // });
             }
         });
     } catch (e) {
         logger.error(e);
-        res.json({
-            result: false,
-            info: {
-                code: "00000",
-                script: "参数有误"
-            }
-        });
+        // res.json({
+        //     result: false,
+        //     info: {
+        //         code: "00000",
+        //         script: "参数有误"
+        //     }
+        // });
     }
 };
 

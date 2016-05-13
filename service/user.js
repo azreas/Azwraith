@@ -80,7 +80,7 @@ exports.mailverify = function (postdata, callback) {
  * @param tophone
  * @param callback
  */
-exports.SNSverify = function (uid,tophone, callback){
+exports.sendSNSverify = function (uid,tophone, callback){
     return userDao.get(uid,tophone, callback);
 };
 

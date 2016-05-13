@@ -153,7 +153,7 @@ exports.mailverify = function (postdata, callback) {
 }
 
 
-exports.SNSverify = function (uid,tophone, callback) {
+exports.sendSNSverify = function (uid,tophone, callback) {
     rest.get('http://' + userservice.host + ':' + userservice.port + '/v1/people/'+uid+'?tophone='+tophone).on('complete', function(data, response) {
         try {
             if (data.result !== true) {
