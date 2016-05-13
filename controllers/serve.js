@@ -50,10 +50,11 @@ exports.create = function (req, res, next) {
             network: "", // 网络名（email-name+appname）
             networkid: "", // 网络 id
             subdomain: "", // 子域名（email-name+appname）
-            status: 1, // 服务状态，1.启动中，2.运行中，3.停止中，4.已停止,5.启动失败,6.停止失败
+            status: 1, // 服务状态，1.启动中，2.运行中，3.停止中，4.已停止,5.启动失败,6.停止失败,7.创建失败
             createtime: new Date().getTime(), // 创建时间
             updatetime: new Date().getTime(), // 更新时间
             address: "-" // 服务地址
+            
         };
         serveService.create(req.cookies.token, serveConfig, function (err, result) {
             try {

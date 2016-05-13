@@ -27,6 +27,15 @@ var logger = require("../modules/log/log").logger();
 exports.create = function (token, serveConfig, callback) {
     // 多个函数依次执行，且前一个的输出为后一个的输入
     async.waterfall([
+        function (waterfallCallback) {
+            var status = serveConfig.status;
+            if (status==7) {
+                logger.info("服务创建失败");
+                waterfallCallback("服务创建失败");
+            } else {
+                waterfallCallback(null);//触发下一步
+            }
+        },
         function (waterfallCallback) {// 根据 token 获取用户id
             userDao.getIdByToken(token, function (err, result) {
                 try {
@@ -104,7 +113,8 @@ exports.create = function (token, serveConfig, callback) {
                 appid: serveConfig.id,
                 event: "创建成功",
                 titme: new Date().getTime(),
-                script: "create app ：" + serveConfig.id
+                script: "create app ：" + serveConfig.id,
+                status:1//1:success;2:failed
             }
             serveDao.saveEvent(containerEventConfig, function (err, result) {
                 try {
@@ -112,10 +122,12 @@ exports.create = function (token, serveConfig, callback) {
                         logger.debug(moment().format('h:mm:ss') + '   存储服务事件');
                         waterfallCallback(null);//触发下一步
                     } else {
+                        containerEventConfig.status = 2;
                         logger.info('存储服务事件失败:' + err);
                         waterfallCallback(err);
                     }
                 } catch (e) {
+                    containerEventConfig.status = 2;
                     logger.info('存储服务事件失败:' + e);
                     waterfallCallback('存储服务事件失败');
                 }
@@ -123,6 +135,7 @@ exports.create = function (token, serveConfig, callback) {
         }
     ], function (error) {
         if (error) {
+            serveConfig.status = 7;
             logger.info("创建服务失败：" + error);
             return callback("创建服务失败：" + error);
         } else {
@@ -149,7 +162,7 @@ exports.update = function (resourceParams, callback) {
                     appid: resourceParams.id,
                     event: "资源调整",
                     titme: new Date().getTime(),
-                    script: "update app resource：" + resourceParams.id
+                    script: "update app resource：" + resourceParams.id,
                 }
                 serveDao.saveEvent(containerEventConfig, function (err, result) {
                     try {

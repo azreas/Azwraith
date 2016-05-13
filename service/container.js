@@ -84,13 +84,15 @@ exports.create = function (appid, creatCount, servicecallback) {
                             appid: app.id,
                             event: "拉取镜像中",
                             titme: new Date().getTime(),
-                            script: "pull image " + app.image + ":" + app.imagetag
+                            script: "pull image " + app.image + ":" + app.imagetag,
+                            status:1//1,success;2,failed
                         };
                         //保存拉取镜像事件
                         serveDao.saveEvent(serverEventConfig, function (err, data) {
                             try {
                                 logger.info("服务 " + app.name + " 保存" + serverEventConfig.event + "事件情况：" + data.info.script);
                             } catch (e) {
+                                serverEventConfig.status = 2;
                                 logger.info("服务 " + app.name + " 保存" + serverEventConfig.event + "事件失败：" + e);
                             }
                         });
@@ -103,6 +105,7 @@ exports.create = function (appid, creatCount, servicecallback) {
                                     try {
                                         logger.info("服务 " + app.name + " 保存" + serverEventConfig.event + "事件情况：" + data.info.script);
                                     } catch (e) {
+                                        serverEventConfig.status = 2;
                                         logger.info("服务 " + app.name + " 保存" + serverEventConfig.event + "事件失败：" + e);
                                     }
                                 });
@@ -114,6 +117,7 @@ exports.create = function (appid, creatCount, servicecallback) {
                                     try {
                                         logger.info("服务 " + app.name + " 保存" + serverEventConfig.event + "事件情况：" + data.info.script);
                                     } catch (e) {
+                                        serverEventConfig.status = 2;
                                         logger.info("服务 " + app.name + " 保存" + serverEventConfig.event + "事件失败：" + e);
                                     }
                                 });
@@ -221,7 +225,8 @@ exports.create = function (appid, creatCount, servicecallback) {
                                 appid: app.id,
                                 event: eventTitle,
                                 titme: time,
-                                script: script
+                                script: script,
+                                status:1//1:success;2:failed
                             };
                             serveDao.saveEvent(serverEventConfig, function (err, data) {
                                 try {
@@ -229,6 +234,7 @@ exports.create = function (appid, creatCount, servicecallback) {
 
                                     logger.info("服务 " + app.name + " 保存" + serverEventConfig.event + "事件情况：" + data.info.script);
                                 } catch (e) {
+                                    serverEventConfig.status = 2;
                                     logger.info("服务 " + app.name + " 保存" + serverEventConfig.event + "事件失败：" + e);
                                 }
                             });
@@ -277,7 +283,7 @@ exports.create = function (appid, creatCount, servicecallback) {
                                         },
                                         name: app.name + "-" + stringUtil.randomString(5),
                                         status: 2,// // 容器实例状态，1.启动中，2.运行中，3.停止中，4.已停止,5.启动失败,6.停止失败
-                                        createtime: new Date(data.Created).getTime(),
+                                        createtime: new Date(data.Created).getTime()
                                     };
                                 } catch (e) {
                                     return createcallback(e);
@@ -370,16 +376,19 @@ exports.create = function (appid, creatCount, servicecallback) {
                     appid: app.id,
                     event: "",
                     titme: new Date().getTime(),
-                    script: ""
+                    script: "",
+                    status:1//1:success;2:failed
                 }
                 if (containerSuccessCounter <= 0) { // 表示服务启动失败，存储服务启动失败事件
                     serverEventConfig.event = "服务启动失败";
                     serverEventConfig.script = "启动服务 " + app.name + "失败";
+                    serverEventConfig.status = 2;
                 } else { // 表示服务启动成功，存储服务运行中事件
                     serverEventConfig.event = "运行中";
                     if (creatCount) {
                         serverEventConfig.script = "资源调整 " + app.name + "成功，共有 [" + containerSuccessCounter + "/" + creatCount + "] 个实例增加成功";
                     } else {
+                        serverEventConfig
                         serverEventConfig.script = "启动服务 " + app.name + "成功，共有 [" + containerSuccessCounter + "/" + app.instance + "] 个实例启动成功";
                     }
 
@@ -393,6 +402,7 @@ exports.create = function (appid, creatCount, servicecallback) {
                         logger.info("server event result ---> " + JSON.stringify(data));
                         logger.info("服务 " + app.name + " 保存" + serverEventConfig.event + "事件情况：" + data.info.script);
                     } catch (e) {
+                        serverEventConfig.status = 2;
                         logger.info("服务 " + app.name + " 保存" + serverEventConfig.event + "事件失败：" + e);
                     }
                 });
@@ -481,13 +491,15 @@ exports.scale = function (appid, creatCount, servicecallback) {
                             appid: app.id,
                             event: "拉取镜像中",
                             titme: new Date().getTime(),
-                            script: "pull image " + app.image + ":" + app.imagetag
+                            script: "pull image " + app.image + ":" + app.imagetag,
+                            status:1//1:success;2:failed
                         };
                         //保存拉取镜像事件
                         serveDao.saveEvent(serverEventConfig, function (err, data) {
                             try {
                                 logger.info("服务 " + app.name + " 保存" + serverEventConfig.event + "事件情况：" + data.info.script);
                             } catch (e) {
+                                serverEventConfig.status = 2;
                                 logger.info("服务 " + app.name + " 保存" + serverEventConfig.event + "事件失败：" + e);
                             }
                         });
@@ -500,11 +512,13 @@ exports.scale = function (appid, creatCount, servicecallback) {
                                     try {
                                         logger.info("服务 " + app.name + " 保存" + serverEventConfig.event + "事件情况：" + data.info.script);
                                     } catch (e) {
+                                        serverEventConfig.status = 2;
                                         logger.info("服务 " + app.name + " 保存" + serverEventConfig.event + "事件失败：" + e);
                                     }
                                 });
                                 callback(null);
                             } else {
+                                serverEventConfig.status = 2;
                                 serverEventConfig.event = "拉取镜像失败";
                                 serverEventConfig.script = "pull image " + app.image + ":" + app.imagetag + " fail"
                                 serveDao.saveEvent(serverEventConfig, function (err, data) {
