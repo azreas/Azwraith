@@ -41,7 +41,7 @@
     }).done(function (resp) {
         var events = resp.appevents;
         // console.log(events);
-         console.log(resp);
+        // console.log(resp);
         var html = '';
         for (var i in events) {
             var titme = new Date(events[i].titme);
@@ -141,8 +141,9 @@
         url: '/container/get/' + containerid,
         type: 'get'
     }).done(function (resp) {
-        console.log(resp);
+        //console.log(resp);
         //console.log(resp.iamgeName);
+        var autoscale = resp.autoscale;
         var update = new Date(resp.updateTime);
         var updateTime = formatDate(update);
         var create = new Date(resp.createTime);
@@ -169,7 +170,6 @@
                 status = "停止失败";
                 break;
         }
-
         $('#memory').html(resp.memory);
         $('#CPU').html(resp.cpu);
         $('#severName').html(resp.name);
@@ -187,11 +187,27 @@
             $('#containerImg').attr('src', 'https://hub.docker.com/public/images/official/' + resp.iamgeName + '.png');
         }
         for (var k in resp.environment) {
-            console.log(resp.environment[k][0]);
-            console.log(resp.environment[k][1]);
+            //console.log(resp.environment[k][0]);
+            //console.log(resp.environment[k][1]);
             var elem = $('<tr class="envRow new"><td id="envName">' + resp.environment[k][0] + '</td><td id="envVal">' + resp.environment[k][1] + '</td></tr>');
 
             elem.appendTo($('#envList .BORDER'));
+        }
+
+        //获取容器伸缩数
+        if(autoscale == "true"){
+            $('.applocation').removeClass('hide');
+            $.ajax({
+                url: '/container/scalecontainer/list/' + containerid,
+                type: 'GET'
+            }).done(function (resp) {
+                console.log(resp);
+                if(resp.result == true){
+                    $('.open').text(resp.containers.length);
+                }else if(resp.result == false){
+                    $('.open').text('0');
+                }
+            });
         }
 
     }).fail(function (err) {
@@ -204,6 +220,7 @@
         }).done(function (resp) {
             //console.log(resp);
             //console.log(resp.name);
+            var autoscale = resp.autoscale;
             var update = new Date(resp.updateTime);
             var updateTime = formatDate(update);
             var create = new Date(resp.createTime);
@@ -245,6 +262,22 @@
                 $('#containerImg').attr('src', '/images/image/emt.png');
             } else {
                 $('#containerImg').attr('src', 'https://hub.docker.com/public/images/official/' + resp.iamgeName + '.png');
+            }
+
+            //获取容器伸缩数
+            if(autoscale == "true"){
+                $('.applocation').removeClass('hide');
+                $.ajax({
+                    url: '/container/scalecontainer/list/' + containerid,
+                    type: 'GET'
+                }).done(function (resp) {
+                    //console.log(resp);
+                    if(resp.result == true){
+                        $('.open').text(resp.containers.length);
+                    }else if(resp.result == false){
+                        $('.open').text('0');
+                    }
+                });
             }
         }).fail(function (err) {
             console.log(err);
@@ -289,41 +322,46 @@
         });
     });
 
-    //获取容器伸缩数
-    $.ajax({
-        url: '/container/scalecontainer/list/' + containerid,
-        type: 'GET'
-    }).done(function (resp) {
-         console.log(resp);
-        //var html = '';
-        //for (var i in events) {
-        //    var titme = new Date(events[i].titme);
-        //    var date = formatDate(titme);
-        //    //console.log(date);
-        //
-        //    html += '<div class="event"><div class="event-line"><div class="event-status success"><i class="fa fa-check note"></i></div><div class="time-line-content"><div class="time-line-reason event-title"><div class="title-name success">' + events[i].event + '</div><div class="time-line-time"><div class="event-sign"><i class="fa fa-angle-right fa_caret"></i></div><div class="datetimes">' + date + '</div></div><div class="time-line-message" style="display: none;"><p class="list-times">时间：' + date + '</p><p class="list-conent">信息：' + events[i].script + '</p></div></div></div></div></div>';
-        //
-        //    $('.containerEvent').html(html);
-        //}
-    });
-    //setInterval(function () {
+    ////获取容器伸缩数
+    //var autoscaleStatus = $('#autoscaleStatus').val();
+    //if(autoscaleStatus == true){
+    //    $('.applocation').removeClass('hide');
     //    $.ajax({
-    //        url: '/container/instance/event/list/' + containerid,
+    //        url: '/container/scalecontainer/list/' + containerid,
     //        type: 'GET'
     //    }).done(function (resp) {
-    //        var events = resp.appevents;
-    //        //console.log(events);
-    //        var html = '';
-    //        for (var i in events) {
-    //            var titme = new Date(events[i].titme);
-    //            var date = formatDate(titme);
-    //            //console.log(date);
-    //
-    //            html += '<div class="event"><div class="event-line"><div class="event-status success"><i class="fa fa-check note"></i></div><div class="time-line-content"><div class="time-line-reason event-title"><div class="title-name success">' + events[i].event + '</div><div class="time-line-time"><div class="event-sign"><i class="fa fa-angle-right fa_caret"></i></div><div class="datetimes">' + date + '</div></div><div class="time-line-message" style="display: none;"><p class="list-times">时间：' + date + '</p><p class="list-conent">信息：' + events[i].script + '</p></div></div></div></div></div>';
-    //
-    //            $('.containerEvent').html(html);
-    //        }
+    //        console.log(resp);
+    //        //var html = '';
+    //        //for (var i in events) {
+    //        //    var titme = new Date(events[i].titme);
+    //        //    var date = formatDate(titme);
+    //        //    //console.log(date);
+    //        //
+    //        //    html += '<div class="event"><div class="event-line"><div class="event-status success"><i class="fa fa-check note"></i></div><div class="time-line-content"><div class="time-line-reason event-title"><div class="title-name success">' + events[i].event + '</div><div class="time-line-time"><div class="event-sign"><i class="fa fa-angle-right fa_caret"></i></div><div class="datetimes">' + date + '</div></div><div class="time-line-message" style="display: none;"><p class="list-times">时间：' + date + '</p><p class="list-conent">信息：' + events[i].script + '</p></div></div></div></div></div>';
+    //        //
+    //        //    $('.containerEvent').html(html);
+    //        //}
     //    });
-    //}, 5000);
+        //setInterval(function () {
+        //    $.ajax({
+        //        url: '/container/instance/event/list/' + containerid,
+        //        type: 'GET'
+        //    }).done(function (resp) {
+        //        var events = resp.appevents;
+        //        //console.log(events);
+        //        var html = '';
+        //        for (var i in events) {
+        //            var titme = new Date(events[i].titme);
+        //            var date = formatDate(titme);
+        //            //console.log(date);
+        //
+        //            html += '<div class="event"><div class="event-line"><div class="event-status success"><i class="fa fa-check note"></i></div><div class="time-line-content"><div class="time-line-reason event-title"><div class="title-name success">' + events[i].event + '</div><div class="time-line-time"><div class="event-sign"><i class="fa fa-angle-right fa_caret"></i></div><div class="datetimes">' + date + '</div></div><div class="time-line-message" style="display: none;"><p class="list-times">时间：' + date + '</p><p class="list-conent">信息：' + events[i].script + '</p></div></div></div></div></div>';
+        //
+        //            $('.containerEvent').html(html);
+        //        }
+        //    });
+        //}, 5000);
+    //}
+
 })();
 
