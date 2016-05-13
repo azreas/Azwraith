@@ -6,14 +6,13 @@
 
 var userDao = require('../dao/user');
 var async = require("async");
-
-
+var logger = require("../modules/log/log").logger();
 /**
  * 根据 token 登出
  * @param token
  * @param callback
  */
-exports.logout = function (token, callback){
+exports.logout = function (token, callback) {
     return userDao.logout(token, callback);
 };
 
@@ -23,7 +22,28 @@ exports.logout = function (token, callback){
  * @param id
  * @param callback
  */
-exports.get = function (id, callback){
+exports.get = function (id, callback) {
+
+    async.waterfall([
+        function (waterfallCallback) {
+            userDao.getIdByToken(token, function (err, result) {
+                try {
+                    if (!err) {
+                        waterfallCallback(null, result.id);
+                    } else {
+                        logger.error('getIdByToken  token   ' + token + '   err   ' + err);
+                        waterfallCallback(err);
+                    }
+                } catch (e) {
+
+                }
+            })
+        }
+    ], function (err) {
+
+    });
+
+
     return userDao.get(id, callback);
 };
 
@@ -52,8 +72,46 @@ exports.login = function (user, callback) {
  * @param putdata
  * @param callback
  */
-exports.changeinfo = function (putdata, callback) {
-    return userDao.changeinfo(putdata, callback);
+exports.changeinfo = function (token, profile, callback) {
+
+    async.waterfall([
+        function (waterfallCallback) {
+            userDao.getIdByToken(token, function (err, result) {
+                try {
+                    if (!err) {
+                        waterfallCallback(null, result.id);
+                    } else {
+                        logger.error('getIdByToken  token   ' + token + '   err   ' + err);
+                        waterfallCallback(err);
+                    }
+                } catch (e) {
+                    logger.error('getIdByToken  token   ' + token + '   e   ' + e);
+                    waterfallCallback(e);
+                }
+            });
+        }, function (uid, waterfallCallback) {
+            var putdata = {
+                "uid": uid,
+                "profile": profile
+
+            };
+            userDao.changeinfo(putdata, function (err, data) {
+                try {
+                    if (!err) {
+                        waterfallCallback(null, data);
+                    } else {
+                        logger.error('changeinfo   uid  ' + uid + '   err   ' + err);
+                        waterfallCallback(err);
+                    }
+                } catch (e) {
+                    logger.error('changeinfo   uid  ' + uid + '   e   ' + e);
+                    waterfallCallback(e);
+                }
+            });
+        }
+    ], function (err, data) {
+        return callback(err, data);
+    });
 };
 
 /**
@@ -62,7 +120,41 @@ exports.changeinfo = function (putdata, callback) {
  * @param callback
  */
 exports.changepassword = function (putdata, callback) {
-    return userDao.changepassword(putdata, callback);
+
+    async.waterfall([
+        function (waterfallCallback) {
+            userDao.getIdByToken(token, function (err, result) {
+                try {
+                    if (!err) {
+                        waterfallCallback(null, result.id);
+                    } else {
+                        logger.error('getIdByToken  token   ' + token + '   err   ' + err);
+                        waterfallCallback(err);
+                    }
+                } catch (e) {
+                    logger.error('getIdByToken  token   ' + token + '   e   ' + e);
+                    waterfallCallback(e);
+                }
+            });
+        }, function (uid, waterfallCallback) {
+            putdata.uid = uid;
+            userDao.changepassword(putdata, function (err, data) {
+                try {
+                    if (!err) {
+                        waterfallCallback(null, data);
+                    } else {
+                        logger.error('changepassword   uid  ' + uid + '   err   ' + err);
+                        waterfallCallback(err);
+                    }
+                } catch (e) {
+                    logger.error('changepassword   uid  ' + uid + '   e   ' + e);
+                    waterfallCallback(e);
+                }
+            });
+        }
+    ], function (err, data) {
+        return callback(err, data);
+    });
 };
 
 /**
@@ -70,8 +162,43 @@ exports.changepassword = function (putdata, callback) {
  * @param putdata
  * @param callback
  */
-exports.mailverify = function (postdata, callback) {
-    return userDao.changepassword(postdata, callback);
+exports.mailverify = function (token, postdata, callback) {
+
+    async.waterfall([
+        function (waterfallCallback) {
+            userDao.getIdByToken(token, function (err, result) {
+                try {
+                    if (!err) {
+                        waterfallCallback(null, result.id);
+                    } else {
+                        logger.error('getIdByToken  token   ' + token + '   err   ' + err);
+                        waterfallCallback(err);
+                    }
+                } catch (e) {
+                    logger.error('getIdByToken  token   ' + token + '   e   ' + e);
+                    waterfallCallback(e);
+                }
+            });
+        },
+        function (uid, waterfallCallback) {
+            postdata.uid = uid;
+            userDao.changepassword(postdata, function (err, data) {
+                try {
+                    if (!err) {
+                        waterfallCallback(null, data);
+                    } else {
+                        logger.error('changepassword   uid  ' + uid + '   err   ' + err);
+                        waterfallCallback(err);
+                    }
+                } catch (e) {
+                    logger.error('changepassword   uid  ' + uid + '   e   ' + e);
+                    waterfallCallback(e);
+                }
+            });
+        }
+    ], function (err, data) {
+        return callback(err, data);
+    });
 };
 
 /**
@@ -80,8 +207,87 @@ exports.mailverify = function (postdata, callback) {
  * @param tophone
  * @param callback
  */
-exports.sendSNSverify = function (uid,tophone, callback){
-    return userDao.get(uid,tophone, callback);
+exports.sendSNSverify = function (token, tophone, callback) {
+
+    async.waterfall([
+        function (waterfallCallback) {
+            userDao.getIdByToken(token, function (err, result) {
+                try {
+                    if (!err) {
+                        waterfallCallback(null, result.id);
+                    } else {
+                        logger.error('getIdByToken  token   ' + token + '   err   ' + err);
+                        waterfallCallback(err);
+                    }
+                } catch (e) {
+                    logger.error('getIdByToken  token   ' + token + '   e   ' + e);
+                    waterfallCallback(e);
+                }
+            });
+        },
+        function (uid, waterfallCallback) {
+            userDao.sendSNSverify(uid, tophone, function (err, data) {
+                try {
+                    if (!err) {
+                        waterfallCallback(null, data);
+                    } else {
+                        logger.error('sendSNSverify   uid  ' + uid + '   err   ' + err);
+                        waterfallCallback(err);
+                    }
+                } catch (e) {
+                    logger.error('sendSNSverify   uid  ' + uid + '   e   ' + e);
+                    waterfallCallback(e);
+                }
+            });
+        }
+    ], function (err, data) {
+        return callback(err, data);
+    });
+};
+
+
+/**
+ * 验证短信验证码
+ * @param uid
+ * @param tophone
+ * @param callback
+ */
+exports.verifySNS = function (token, phonecode, callback) {
+
+    async.waterfall([
+        function (waterfallCallback) {
+            userDao.getIdByToken(token, function (err, result) {
+                try {
+                    if (!err) {
+                        waterfallCallback(null, result.id);
+                    } else {
+                        logger.error('getIdByToken  token   ' + token + '   err   ' + err);
+                        waterfallCallback(err);
+                    }
+                } catch (e) {
+                    logger.error('getIdByToken  token   ' + token + '   e   ' + e);
+                    waterfallCallback(e);
+                }
+            });
+        },
+        function (uid, waterfallCallback) {
+            userDao.verifySNS(uid, phonecode, function (err, data) {
+                try {
+                    if (!err) {
+                        waterfallCallback(null, data);
+                    } else {
+                        logger.error('verifySNS   uid  ' + uid + '   err   ' + err);
+                        waterfallCallback(err);
+                    }
+                } catch (e) {
+                    logger.error('verifySNS   uid  ' + uid + '   e   ' + e);
+                    waterfallCallback(e);
+                }
+            });
+        }
+    ], function (err) {
+        return callback(err, data);
+    });
 };
 
 

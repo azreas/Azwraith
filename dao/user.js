@@ -14,7 +14,7 @@ var userservice = require('../settings').userservice;
  * @param callback
  */
 exports.insert = function (user, callback) {
-    rest.postJson('http://' + userservice.host + ':' + userservice.port + '/v1/people/', user).on('complete', function(data, response) {
+    rest.postJson('http://' + userservice.host + ':' + userservice.port + '/v1/people/', user).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
@@ -33,7 +33,7 @@ exports.insert = function (user, callback) {
  * @param callback
  */
 exports.logout = function (token, callback) {
-    rest.del('http://' + userservice.host + ':' + userservice.port + '/v1/auth/'+token).on('complete', function(data, response) {
+    rest.del('http://' + userservice.host + ':' + userservice.port + '/v1/auth/' + token).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
@@ -52,7 +52,7 @@ exports.logout = function (token, callback) {
  * @param callback
  */
 exports.get = function (id, callback) {
-    rest.get('http://' + userservice.host + ':' + userservice.port + '/v1/people/'+id).on('complete', function(data, response) {
+    rest.get('http://' + userservice.host + ':' + userservice.port + '/v1/people/' + id).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
@@ -71,7 +71,7 @@ exports.get = function (id, callback) {
  * @param callback
  */
 exports.getIdByToken = function (token, callback) {
-    rest.get('http://' + userservice.host + ':' + userservice.port + '/v1/auth/'+token).on('complete', function(data, response) {
+    rest.get('http://' + userservice.host + ':' + userservice.port + '/v1/auth/' + token).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
@@ -90,7 +90,7 @@ exports.getIdByToken = function (token, callback) {
  * @param callback
  */
 exports.login = function (user, callback) {
-    rest.postJson('http://' + userservice.host + ':' + userservice.port + '/v1/auth/', user).on('complete', function(data, response) {
+    rest.postJson('http://' + userservice.host + ':' + userservice.port + '/v1/auth/', user).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
@@ -109,7 +109,7 @@ exports.login = function (user, callback) {
  * @param callback
  */
 exports.changeinfo = function (putdata, callback) {
-    rest.putJson('http://' + userservice.host + ':' + userservice.port + '/v1/people/', putdata).on('complete', function(data, response) {
+    rest.putJson('http://' + userservice.host + ':' + userservice.port + '/v1/people/', putdata).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
@@ -127,7 +127,7 @@ exports.changeinfo = function (putdata, callback) {
  * @param callback
  */
 exports.changepassword = function (putdata, callback) {
-    rest.putJson('http://' + userservice.host + ':' + userservice.port + '/v1/people/passwd/', putdata).on('complete', function(data, response) {
+    rest.putJson('http://' + userservice.host + ':' + userservice.port + '/v1/people/passwd/', putdata).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
@@ -140,7 +140,7 @@ exports.changepassword = function (putdata, callback) {
 }
 
 exports.mailverify = function (postdata, callback) {
-    rest.postJson('http://' + userservice.host + ':' + userservice.port + '/v1/people/mailverify/', postdata).on('complete', function(data, response) {
+    rest.postJson('http://' + userservice.host + ':' + userservice.port + '/v1/people/mailverify/', postdata).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
@@ -153,8 +153,22 @@ exports.mailverify = function (postdata, callback) {
 }
 
 
-exports.sendSNSverify = function (uid,tophone, callback) {
-    rest.get('http://' + userservice.host + ':' + userservice.port + '/v1/people/'+uid+'?tophone='+tophone).on('complete', function(data, response) {
+exports.sendSNSverify = function (uid, tophone, callback) {
+    rest.get('http://' + userservice.host + ':' + userservice.port + '/v1/people/' + uid + '?tophone=' + tophone).on('complete', function (data, response) {
+        try {
+            if (data.result !== true) {
+                throw new Error(data.info.script);
+            }
+        } catch (e) {
+            return callback(e.message, data);
+        }
+        return callback(null, data);
+    });
+};
+
+
+exports.verifySNS = function (uid, phonecode, callback) {
+    rest.post('http://' + userservice.host + ':' + userservice.port + '/v1/people/' + uid + '?phonecode=' + phonecode, null).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
