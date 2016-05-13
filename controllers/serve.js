@@ -93,17 +93,17 @@ exports.remove = function (req, res, next) {
         for (var i in ids) {
             console.log(ids[i]);
             var id = ids[i];
-            // serveService.removeDomainByAppid(id, function (err) {
-            //     try {
-            //         if (!err) {
-            //
-            //         } else {
-            //             errorCount++;
-            //         }
-            //     } catch (e) {
-            //         next(e);
-            //     }
-            // });
+            serveService.removeDomainByAppid(id, function (err) {
+                try {
+                    if (!err) {
+
+                    } else {
+                        errorCount++;
+                    }
+                } catch (e) {
+                    next(e);
+                }
+            });
             serveService.remove(id, function (err, result) {
                 try {
                     if (!err) {

@@ -346,11 +346,11 @@ exports.remove = function (appId, callback) {
                                     logger.debug("删除网络成功");
                                     waterfullCallback(null, app);
                                 } else {
-                                    logger.info("删除网络失败" + error);
+                                    logger.info("删除网络失败err" + error);
                                     waterfullCallback("删除网络失败" + error);
                                 }
                             } catch (e) {
-                                logger.info("删除网络失败" + e);
+                                logger.info("删除网络失败e" + e);
                                 waterfullCallback("删除网络失败" + e);
                             }
                         });
@@ -364,7 +364,6 @@ exports.remove = function (appId, callback) {
                 }
             });
         }, function (app, waterfullCallback) {//数据库APP删除
-            waterfullCallback(null, app);
             serveDao.delete(app.id, function (err) {
                 try {
                     if (!err) {
@@ -432,7 +431,7 @@ exports.remove = function (appId, callback) {
              return callback(err);
              });*/
         } else {
-            return callback(null, result);
+            return callback(null);
         }
     });
 
