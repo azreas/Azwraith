@@ -323,5 +323,60 @@ exports.verifySNS = function (req, res, next) {
     }
 }
 
+/**
+ * 上传头像
+ * @param req
+ * @param res
+ * @param next
+ */
+exports.avatarupload = function (req, res, next) {
 
+    try {
+        var token = req.cookies.token;
+        userService.avatarupload(token, function (err, data) {
+            if (!err) {
+                res.json(data);
+            } else {
+                logger.error(err);
+                res.json({"result": false});
+            }
 
+        })
+    } catch (e) {
+        logger.error(e);
+        res.json({"result": false});
+    }
+}
+
+exports.getavatar = function (req, res) {
+    try {
+        userService.getavatar(req.cookies.token, function (err, data) {
+            try {
+                if (err) {
+                    throw new Error(err);
+                }
+                logger.info("获取用户头像路径成功，返回 " + JSON.stringify(data));
+                res.json(data);
+            } catch (e) {
+                logger.info("根据用户 id[" + req.params.id + "] 获取用户头像路径失败");
+                logger.error(e);
+                res.json({
+                    result: false,
+                    info: {
+                        code: "00000",
+                        script: "获取用户头像路径失败"
+                    }
+                });
+            }
+        });
+    } catch (e) {
+        logger.error(e);
+        res.json({
+            result: false,
+            info: {
+                code: "00000",
+                script: "参数有误"
+            }
+        });
+    }
+};

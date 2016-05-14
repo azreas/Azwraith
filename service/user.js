@@ -304,9 +304,87 @@ exports.verifySNS = function (token, phonecode, callback) {
     });
 };
 
+/**
+ * 上传头像
+ * @param token
+ * @param callback
+ */
+exports.avatarupload = function (token, callback) {
+
+    async.waterfall([
+        function (waterfallCallback) {
+            userDao.getIdByToken(token, function (err, result) {
+                try {
+                    if (!err) {
+                        waterfallCallback(null, result.id);
+                    } else {
+                        logger.error('getIdByToken  token   ' + token + '   err   ' + err);
+                        waterfallCallback(err);
+                    }
+                } catch (e) {
+                    logger.error('getIdByToken  token   ' + token + '   e   ' + e);
+                    waterfallCallback(e);
+                }
+            });
+        },
+        function (uid, waterfallCallback) {
+            userDao.avatarupload(uid, function (err, data) {
+                try {
+                    if (!err) {
+                        waterfallCallback(null, data);
+                    } else {
+                        logger.error('avatarupload   uid  ' + uid + '   err   ' + err);
+                        waterfallCallback(err);
+                    }
+                } catch (e) {
+                    logger.error('avatarupload   uid  ' + uid + '   e   ' + e);
+                    waterfallCallback(e);
+                }
+            });
+        }
+    ], function (err) {
+        return callback(err, data);
+    });
+};
+
+exports.getavatar = function (id, callback) {
+
+    async.waterfall([
+        function (waterfallCallback) {
+            userDao.getIdByToken(token, function (err, result) {
+                try {
+                    if (!err) {
+                        waterfallCallback(null, result.id);
+                    } else {
+                        logger.error('getIdByToken  token   ' + token + '   err   ' + err);
+                        waterfallCallback(err);
+                    }
+                } catch (e) {
+
+                }
+            });
+        }, function (uid, waterfallCallback) {
+            userDao.getavatar(uid, function (err, data) {
+                try {
+                    if (!err) {
+                        waterfallCallback(null, data);
+                    } else {
+                        logger.error('get   uid  ' + uid + '   err   ' + err);
+                        waterfallCallback(err);
+                    }
+                } catch (e) {
+                    logger.error('get   uid  ' + uid + '   e   ' + e);
+                    waterfallCallback(e);
+                }
+            });
+        }
+    ], function (err, data) {
+        return callback(err, data);
+    });
 
 
-
+    return userDao.get(id, callback);
+};
 
 
 

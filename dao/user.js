@@ -179,3 +179,35 @@ exports.verifySNS = function (uid, phonecode, callback) {
         return callback(null, data);
     });
 };
+
+/**
+ * 上传头像
+ * @param uid
+ * @param phonecode
+ * @param callback
+ */
+exports.avatarupload = function (uid, phonecode, callback) {
+    rest.post('http://' + userservice.host + ':' + userservice.port + '/v1/people/avatarupload/' + uid , null).on('complete', function (data, response) {
+        try {
+            if (data.result !== true) {
+                throw new Error(data.info.script);
+            }
+        } catch (e) {
+            return callback(e.message, data);
+        }
+        return callback(null, data);
+    });
+};
+
+exports.getavatar = function (id, callback) {
+    rest.get('http://' + userservice.host + ':' + userservice.port + '/v1/people/avatarupload/' + id).on('complete', function (data, response) {
+        try {
+            if (data.result !== true) {
+                throw new Error(data.info.script);
+            }
+        } catch (e) {
+            return callback(e.message, data);
+        }
+        return callback(null, data);
+    });
+};

@@ -41,6 +41,12 @@ module.exports = function (app) {
     //邮箱亚洲
     router.post('/mail/verify/', userController.mailverify);
 
+    //上传头像
+    router.post('/avatar/avatarupload/', userController.avatarupload);
+
+    //根据id获取用户头像路径
+    router.post('/avatar/getavatar/', userController.getavatar);
+
     // router 命名空间
     app.use('/', router);
 };
