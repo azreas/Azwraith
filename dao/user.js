@@ -167,11 +167,11 @@ exports.sendSNSverify = function (uid, tophone, callback) {
 };
 
 
-exports.verifySNS = function (uid, phonecode, callback) {
-    rest.post('http://' + userservice.host + ':' + userservice.port + '/v1/people/SNSverify/' + uid + '?phonecode=' + phonecode, null).on('complete', function (data, response) {
+exports.verifySNS = function (uid, phonecode,cellphone, callback) {
+    rest.post('http://' + userservice.host + ':' + userservice.port + '/v1/people/SNSverify/' + uid + '?phonecode=' + phonecode + '&cellphone=' +cellphone, null).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
-                throw new Error(data.info.script);
+                throw new Error(data.info.code);
             }
         } catch (e) {
             return callback(e.message, data);

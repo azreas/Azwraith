@@ -263,7 +263,7 @@ exports.sendSNSverify = function (token, tophone, callback) {
  * @param tophone
  * @param callback
  */
-exports.verifySNS = function (token, phonecode, callback) {
+exports.verifySNS = function (token, phonecode,cellphone, callback) {
 
     async.waterfall([
         function (waterfallCallback) {
@@ -282,7 +282,7 @@ exports.verifySNS = function (token, phonecode, callback) {
             });
         },
         function (uid, waterfallCallback) {
-            userDao.verifySNS(uid, phonecode, function (err, data) {
+            userDao.verifySNS(uid, phonecode,cellphone, function (err, data) {
                 try {
                     if (!err) {
                         waterfallCallback(null, data);

@@ -328,12 +328,18 @@ exports.verifySNS = function (req, res, next) {
     try {
         var token = req.cookies.token;
         var phonecode = req.body.phonecode;
-        userService.verifySNS(token, phonecode, function (err, data) {
+        var cellphone = req.body.cellphone;
+        userService.verifySNS(token, phonecode,cellphone, function (err, data) {
             if (!err) {
                 res.json(data);
             } else {
                 logger.error(err);
-                res.json({"result": false});
+                if(err == "11"){
+                    res.json({"result": "11"});
+                }else if(err == "12"){
+                    res.json({"result": "12"});
+                }
+
             }
 
         })
