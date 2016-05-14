@@ -78,11 +78,8 @@
                 <input id="containerId" type="hidden" value="<%= id %>">
             </ul>
             <div class="applocation hide">
-                <span class="" style="vertical-align: top;padding: 0px;height:46px; font-size: 20px;line-height: 46px; width: 150px;">
-                    自动伸缩容器数：
-                </span>
                 <div style="text-align: center">
-                    <span class="open" style="font-size:16px;"></span>
+                    <svg id="fillgauge" width="205" height="200" style="display: block"></svg>
                 </div>
             </div>
         </section>
@@ -285,7 +282,8 @@
         </div>
     </div>
 </div>
-
+<script src="/js/d3/d3.min.js"></script>
+<script src="/js/d3/d3draw.js"></script>
 <script src="/js/detail.js"></script>
 <script src="/js/header.js"></script>
 </body>

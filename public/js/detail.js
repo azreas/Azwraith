@@ -1,6 +1,14 @@
 (function () {
 
-    $('.nav-menu li').eq(1).addClass('item-click');
+    //伸缩容器图标生成
+    var config = liquidFillGaugeDefaultSettings();
+    config.circleThickness = 0.1;
+    config.circleFillGap = 0.2;
+    config.textVertPosition = 0.8;
+    config.waveAnimateTime = 2000;
+    config.waveHeight = 0.3;
+    config.waveCount = 1;
+    var gauge = loadLiquidFillGauge("fillgauge", 0, config);
 
     $('.baseInfo a').click(function () {
         $(this).addClass('btn-prim').siblings().removeClass('btn-prim');
@@ -201,12 +209,11 @@
                 url: '/container/scalecontainer/list/' + containerid,
                 type: 'GET'
             }).done(function (resp) {
-                console.log(resp);
-                console.log(resp.containers.length);
+                //console.log(resp);
                 if(resp.result == true){
-                    $('.open').text(resp.containers.length);
+                    gauge.update(resp.containers.length);
                 }else if(resp.result == false){
-                    $('.open').text('0');
+                    gauge.update(0);
                 }
             });
         }
@@ -272,12 +279,11 @@
                     url: '/container/scalecontainer/list/' + containerid,
                     type: 'GET'
                 }).done(function (resp) {
-                    console.log(resp);
-                    console.log(resp.containers.length);
+                    //console.log(resp);
                     if(resp.result == true){
-                        $('.open').text(resp.containers.length);
+                        gauge.update(resp.containers.length);
                     }else if(resp.result == false){
-                        $('.open').text('0');
+                        gauge.update(0);
                     }
                 });
             }
