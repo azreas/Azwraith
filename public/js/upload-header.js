@@ -57,7 +57,7 @@
         // var _csrf = $('[name=_csrf]').val();
         this.uploader = WebUploader.create({
             swf: '/js/webuploader/Uploader.swf',
-            server: '192.168.1.184:3001/upload',
+            server: 'http://192.168.1.210:3000/avatar/avatarupload',
             pick: this.$uploadBtn[0],
             paste: document.body,
             dnd: this.$upload[0],

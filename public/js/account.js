@@ -324,7 +324,7 @@
 
     });
 
-    //用户修改密码验证
+    //用户上传头像
     //$('#changePwd').click(function () {
     //    var originalPwd = $('#originalPwd').val();
     //    var newPwd = $('#newPwd').val();

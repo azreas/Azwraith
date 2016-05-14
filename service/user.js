@@ -263,7 +263,7 @@ exports.sendSNSverify = function (token, tophone, callback) {
  * @param tophone
  * @param callback
  */
-exports.verifySNS = function (token, phonecode,cellphone, callback) {
+exports.verifySNS = function (token, phonecode, cellphone, callback) {
 
     async.waterfall([
         function (waterfallCallback) {
@@ -282,7 +282,7 @@ exports.verifySNS = function (token, phonecode,cellphone, callback) {
             });
         },
         function (uid, waterfallCallback) {
-            userDao.verifySNS(uid, phonecode,cellphone, function (err, data) {
+            userDao.verifySNS(uid, phonecode, cellphone, function (err, data) {
                 try {
                     if (!err) {
                         waterfallCallback(null, data);
@@ -339,7 +339,7 @@ exports.avatarupload = function (token, callback) {
                 }
             });
         }
-    ], function (err) {
+    ], function (err, data) {
         return callback(err, data);
     });
 };

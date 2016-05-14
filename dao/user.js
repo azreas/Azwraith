@@ -167,8 +167,8 @@ exports.sendSNSverify = function (uid, tophone, callback) {
 };
 
 
-exports.verifySNS = function (uid, phonecode,cellphone, callback) {
-    rest.post('http://' + userservice.host + ':' + userservice.port + '/v1/people/SNSverify/' + uid + '?phonecode=' + phonecode + '&cellphone=' +cellphone, null).on('complete', function (data, response) {
+exports.verifySNS = function (uid, phonecode, cellphone, callback) {
+    rest.post('http://' + userservice.host + ':' + userservice.port + '/v1/people/SNSverify/' + uid + '?phonecode=' + phonecode + '&cellphone=' + cellphone, null).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.code);
@@ -186,11 +186,11 @@ exports.verifySNS = function (uid, phonecode,cellphone, callback) {
  * @param phonecode
  * @param callback
  */
-exports.avatarupload = function (uid, phonecode, callback) {
-    rest.post('http://' + userservice.host + ':' + userservice.port + '/v1/people/avatarupload/' + uid , null).on('complete', function (data, response) {
+exports.avatarupload = function (uid, callback) {
+    rest.post('http://192.168.1.210:3000/v1/people/avatarupload/' + uid, null).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
-                throw new Error(data.info.script);
+                throw new Error(data);
             }
         } catch (e) {
             return callback(e.message, data);
@@ -200,10 +200,10 @@ exports.avatarupload = function (uid, phonecode, callback) {
 };
 
 exports.getavatar = function (id, callback) {
-    rest.get('http://' + userservice.host + ':' + userservice.port + '/v1/people/avatarupload/' + id).on('complete', function (data, response) {
+    rest.get('http://192.168.1.210:3001/v1/people/avatarupload/' + id).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
-                throw new Error(data.info.script);
+                throw new Error(data);
             }
         } catch (e) {
             return callback(e.message, data);
