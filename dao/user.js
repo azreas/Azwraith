@@ -181,16 +181,16 @@ exports.verifySNS = function (uid, phonecode, cellphone, callback) {
 };
 
 /**
- * 上传头像
+ * 记录上传头像
  * @param uid
  * @param phonecode
  * @param callback
  */
-exports.avatarupload = function (uid, callback) {
-    rest.post('http://192.168.1.210:3000/v1/people/avatarupload/' + uid, null).on('complete', function (data, response) {
+exports.avatarupload = function (postdata, callback) {
+    rest.post('http://' + userservice.host + ':' + userservice.port + '/v1/people/saveHeadName', postdata).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
-                throw new Error(data);
+                throw new Error(data.info.script);
             }
         } catch (e) {
             return callback(e.message, data);

@@ -329,14 +329,14 @@ exports.verifySNS = function (req, res, next) {
         var token = req.cookies.token;
         var phonecode = req.body.phonecode;
         var cellphone = req.body.cellphone;
-        userService.verifySNS(token, phonecode,cellphone, function (err, data) {
+        userService.verifySNS(token, phonecode, cellphone, function (err, data) {
             if (!err) {
                 res.json(data);
             } else {
                 logger.error(err);
-                if(err == "11"){
+                if (err == "11") {
                     res.json({"result": "11"});
-                }else if(err == "12"){
+                } else if (err == "12") {
                     res.json({"result": "12"});
                 }
 
@@ -357,21 +357,33 @@ exports.verifySNS = function (req, res, next) {
  */
 exports.avatarupload = function (req, res, next) {
 
-    try {
-        var token = req.cookies.token;
-        userService.avatarupload(token, function (err, data) {
-            if (!err) {
-                res.json(data);
-            } else {
-                logger.error(err);
-                res.json({"result": false});
-            }
 
-        })
-    } catch (e) {
-        logger.error(e);
-        res.json({"result": false});
-    }
+    var muilter = require('../modules/multerUtil');
+    //multer有single()中的名称必须是表单上传字段的name名称。
+    var upload = muilter.single('file');
+    upload(req, res, function (err) {
+        //添加错误处理
+        if (err) {
+            console.log(err);
+        } else {
+            
+        }
+    });
+    // try {
+    //     var token = req.cookies.token;
+    //     userService.avatarupload(token, function (err, data) {
+    //         if (!err) {
+    //             res.json(data);
+    //         } else {
+    //             logger.error(err);
+    //             res.json({"result": false});
+    //         }
+    //
+    //     })
+    // } catch (e) {
+    //     logger.error(e);
+    //     res.json({"result": false});
+    // }
 }
 
 exports.getavatar = function (req, res) {

@@ -202,6 +202,7 @@
                 type: 'GET'
             }).done(function (resp) {
                 console.log(resp);
+                console.log(resp.containers.length);
                 if(resp.result == true){
                     $('.open').text(resp.containers.length);
                 }else if(resp.result == false){
@@ -271,7 +272,8 @@
                     url: '/container/scalecontainer/list/' + containerid,
                     type: 'GET'
                 }).done(function (resp) {
-                    //console.log(resp);
+                    console.log(resp);
+                    console.log(resp.containers.length);
                     if(resp.result == true){
                         $('.open').text(resp.containers.length);
                     }else if(resp.result == false){

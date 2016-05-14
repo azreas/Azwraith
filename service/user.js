@@ -92,7 +92,7 @@ exports.changeinfo = function (token, profile, callback) {
                     if (!err) {
                         waterfallCallback(null, result.id);
                     } else {
-                        logger.error('getIdByToken  token   ' + token + '   err   ' + err);
+                        logger.info('getIdByToken  token   ' + token + '   err   ' + err);
                         waterfallCallback(err);
                     }
                 } catch (e) {
@@ -111,7 +111,7 @@ exports.changeinfo = function (token, profile, callback) {
                     if (!err) {
                         waterfallCallback(null, data);
                     } else {
-                        logger.error('changeinfo   uid  ' + uid + '   err   ' + err);
+                        logger.info('changeinfo   uid  ' + uid + '   err   ' + err);
                         waterfallCallback(err);
                     }
                 } catch (e) {
@@ -139,7 +139,7 @@ exports.changepassword = function (token, putdata, callback) {
                     if (!err) {
                         waterfallCallback(null, result.id);
                     } else {
-                        logger.error('getIdByToken  token   ' + token + '   err   ' + err);
+                        logger.info('getIdByToken  token   ' + token + '   err   ' + err);
                         waterfallCallback(err);
                     }
                 } catch (e) {
@@ -154,7 +154,7 @@ exports.changepassword = function (token, putdata, callback) {
                     if (!err) {
                         waterfallCallback(null, data);
                     } else {
-                        logger.error('changepassword   uid  ' + uid + '   err   ' + err);
+                        logger.info('changepassword   uid  ' + uid + '   err   ' + err);
                         waterfallCallback(err);
                     }
                 } catch (e) {
@@ -182,7 +182,7 @@ exports.mailverify = function (token, postdata, callback) {
                     if (!err) {
                         waterfallCallback(null, result.id);
                     } else {
-                        logger.error('getIdByToken  token   ' + token + '   err   ' + err);
+                        logger.info('getIdByToken  token   ' + token + '   err   ' + err);
                         waterfallCallback(err);
                     }
                 } catch (e) {
@@ -193,16 +193,16 @@ exports.mailverify = function (token, postdata, callback) {
         },
         function (uid, waterfallCallback) {
             postdata.uid = uid;
-            userDao.changepassword(postdata, function (err, data) {
+            userDao.mailverify(postdata, function (err, data) {
                 try {
                     if (!err) {
                         waterfallCallback(null, data);
                     } else {
-                        logger.error('changepassword   uid  ' + uid + '   err   ' + err);
+                        logger.info('mailverify   uid  ' + uid + '   err   ' + err);
                         waterfallCallback(err);
                     }
                 } catch (e) {
-                    logger.error('changepassword   uid  ' + uid + '   e   ' + e);
+                    logger.error('mailverify   uid  ' + uid + '   e   ' + e);
                     waterfallCallback(e);
                 }
             });
@@ -227,7 +227,7 @@ exports.sendSNSverify = function (token, tophone, callback) {
                     if (!err) {
                         waterfallCallback(null, result.id);
                     } else {
-                        logger.error('getIdByToken  token   ' + token + '   err   ' + err);
+                        logger.info('getIdByToken  token   ' + token + '   err   ' + err);
                         waterfallCallback(err);
                     }
                 } catch (e) {
@@ -242,7 +242,7 @@ exports.sendSNSverify = function (token, tophone, callback) {
                     if (!err) {
                         waterfallCallback(null, data);
                     } else {
-                        logger.error('sendSNSverify   uid  ' + uid + '   err   ' + err);
+                        logger.info('sendSNSverify   uid  ' + uid + '   err   ' + err);
                         waterfallCallback(err);
                     }
                 } catch (e) {
@@ -272,7 +272,7 @@ exports.verifySNS = function (token, phonecode, cellphone, callback) {
                     if (!err) {
                         waterfallCallback(null, result.id);
                     } else {
-                        logger.error('getIdByToken  token   ' + token + '   err   ' + err);
+                        logger.info('getIdByToken  token   ' + token + '   err   ' + err);
                         waterfallCallback(err);
                     }
                 } catch (e) {
@@ -302,7 +302,7 @@ exports.verifySNS = function (token, phonecode, cellphone, callback) {
 };
 
 /**
- * 上传头像
+ * 记录上传头像
  * @param token
  * @param callback
  */
@@ -315,7 +315,7 @@ exports.avatarupload = function (token, callback) {
                     if (!err) {
                         waterfallCallback(null, result.id);
                     } else {
-                        logger.error('getIdByToken  token   ' + token + '   err   ' + err);
+                        logger.info('getIdByToken  token   ' + token + '   err   ' + err);
                         waterfallCallback(err);
                     }
                 } catch (e) {
@@ -325,27 +325,44 @@ exports.avatarupload = function (token, callback) {
             });
         },
         function (uid, waterfallCallback) {
-            userDao.avatarupload(uid, function (err, data) {
+            userDao.get(uid, function (err, result) {
+                try {
+                    if (!err) {
+                        var postdata = {
+                            uid: uid,
+                            headname: result.people.profile.sub_domain
+                        }
+                        waterfallCallback(null, postdata);
+                    } else {
+                        logger.error('get   uid  ' + uid + '   err   ' + err);
+                        waterfallCallback(err);
+                    }
+                } catch (e) {
+                    logger.error('get   uid  ' + uid + '   e   ' + e);
+                    waterfallCallback(e);
+                }
+            });
+        }, function (user, waterfallCallback) {
+            userDao.avatarupload(postdata, function (err, data) {
                 try {
                     if (!err) {
                         waterfallCallback(null, data);
                     } else {
-                        logger.error('avatarupload   uid  ' + uid + '   err   ' + err);
+                        logger.info('avatarupload  err   ' + err);
                         waterfallCallback(err);
                     }
                 } catch (e) {
-                    logger.error('avatarupload   uid  ' + uid + '   e   ' + e);
+                    logger.error('getIdByToken  token   ' + token + '   e   ' + e);
                     waterfallCallback(e);
                 }
             });
         }
-    ], function (err, data) {
+    ], function (err, upload) {
         return callback(err, data);
     });
 };
 
-exports.getavatar = function (id, callback) {
-
+exports.getavatar = function (token, callback) {
     async.waterfall([
         function (waterfallCallback) {
             userDao.getIdByToken(token, function (err, result) {
@@ -353,11 +370,12 @@ exports.getavatar = function (id, callback) {
                     if (!err) {
                         waterfallCallback(null, result.id);
                     } else {
-                        logger.error('getIdByToken  token   ' + token + '   err   ' + err);
+                        logger.info('getIdByToken  token   ' + token + '   err   ' + err);
                         waterfallCallback(err);
                     }
                 } catch (e) {
-
+                    logger.error('getIdByToken  token   ' + token + '   e   ' + e);
+                    waterfallCallback(err);
                 }
             });
         }, function (uid, waterfallCallback) {
@@ -366,7 +384,7 @@ exports.getavatar = function (id, callback) {
                     if (!err) {
                         waterfallCallback(null, data);
                     } else {
-                        logger.error('get   uid  ' + uid + '   err   ' + err);
+                        logger.info('get   uid  ' + uid + '   err   ' + err);
                         waterfallCallback(err);
                     }
                 } catch (e) {
@@ -378,8 +396,6 @@ exports.getavatar = function (id, callback) {
     ], function (err, data) {
         return callback(err, data);
     });
-
-
     return userDao.get(id, callback);
 };
 

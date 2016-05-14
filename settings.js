@@ -51,7 +51,7 @@ var userservice = {
      port : 9000*/
     /*host : '192.168.1.236',
      port : 9000*/
-    host: process.env.userservicehost || '192.168.1.253',
+    host: process.env.userservicehost || '192.168.1.121',
     port: process.env.userserviceport || 3001
     // host: '127.0.0.1',
     // port: 9000
@@ -63,7 +63,7 @@ var dockerservice = {
      port : 9001*/
     /*host : 'zerocloud.daoapp.io',
      port : 80*/
-    host: process.env.dockerservicehost || '192.168.1.253',
+    host: process.env.dockerservicehost || '192.168.1.121',
     port: process.env.dockerserviceport || 3000
 };
 var domainservice = {
