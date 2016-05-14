@@ -178,36 +178,15 @@ exports.changeinfo = function (req, res, next) {
             name: req.body.name,
             sub_domain: req.body.sub_domain
         };
-
-
         userService.changeinfo(token, profile, function (err, data) {
             try {
                 if (err) {
                     throw new Error(err);
                 }
                 logger.info("用户修改成功");
-                // 设置 cookie token
-                // cookieUtil.set(res, "token", data.token);
-                // 进入重定向页面
-                // res.redirect('container');
             } catch (e) {
                 logger.info("用户修改失败");
                 logger.error(e);
-                // 登录失败，返回 登录页面 带着提示信息和回显信息
-                var errorCode = data.info.code;
-                // if(errorCode == '12'){
-                //     res.render("login",{
-                //         status: '当前邮箱未注册,请先注册后登录'
-                //     });
-                // }else if(errorCode == '13'){
-                //     res.render("login",{
-                //         status: '您输入的密码有误，请重新输入'
-                //     });
-                // }else {
-                //     res.render("login",{
-                //         status: '抱歉，服务器开小差了，请重新登陆'
-                //     });
-                // }
             }
         })
     } catch (e) {
@@ -247,20 +226,6 @@ exports.changepassword = function (req, res, next) {
                 logger.info("用户修改密碼失败");
                 logger.error(e);
                 // 登录失败，返回 登录页面 带着提示信息和回显信息
-                var errorCode = data.info.code;
-                // if(errorCode == '12'){
-                //     res.render("login",{
-                //         status: '当前邮箱未注册,请先注册后登录'
-                //     });
-                // }else if(errorCode == '13'){
-                //     res.render("login",{
-                //         status: '您输入的密码有误，请重新输入'
-                //     });
-                // }else {
-                //     res.render("login",{
-                //         status: '抱歉，服务器开小差了，请重新登陆'
-                //     });
-                // }
             }
         })
     } catch (e) {
