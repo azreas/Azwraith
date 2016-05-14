@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <!--浏览器窗口图标-->
+    <link rel="icon" type="image/z-icon" href="/images/favicon.ico">
+    <link rel="stylesheet" href="/stylesheets/dashboard.css">
+    <link rel="stylesheet" href="/stylesheets/account.css">
+    <link rel="stylesheet" href="/stylesheets/layer/skin/layer.css">
+    <link rel="stylesheet" href="/js/webuploader/webuploader.css">
+
+    <script type="text/javascript" src="/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/stylesheets/layer/layer.js"></script>
+    <script type="text/javascript" src="/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/webuploader/webuploader.withoutimage.js"></script>
+    <title>零云 - 服务详情</title>
+    <title>title</title>
+</head>
+<body>
+<% include header.ejs %>
+
+<div class="page-container container">
+    <article>
+        <div class="setTab">
+            <input id="selectedPage" type="hidden" value="<%= value %>">
+            <a id="baseinfo" class="Record active">基本信息</a>
+            <a id="phone" class="Record">绑定手机</a>
+            <a id="psd" class="Record">修改密码</a>
+        </div>
+
+        <div class="account_table">
+            <table class="base user_info" style="display: table;">
+                <tbody>
+                <tr style="height:90px">
+                    <td style="width:4%;max-width:80px;min-width:50px;">头像：</td>
+                    <td style="width:50%;">
+                        <div class="defaultimg" style="width:500px;height:90px;">
+                            <img class="username"
+                                 src="/images/user-avatar.png"
+                                 style="min-width:80px;height:80px;border:1px solid #ddd;">
+                            <span class="btn btn-upload"><i class="fa fa-upload margin"></i>上传</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>用户名：</td>
+                    <td>
+                        <div class="input-form" id="username" disabled="disabled" style="cursor:no-drop"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>账户类型：</td>
+                    <td>
+                        <div class="input-form" id="accountType" disabled="disabled" style="cursor:no-drop">免费账户</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>邮&nbsp;&nbsp;&nbsp;箱：</td>
+                    <td>
+                        <input type="email" id="emailhide" value="" class="hidden">
+                        <input id="email" type="hidden" value="">
+                        <input class="input-form" value="">
+                        <!-- <button class="btn btn_edit">修改</button> -->
+
+                        <span class="activeEmail hide">已激活</span>
+                        <span id="resendEmailSpan">
+                          <span class="email_status">未激活</span>
+                          <span id="resendEmail" class="btn btn-link  btn-small" data-toggle="tooltip"
+                                data-placement="top"
+                                title="" data-original-title="重新发送激活邮件"><i class="fa fa-paper-plane-o"></i></span>
+                          <span class="faspin"><i class="fa fa-spinner fa-spin"></i></span>
+                            <span class="msg">
+                                (发送成功，<span id="resendEmailTime">60</span>s 后可重新发送)
+                            </span>
+                        </span>
+
+                    </td>
+                </tr>
+                <!-- <tr>
+                  <td>邀请码：</td>
+                  <td>
+                  <span class="input-form inviteCode">30965941</span><span class="btn" id="copyinvite" data-clipboard-target=".inviteCode" style="margin-left:8px;" data-toggle="tooltip" data-placement="top" title="" data-original-title="点击复制">复制</span>
+                  </td>
+                </tr> -->
+                <tr>
+                    <td>公&nbsp;&nbsp;&nbsp;司：</td>
+                    <td>
+                        <input id="companyshow" class="input-form" value="">
+                        <input type="hidden" id="company" value="">
+                    </td>
+                </tr>
+                <tr>
+                    <td>微&nbsp;&nbsp;&nbsp;信：</td>
+                    <td>
+                        <input id="wechatshow" class="input-form" value="">
+                        <input type="hidden" id="wechat" value="">
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>
+                        <span id="saveUserInfo" class="btn btn-primary">&nbsp;&nbsp;&nbsp;&nbsp;保存&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                    </td>
+                </tr>
+                <tr class="statusonly">
+                    <td>&nbsp; </td>
+                    <td><span class="status">修改成功!</span></td>
+                </tr>
+
+                <!-- <tr class='msgonly'>
+                  <td>&nbsp;</td>
+                  <td>
+                    <span class="email_status">未激活</span>
+                    <a class='go_email' href='http://mail.qq.com' target='_blank' >进入邮箱查收验证邮件，激活您的帐户</a>
+                  </td>
+                </tr>
+                <tr class='msgonly'>
+                  <td>&nbsp;</td>
+                  <td>
+                    <button class='btn btn-primary' id='resendEmail'>重发认证邮件</button>
+                    <span class='faspin'>
+                      <i class='fa fa-spinner fa-spin'></i>
+                    </span>
+                    <span class='msg'>发送成功！</span>
+                  </td>
+                </tr> -->
+
+                </tbody>
+            </table>
+            <table class="base edit_pwd" style="display: none;">
+                <tbody>
+                <tr>
+                    <td>原密码：</td>
+                    <td>
+                        <!-- <input id="originalPwd" type="password" placeholder="必须输入原密码才可以修改" class="hidden"/> -->
+                        <input id="originalPwd" type="password" placeholder="必须输入原密码才可以修改">
+                    </td>
+                    <td><span class="editinfo"></span></td>
+                </tr>
+                <tr>
+                    <td>新密码：</td>
+                    <td>
+                        <input id="newPwd" type="password" placeholder="最小长度为6个字符">
+                    </td>
+                    <td><span class="editinfo"></span></td>
+                </tr>
+                <tr>
+                    <td>确认新密码：</td>
+                    <td>
+                        <input id="confirmNewPwd" type="password" placeholder="再次输入密码">
+                    </td>
+                    <td><span class="editinfo"></span></td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>
+                        <button id="changePwd" class="btn btn-primary">提交修改</button>
+                        <span class="pwdfaspin"><i class="fa fa-spinner fa-spin"></i></span><span class="pwdmsg"></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <table class="base edit_iphone" style="display: none;">
+                <tbody>
+                <tr>
+                    <td>手机号：</td>
+                    <td>
+                        <input id="phonenumber" type="text" value="" placeholder="输入手机号码，限中国大陆">
+                        <button class='btn btn-primary get_code'>发送验证码</button>
+                        <span class='sendfaspin'>
+                          <i class='fa fa-spinner fa-spin'></i>
+                        </span>
+                        <span class='codemsg'></span>
+                    </td>
+                </tr>
+                <tr style="height:20px;">
+                    <td>&nbsp;</td>
+                    <td>
+                        <p class="inform">绑定手机号可接收系统重要通知</p>
+                    </td>
+                </tr>
+                <tr id="securitycode" class="hide">
+                    <td>&nbsp;</td>
+                    <td>
+                        <input id="codenumber" type="text" value="" placeholder="输入手机验证码">
+                        <button id="codeverify" class='btn btn-primary'>验证</button>
+                        <span class='sendcode hide'>
+                          <i class='fa fa-spinner fa-spin'></i>
+                        </span>
+                        <span class='code'></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </article>
+</div>
+
+<script src="/js/header.js"></script>
+<script src="/js/account.js"></script>
+<script src="/js/upload-header.js"></script>
+</body>
+</html>
