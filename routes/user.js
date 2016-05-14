@@ -11,7 +11,7 @@ var router = express.Router();
 module.exports = function (app) {
 
     // 根据用户 id 更改密码
-    router.post('/pwd/', userController.changepassword);
+    router.post('/pwd', userController.changepassword);
 
     // 根据 token 登出
     //router.get( '/logout', user_impl.logout);
@@ -21,7 +21,7 @@ module.exports = function (app) {
     // router.put('/user/:id', user_impl.update);
 
     // 根据用户 id 获取用户基本信息
-    router.get('/user/', userController.get);
+    router.get('/user', userController.get);
 
     // 根据用户 id 获取用户所属资源信息
     // router.get('/user/resource/:id', user_impl.getResource);
@@ -30,16 +30,16 @@ module.exports = function (app) {
     // router.get('/user/log/:id', user_impl.getLog);
 
     // 根据用户 id 修改用户信息
-    router.post('/user/update/', userController.changeinfo);
+    router.post('/user/update', userController.changeinfo);
 
     //获取短信验证码
-    router.post('/phone/send/', userController.sendSNSverify);
+    router.post('/phone/send', userController.sendSNSverify);
 
     //验证短信验证码
-    router.post('/phone/verify/', userController.verifySNS);
+    router.post('/phone/verify', userController.verifySNS);
 
-    //邮箱亚洲
-    router.post('/mail/verify/', userController.mailverify);
+    //邮箱验证
+    router.post('/mail/verify', userController.mailverify);
 
     //上传头像
     router.post('/avatar/avatarupload/', userController.avatarupload);

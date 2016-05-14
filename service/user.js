@@ -22,7 +22,7 @@ exports.logout = function (token, callback) {
  * @param id
  * @param callback
  */
-exports.get = function (id, callback) {
+exports.get = function (token, callback) {
 
     async.waterfall([
         function (waterfallCallback) {
@@ -56,9 +56,6 @@ exports.get = function (id, callback) {
     ], function (err, data) {
         return callback(err, data);
     });
-
-
-    return userDao.get(id, callback);
 };
 
 
@@ -133,7 +130,7 @@ exports.changeinfo = function (token, profile, callback) {
  * @param putdata
  * @param callback
  */
-exports.changepassword = function (putdata, callback) {
+exports.changepassword = function (token, putdata, callback) {
 
     async.waterfall([
         function (waterfallCallback) {
@@ -290,7 +287,7 @@ exports.verifySNS = function (token, phonecode, callback) {
                     if (!err) {
                         waterfallCallback(null, data);
                     } else {
-                        logger.error('verifySNS   uid  ' + uid + '   err   ' + err);
+                        logger.info('verifySNS   uid  ' + uid + '   err   ' + err);
                         waterfallCallback(err);
                     }
                 } catch (e) {
@@ -299,7 +296,7 @@ exports.verifySNS = function (token, phonecode, callback) {
                 }
             });
         }
-    ], function (err) {
+    ], function (err, data) {
         return callback(err, data);
     });
 };

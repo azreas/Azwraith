@@ -73,3 +73,21 @@ exports.account = function(req,res) {
         value: req.params.id
     })
 };
+
+/**
+ * 邮箱验证成功
+ * @param req
+ * @param res
+ */
+exports.emailsuccess = function(req,res) {
+    res.render('emailSuccess',{ })
+};
+
+/**
+ * 邮箱验证失败
+ * @param req
+ * @param res
+ */
+exports.emailfail = function(req,res) {
+    res.render('emailFail',{ })
+};

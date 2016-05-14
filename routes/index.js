@@ -28,6 +28,12 @@ module.exports = function(app){
   //进入用户信息页面
   router.get('/account/:id',index_impl.account);
 
+  //进入邮箱验证成功
+  router.get('/emailsuccess',index_impl.emailsuccess);
+
+  //进入邮箱验证失败
+  router.get('/emailfail',index_impl.emailfail);
+
   // 测试界面
   router.get('/test', index_impl.test);
 

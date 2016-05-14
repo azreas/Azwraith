@@ -41,6 +41,11 @@
         $('.foldingpad').css('left','210px')
     }
 
+    //期待更多
+    $('.work').on('click',function(){
+        layer.msg('更多功能敬请期待！', {icon: 6});
+    });
+
     //用户信息
     //var userId = $('#userId').val();
     //$.ajax({

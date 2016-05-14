@@ -154,7 +154,7 @@ exports.mailverify = function (postdata, callback) {
 
 
 exports.sendSNSverify = function (uid, tophone, callback) {
-    rest.get('http://' + userservice.host + ':' + userservice.port + '/v1/people/' + uid + '?tophone=' + tophone).on('complete', function (data, response) {
+    rest.get('http://' + userservice.host + ':' + userservice.port + '/v1/people/SNSverify/' + uid + '?tophone=' + tophone).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);
@@ -168,7 +168,7 @@ exports.sendSNSverify = function (uid, tophone, callback) {
 
 
 exports.verifySNS = function (uid, phonecode, callback) {
-    rest.post('http://' + userservice.host + ':' + userservice.port + '/v1/people/' + uid + '?phonecode=' + phonecode, null).on('complete', function (data, response) {
+    rest.post('http://' + userservice.host + ':' + userservice.port + '/v1/people/SNSverify/' + uid + '?phonecode=' + phonecode, null).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
                 throw new Error(data.info.script);

@@ -36,13 +36,13 @@
 
             </ul>
             <ul class="nav navbar-nav navbar-left z_navbar">
-              <li class="header-products"><a href="">服务中心</a>
+              <li class="header-products"><a href="javascript:void(0);">服务中心</a>
 
               </li>
               <li class="header-solutions">
-                <a href="" target="_block">社区</a>
+                <a href="javascript:void(0);" target="_block">社区</a>
               </li>
-              <li><a href="">文档</a></li>
+              <li><a href="javascript:void(0);">文档</a></li>
             </ul>
           </div>
         </div>
@@ -176,7 +176,10 @@
           break;
       }
     }
-
+    //期待更多
+    $('.z_navbar li').on('click',function(){
+      layer.msg('更多功能敬请期待！', {icon: 6});
+    });
   })();
 </script>
 </body>

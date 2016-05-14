@@ -26,7 +26,7 @@ exports.logout = function (req, res, next) {
                 var exp = new Date();
                 exp.setTime(exp.getTime() - 1);
                 res.setHeader("Set-Cookie", ['token=0;Expires=' + exp.toGMTString()]);
-                res.redirect('/login');
+                res.redirect('login');
             } catch (e) {
                 logger.info("根据 token[" + req.cookies.token + "] 登出失败");
                 logger.error(e);
@@ -176,7 +176,9 @@ exports.changeinfo = function (req, res, next) {
         var token = req.cookies.token;
         var profile = {
             name: req.body.name,
-            sub_domain: req.body.sub_domain
+            sub_domain: req.body.sub_domain,
+            company: req.body.company,
+            wechat: req.body.wechat
         };
         userService.changeinfo(token, profile, function (err, data) {
             try {
@@ -184,13 +186,18 @@ exports.changeinfo = function (req, res, next) {
                     throw new Error(err);
                 }
                 logger.info("用户修改成功");
+                res.json(data);
+                // 设置 cookie token
+                // cookieUtil.set(res, "token", data.token);
+                // 进入重定向页面
+                // res.redirect('container');
             } catch (e) {
                 logger.info("用户修改失败");
                 logger.error(e);
             }
         })
     } catch (e) {
-        logger.error(e);
+        logger.info(e);
         next(e);
     }
 };
@@ -213,23 +220,36 @@ exports.changepassword = function (req, res, next) {
         };
 
         userService.changepassword(token, putdata, function (err, data) {
-            try {
-                if (err) {
-                    throw new Error(err);
+                try {
+                    if (err) {
+                        throw new Error(err);
+                    }
+                    logger.info("用户修改密碼成功");
+                    res.json(data);
+                    // 设置 cookie token
+                    // cookieUtil.set(res, "token", data.token);
+                    // 进入重定向页面
+                    // res.redirect('container');
+                } catch (e) {
+                    logger.info("用户修改密碼失败");
+                    logger.error(e);
+                    // 密码修改失败
+                    if (err == '旧密码错误') {
+                        res.json('旧密码错误');
+                        // }else if(errorCode == '13'){
+                        //     res.render("login",{
+                        //         status: '您输入的密码有误，请重新输入'
+                        //     });
+                        // }else {
+                        //     res.render("login",{
+                        //         status: '抱歉，服务器开小差了，请重新登陆'
+                        //     });
+                    }
                 }
-                logger.info("用户修改密碼成功");
-                // 设置 cookie token
-                // cookieUtil.set(res, "token", data.token);
-                // 进入重定向页面
-                // res.redirect('container');
-            } catch (e) {
-                logger.info("用户修改密碼失败");
-                logger.error(e);
-                // 登录失败，返回 登录页面 带着提示信息和回显信息
             }
-        })
+        )
     } catch (e) {
-        logger.error(e);
+        logger.info(e);
         next(e);
     }
 };
@@ -264,7 +284,7 @@ exports.mailverify = function (req, res, next) {
             }
         });
     } catch (e) {
-        logger.error(e);
+        logger.info(e);
         next(e);
     }
 };
@@ -292,7 +312,7 @@ exports.sendSNSverify = function (req, res) {
             }
         });
     } catch (e) {
-        logger.error(e);
+        logger.info(e);
     }
 };
 
@@ -318,7 +338,7 @@ exports.verifySNS = function (req, res, next) {
 
         })
     } catch (e) {
-        logger.error(e);
+        logger.info(e);
         res.json({"result": false});
     }
 }
