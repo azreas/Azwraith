@@ -313,7 +313,7 @@
 
             var instanceNumber = $("#instanceNumber").val();
             var instanceType = $("#instanceType").val();
-            var autoscale = $('input[name="chkItem"]:checked').attr('value');
+            var autoscale = $('input[name="autoscale"]:checked').attr('value');
 
             $.ajax({
                 url: '/serve/updata',

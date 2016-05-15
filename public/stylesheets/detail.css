@@ -136,9 +136,9 @@ pre{white-space: pre-wrap;word-wrap:break-word }
 }
 .applocation{
     position: absolute;
-    right: -68px;
+    right: 0;
     width: 40%;
-    top: -40px;
+    top: 0;
 }
 .detail-succeed .open{
     width:50px;height: 50px;
