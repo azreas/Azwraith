@@ -187,7 +187,9 @@
         $('#address').parent().attr('href', 'http://' + resp.address);
         $('#updateTime').html(updateTime);
         $('#createTime').html(createTime);
-        if (resp.iamgeName == 'alexwhen/docker-2048') {
+        if(resp.iamgeName == 'zerolinke/siege'){
+            $('#containerImg').attr('src', '/images/image/siege.svg');
+        }else if (resp.iamgeName == 'alexwhen/docker-2048') {
             $('#containerImg').attr('src', '/images/image/2048.png');
         } else if (resp.iamgeName == 'zerosky/emt') {
             $('#containerImg').attr('src', '/images/image/emt.png');
@@ -264,7 +266,9 @@
             $('#address').parent().attr('href', 'http://' + resp.address);
             $('#updateTime').html(updateTime);
             $('#createTime').html(createTime);
-            if (resp.iamgeName == 'alexwhen/docker-2048') {
+            if(resp.iamgeName == 'zerolinke/siege'){
+                $('#containerImg').attr('src', '/images/image/siege.svg');
+            }else if (resp.iamgeName == 'alexwhen/docker-2048') {
                 $('#containerImg').attr('src', '/images/image/2048.png');
             } else if (resp.iamgeName == 'zerosky/emt') {
                 $('#containerImg').attr('src', '/images/image/emt.png');
