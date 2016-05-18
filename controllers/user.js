@@ -366,8 +366,15 @@ exports.avatarupload = function (req, res, next) {
         //添加错误处理
         if (err) {
             console.log(err);
+            return res.json({
+                result: false,
+                info: {
+                    code: 11,
+                    script: "Avatar upload failed."
+                }
+            });
         } else {
-            res.json({
+            return res.json({
                 result: true,
                 filename:req.file.filename,
                 info: {
