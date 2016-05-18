@@ -367,7 +367,14 @@ exports.avatarupload = function (req, res, next) {
         if (err) {
             console.log(err);
         } else {
-            
+            res.json({
+                result: true,
+                filename:req.file.filename,
+                info: {
+                    code: 1,
+                    script: "Avatar upload sucess."
+                }
+            });
         }
     });
     // try {
@@ -385,7 +392,7 @@ exports.avatarupload = function (req, res, next) {
     //     logger.error(e);
     //     res.json({"result": false});
     // }
-}
+};
 
 exports.getavatar = function (req, res) {
     try {

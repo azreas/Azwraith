@@ -211,3 +211,16 @@ exports.getavatar = function (id, callback) {
         return callback(null, data);
     });
 };
+
+exports.avatarname = function (postdata, callback) {
+    rest.putJson('http://' + userservice.host + ':' + userservice.port + '/v1/people/avatarname/', postdata).on('complete', function (data, response) {
+        try {
+            if (data.result !== true) {
+                throw new Error(data.info.script);
+            }
+        } catch (e) {
+            return callback(e.message, data);
+        }
+        return callback(null, data);
+    });
+}

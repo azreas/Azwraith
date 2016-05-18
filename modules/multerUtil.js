@@ -4,6 +4,8 @@
 var multer = require('multer');
 var userDao = require('../dao/user');
 var async = require('async');
+// var logger = require("../log/log").logger();
+var fs = require("fs");
 var storage = multer.diskStorage({
     //设置上传后文件路径，uploads文件夹会自动创建。
     destination: function (req, file, cb) {
@@ -15,14 +17,47 @@ var storage = multer.diskStorage({
         userDao.getIdByToken(req.cookies.token, function (err, result) {
             if (!err) {
                 userDao.get(result.id, function (error, data) {
+                    var putdata = {
+                        uid:result.id,
+                        avatarname:data.people.profile.sub_domain + "." + fileFormat[fileFormat.length - 1]
+                    };
                     if (!err) {
-                        cb(null, data.people.profile.sub_domain + "." + fileFormat[fileFormat.length - 1]);
+                        if(data.people.profile.avatarname!=null){
+                            fs.unlink('../public/upload/'+data.people.profile.avatarname, function(err){
+                                if(err){
+                                    console.log("Delete image failed.");
+                                    // logger.error(err);
+                                }else{
+                                    console.log("Delete image success.");
+                                }
+                            });
+                            userDao.avatarname(putdata,function (err,data) {
+                                if(!err){
+                                    cb(null, putdata.avatarname);
+                                }
+                                else{
+                                    // logger.error(err);
+                                }
+                            })
+                        }
+                        else{
+                            userDao.avatarname(putdata,function (err,data) {
+                                if(!err){
+                                    cb(null, putdata.avatarname);
+                                }
+                                else{
+                                    // logger.error(err);
+                                }
+                            })
+                        }
                     } else {
 //todo
+//                         logger.error(err);
                     }
                 });
             } else {
 //todo
+//                 logger.error(err);
             }
         });
     }
