@@ -91,3 +91,12 @@ exports.emailsuccess = function(req,res) {
 exports.emailfail = function(req,res) {
     res.render('emailFail',{ })
 };
+
+/**
+ * 404页面
+ * @param req
+ * @param res
+ */
+exports.notfound = function(req,res) {
+    res.render('404',{ })
+};

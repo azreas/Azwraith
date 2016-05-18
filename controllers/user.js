@@ -273,7 +273,8 @@ exports.mailverify = function (req, res, next) {
                 }
                 logger.info("发送邮件成功");
                 // 注册成功，跳到 登录 页面
-                // res.redirect("/login");
+                console.log(data);
+                res.json(data);
             } catch (e) {
                 logger.info("邮件发送失败");
                 logger.error(e);

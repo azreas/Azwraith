@@ -34,6 +34,9 @@ module.exports = function(app){
   //进入邮箱验证失败
   router.get('/emailfail',index_impl.emailfail);
 
+  //404页面
+  router.get('/notfound',index_impl.notfound);
+
   // 测试界面
   router.get('/test', index_impl.test);
 

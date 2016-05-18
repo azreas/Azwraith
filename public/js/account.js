@@ -43,6 +43,8 @@
         var wechat = resp.people.profile.wechat;
         var phone = resp.people.profile.cellphone;
         var phoneVerify = resp.people.profile.phoneVerify;
+        var mailVerify = resp.people.profile.mailVerify;
+
         $('#username').text(username);
         $('#emailhide').attr('value', email);
         $('#email').val(email);
@@ -55,6 +57,10 @@
         if(phoneVerify == true){
             $('.get_code').attr('disabled', 'disabled');
             $('.codemsg').html('<font color="#429368">手机号已验证</font>').fadeIn();
+        }
+        if(mailVerify == true){
+            $('.activeEmail').removeClass('hide');
+            $('#resendEmailSpan').addClass('hide');
         }
     });
 
@@ -197,6 +203,7 @@
             type: 'POST',
             data: user_info
         }).done(function (data, status, xhs) {
+            console.log(data);
             $('.faspin').hide();
             $('.msg').fadeIn();
             var changeResendTimeInterval = setInterval(_changeResendTime, 1000);
