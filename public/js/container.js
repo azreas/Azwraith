@@ -174,9 +174,9 @@
         var servers = resp.apps;
         if (resp == 0) {
             layer.msg("请求超时，请重新登录。");
-            //setTimeout(function () {
-            //    location.href = '/login';
-            //}, 2000);
+            setTimeout(function () {
+                location.href = '/login';
+            }, 2000);
         }
         if (resp.info.code == 11) {
             $('#dbtable').html('');
