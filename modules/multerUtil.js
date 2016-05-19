@@ -7,8 +7,13 @@ var async = require('async');
 // var logger = require("../log/log").logger();
 var fs = require("fs");
 var storage = multer.diskStorage({
-    //设置上传后文件路径，uploads文件夹会自动创建。
+    //设置上传后文件路径，upload文件夹会自动创建。
     destination: function (req, file, cb) {
+        var upload_dir = "../public/upload";
+        // 检查 upload 文件夹是否存在，不存在则自动生成
+        if (!fs.existsSync(upload_dir)){
+            fs.mkdirSync(upload_dir);
+        }
         cb(null, '../public/upload')
     },
     //给上传文件重命名，获取添加后缀名
@@ -18,34 +23,34 @@ var storage = multer.diskStorage({
             if (!err) {
                 userDao.get(result.id, function (error, data) {
                     var putdata = {
-                        uid:result.id,
-                        avatarname:data.people.profile.sub_domain + "." + fileFormat[fileFormat.length - 1]
+                        uid: result.id,
+                        avatarname: data.people.profile.sub_domain + "." + fileFormat[fileFormat.length - 1]
                     };
                     if (!err) {
-                        if(data.people.profile.avatarname!=null){
-                            fs.unlink('../public/upload/'+data.people.profile.avatarname, function(err){
-                                if(err){
+                        if (data.people.profile.avatarname != null) {
+                            fs.unlink('../public/upload/' + data.people.profile.avatarname, function (err) {
+                                if (err) {
                                     console.log("Delete image failed.");
                                     // logger.error(err);
-                                }else{
+                                } else {
                                     console.log("Delete image success.");
                                 }
                             });
-                            userDao.avatarname(putdata,function (err,data) {
-                                if(!err){
+                            userDao.avatarname(putdata, function (err, data) {
+                                if (!err) {
                                     cb(null, putdata.avatarname);
                                 }
-                                else{
+                                else {
                                     // logger.error(err);
                                 }
                             })
                         }
-                        else{
-                            userDao.avatarname(putdata,function (err,data) {
-                                if(!err){
+                        else {
+                            userDao.avatarname(putdata, function (err, data) {
+                                if (!err) {
                                     cb(null, putdata.avatarname);
                                 }
-                                else{
+                                else {
                                     // logger.error(err);
                                 }
                             })
