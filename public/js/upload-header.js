@@ -57,7 +57,7 @@
         // var _csrf = $('[name=_csrf]').val();
         this.uploader = WebUploader.create({
             swf: '/js/webuploader/Uploader.swf',
-            server: '/avatar/avatarupload/',
+            server: '/avatar/avatarupload',
             pick: this.$uploadBtn[0],
             paste: document.body,
             dnd: this.$upload[0],
@@ -86,9 +86,10 @@
         });
 
         this.uploader.on('uploadSuccess', function (file, res) {
-            if (res.success) {
+            //console.log(res);
+            if (res.result) {
                 self.$win.modal('hide');
-                $(self.editor).find('img.username').attr('src', res.url + '?v=' + Math.random().toString(36).substr(2) + '&imageView2/1/w/100/h/100');
+                $(self.editor).find('img.username').attr('src', '/upload/' + res.filename + '?v=' + Math.random().toString(36).substr(2));
                 layer.msg('头像上传成功~', {icon: 1, time: 3000});
             }
             else {

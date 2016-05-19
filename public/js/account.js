@@ -36,7 +36,7 @@
         contentType: 'application/json',
         dataType: 'json'
     }).done(function (resp) {
-        console.log(resp.people.profile);
+        //console.log(resp.people.profile);
         var username = resp.people.account.email_name;
         var email = resp.people.account.email_name + '@' + resp.people.account.email_domain;
         var company = resp.people.profile.company;
@@ -44,6 +44,7 @@
         var phone = resp.people.profile.cellphone;
         var phoneVerify = resp.people.profile.phoneVerify;
         var mailVerify = resp.people.profile.mailVerify;
+        var avatarname = resp.people.profile.avatarname;
 
         $('#username').text(username);
         $('#emailhide').attr('value', email);
@@ -54,14 +55,20 @@
         $('#company').val(company);
         $('#wechat').val(wechat);
         $('#phonenumber').val(phone);
-        if(phoneVerify == true){
+        if (phoneVerify == true) {
             $('.get_code').attr('disabled', 'disabled');
             $('.codemsg').html('<font color="#429368">手机号已验证</font>').fadeIn();
         }
-        if(mailVerify == true){
+        if (mailVerify == true) {
             $('.activeEmail').removeClass('hide');
             $('#resendEmailSpan').addClass('hide');
         }
+        if (avatarname != '' && avatarname != undefined) {
+            $('.defaultimg img.username').attr('src', '/upload/' + avatarname);
+        } else {
+            $('.defaultimg img.username').attr('src', '/images/user-avatar.png');
+        }
+
     });
 
     //保存基本信息
@@ -253,7 +260,7 @@
             type: 'POST',
             data: data
         }).done(function (data, status, xhs) {
-            if(data.result == false){
+            if (data.result == false) {
                 $('.codemsg').html('<font color="#429368">手机号已验证</font>').fadeIn();
                 setTimeout(function () {
                     $('.codemsg').fadeOut();
@@ -287,10 +294,10 @@
     });
 
     //验证码验证
-    $('#codeverify').click(function(){
+    $('#codeverify').click(function () {
         var phone = $('#phonenumber').val().trim();
         var codenumber = $('#codenumber').val().trim();
-        if(codenumber == ''){
+        if (codenumber == '') {
             $('.code').html('<font color="#b94a48">请输入验证码</font>').fadeIn();
             setTimeout(function () {
                 $('#codenumber').focus();
@@ -310,20 +317,20 @@
             data: data
         }).done(function (data, status, xhs) {
             console.log(data);
-            if(data.result == true){
+            if (data.result == true) {
                 $('.sendcode').addClass('hide');
                 $('.get_code').text('发送验证码');
                 $('.code').html('<font color="#429368">验证成功</font>').fadeIn();
-                layer.msg('恭喜，手机号验证成功！',{icon: 1});
+                layer.msg('恭喜，手机号验证成功！', {icon: 1});
                 setTimeout(function () {
                     $('#securitycode').addClass('hide');
                 }, 1500);
-            }else if(data.result == '11'){
+            } else if (data.result == '11') {
                 $('.sendcode').addClass('hide');
-                layer.msg('抱歉，您的验证码已经失效',{icon: 5});
-            }else if(data.result == '12'){
+                layer.msg('抱歉，您的验证码已经失效', {icon: 5});
+            } else if (data.result == '12') {
                 $('.sendcode').addClass('hide');
-                layer.msg('抱歉，手机号已验证',{icon: 5});
+                layer.msg('抱歉，手机号已验证', {icon: 5});
             }
 
         });

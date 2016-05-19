@@ -64,25 +64,27 @@
             </div>
         </div>
         <section class="detail-succeed">
-            <div class="icon-img">
-                <div class="type-icon">
-                    <img id="containerImg" src="" height="100%">
+            <div class="row">
+                <div class="icon-img col-lg-2 col-md-2 col-sm-2">
+                    <div class="type-icon">
+                        <img id="containerImg" src="" height="100%">
+                    </div>
                 </div>
-            </div>
-            <ul class="succeed-content pull-left">
-                <li>运行状态：<span id="status"></span></li>
-                <li>服务地址：<a href="" target="_blank"><span id="address"></span></a></li>
-                <!--<li>创建时间：<span></span></li>-->
-                <li>更新时间：<span id="updateTime"></span></li>
-                <li>服务监控状态：健康<span style="color: #fff;margin-left:100px;padding: 10px 15px;background: #008CD6;cursor: pointer;border-radius: 2px;">调整资源</span></li>
-                <input id="containerId" type="hidden" value="<%= id %>">
-            </ul>
-            <div class="applocation hide">
-                <div class="" style="float: left;text-align:center;vertical-align: top;padding: 0px;height:46px; font-size: 20px;line-height: 46px;">
-                    自动伸缩容器数：
-                </div>
-                <div style="float: left;text-align: center">
-                    <svg id="fillgauge" width="200" height="150" style="display: block"></svg>
+                <ul class="succeed-content pull-left col-lg-5 col-md-6 col-sm-6">
+                    <li>运行状态：<span id="status"></span></li>
+                    <li>服务地址：<a href="" target="_blank"><span id="address"></span></a></li>
+                    <!--<li>创建时间：<span></span></li>-->
+                    <li>更新时间：<span id="updateTime"></span></li>
+                    <li>服务监控状态：健康<span style="color: #fff;margin-left:100px;padding: 10px 15px;background: #008CD6;cursor: pointer;border-radius: 2px;">调整资源</span></li>
+                    <input id="containerId" type="hidden" value="<%= id %>">
+                </ul>
+                <div class="applocation hide col-lg-5 col-md-4 col-sm-3">
+                    <div class="" style="float: left;text-align:center;vertical-align: top;padding: 0px;height:46px; font-size: 17px;line-height: 46px;">
+                        自动伸缩容器数：
+                    </div>
+                    <div style="float: left;text-align: center">
+                        <svg id="fillgauge" width="200" height="120" style="display: block"></svg>
+                    </div>
                 </div>
             </div>
         </section>

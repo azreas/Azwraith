@@ -116,7 +116,7 @@ pre{white-space: pre-wrap;word-wrap:break-word }
     color: #666;
     line-height: 80px;
 }
-.succeed-content,.succeed-status{
+.succeed-status{
     float: left;
     margin-left: 20px;
 }
@@ -133,12 +133,6 @@ pre{white-space: pre-wrap;word-wrap:break-word }
 .hoststatus{
     margin:0px;
     color: #555;
-}
-.applocation{
-    position: absolute;
-    right: 0;
-    width: 40%;
-    top: 0;
 }
 .detail-succeed .open{
     width:50px;height: 50px;
