@@ -56,6 +56,8 @@
         $('#wechat').val(wechat);
         $('#phonenumber').val(phone);
         if (phoneVerify == true) {
+            $('#phonenumber').attr('disabled','disabled');
+            $('#phonenumber').css('cursor','no-drop');
             $('.get_code').attr('disabled', 'disabled');
             $('.codemsg').html('<font color="#429368">手机号已验证</font>').fadeIn();
         }

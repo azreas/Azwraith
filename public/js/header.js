@@ -53,8 +53,14 @@
         type: 'get'
     }).done(function (resp) {
         console.log(resp);
-        var userName = resp.people.profile.name;
-        $('.namespace').html(userName);
+        if (resp.result == false) {
+            layer.msg("请求超时，请重新登录。");
+            setTimeout(function () {
+                location.href = '/login';
+            }, 2000);
+        }else{
+            var userName = resp.people.profile.name;
+            $('.namespace').html(userName);
+        }
     });
-
 })();
