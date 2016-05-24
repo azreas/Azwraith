@@ -5,14 +5,14 @@ var multer = require('multer');
 var userDao = require('../dao/user');
 var async = require('async');
 var path = require('path');
-// var logger = require("../log/log").logger();
+var logger = require("../log/log").logger();
 var fs = require("fs");
 var storage = multer.diskStorage({
     //设置上传后文件路径，upload文件夹会自动创建。
     destination: function (req, file, cb) {
         var upload_dir = path.join(__dirname, "../public/upload");
         // 检查 upload 文件夹是否存在，不存在则自动生成
-        if (!fs.existsSync(upload_dir)){
+        if (!fs.existsSync(upload_dir)) {
             fs.mkdirSync(upload_dir);
         }
         cb(null, upload_dir)
@@ -32,10 +32,10 @@ var storage = multer.diskStorage({
                             var upload_dir = path.join(__dirname, "../public/upload");
                             fs.unlink(upload_dir + data.people.profile.avatarname, function (err) {
                                 if (err) {
-                                    console.log("Delete image failed.");
-                                    // logger.error(err);
+                                    logger.info("Delete image failed.");
+                                    logger.info(err);
                                 } else {
-                                    console.log("Delete image success.");
+                                    logger.debug("Delete image success.");
                                 }
                             });
                             userDao.avatarname(putdata, function (err, data) {
