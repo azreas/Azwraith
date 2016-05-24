@@ -15,7 +15,7 @@ var storage = multer.diskStorage({
         if (!fs.existsSync(upload_dir)){
             fs.mkdirSync(upload_dir);
         }
-        cb(null, '../public/upload')
+        cb(null, upload_dir)
     },
     //给上传文件重命名，获取添加后缀名
     filename: function (req, file, cb) {
@@ -29,7 +29,8 @@ var storage = multer.diskStorage({
                     };
                     if (!err) {
                         if (data.people.profile.avatarname != null) {
-                            fs.unlink('../public/upload/' + data.people.profile.avatarname, function (err) {
+                            var upload_dir = path.join(__dirname, "../public/upload");
+                            fs.unlink(upload_dir + data.people.profile.avatarname, function (err) {
                                 if (err) {
                                     console.log("Delete image failed.");
                                     // logger.error(err);
