@@ -218,20 +218,20 @@
 
                     var imageName;
                     if (servers[i].image == 'zerolinke/siege') {
-                        imageName = 'siege';
+                        imageName = 'siege.png';
                         appAppend(imageName);
                     } else if (servers[i].image == 'alexwhen/docker-2048') {
-                        imageName = '2048';
+                        imageName = '2048.png';
                         appAppend(imageName);
                     } else if (servers[i].image == 'zerosky/emt') {
-                        imageName = 'emt';
+                        imageName = 'emt.png';
                         appAppend(imageName);
                     } else {
-                        imageName = servers[i].image;
+                        imageName = servers[i].image + '.svg';
                         appAppend(imageName);
                     }
                     function appAppend(imageName) {
-                        var dbtr = $('<div class="image-item col-xs-6 col-sm-6"> <span style="position: absolute;top: 25px;right: 25px;"> <input type="checkbox" name="chkItem" value="' + servers[i].name + '" aria-expanded="false" val="' + servers[i].id + '" status="' + servers[i].status + '"> </span> <span class="img_icon span4" style="text-align: inherit;width:34%;margin: 25px 10px 25px 0;"> <img src="/images/image/' + imageName + '.png"> </span> <span class="span6 type" type="runtime"> <div class="list-item-description"> <div class="name h4"> 服务名称：' + servers[i].name + ' </div> <span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"> 镜像名：' + servers[i].image + ' </span> <span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"> 状态：<span id="' + servers[i].name + 'status">' + status + ' </span></span> <span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"> 地址：<a  target="_blank" href="http://' + servers[i].address + '" class="cluster_mirrer_name">' + servers[i].address + '</a><span class="span9">查看二维码：<a target="' + servers[i].address + '" class="showCode" title="点击查看二维码" style="cursor: pointer"><i class="fa fa-external-link-square"></i></a></span> </span> <span class="span9" style="margin: 10px 0;"><a class="btn btn-info" href="/detail/' + servers[i].id + '">查看服务详情</a></span> </div> </span> </div>');
+                        var dbtr = $('<div class="image-item col-xs-6 col-sm-6"> <span style="position: absolute;top: 25px;right: 25px;"> <input type="checkbox" name="chkItem" value="' + servers[i].name + '" aria-expanded="false" val="' + servers[i].id + '" status="' + servers[i].status + '"> </span> <span class="img_icon span4" style="text-align: inherit;width:34%;margin: 25px 10px 25px 0;"> <img src="/images/image/' + imageName +'"> </span> <span class="span6 type" type="runtime"> <div class="list-item-description"> <div class="name h4"> 服务名称：' + servers[i].name + ' </div> <span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"> 镜像名：' + servers[i].image + ' </span> <span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"> 状态：<span id="' + servers[i].name + 'status">' + status + ' </span></span> <span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"> 地址：<a  target="_blank" href="http://' + servers[i].address + '" class="cluster_mirrer_name">' + servers[i].address + '</a><span class="span9">查看二维码：<a target="' + servers[i].address + '" class="showCode" title="点击查看二维码" style="cursor: pointer"><i class="fa fa-external-link-square"></i></a></span> </span> <span class="span9" style="margin: 10px 0;"><a class="btn btn-info" href="/detail/' + servers[i].id + '">查看服务详情</a></span> </div> </span> </div>');
                         dbtr.appendTo($('#dbtable'));
                     }
                 }
@@ -473,53 +473,6 @@
         });
     });
 
-    //刷新容器
-    //$('#iframe').on('click','#stopContainer',function(){
-    //    if($(this).hasClass('cursor-drop')) return;
-    //    var startCont = [];
-    //    var containerNames = [];
-    //    var displaynames = '';
-    //    $('input[name="chkItem"]:checked').each(function(){
-    //        var containerName = $(this).val();
-    //        var containerId = $(this).attr('val');
-    //        //displaynames += ',' + containerId;
-    //        startCont.push(containerId);
-    //        containerNames.push(containerName);
-    //    });
-    //
-    //    $('.dropdown-menu.drop-left').hide();   //隐藏更多操作
-    //    $('a.more').attr('aria-expanded',false);
-    //
-    //    containerNames.forEach(function(containerName){
-    //        $('#' + containerName + 'status').html('<i class="fa_createing"></i><span style="color: #FF9C00">停止中<img class="margin" src="/images/loading4.gif"></span>');
-    //        $('#' + containerName).find('input[name="chkItem"]').attr('status', '-');
-    //    })
-    //
-    //    $.ajax({
-    //        url: '/container/stop/'+startCont,
-    //        type: 'get'
-    //        //data: JSON.stringify(startCont),
-    //        //contentType: 'application/json',
-    //        //dataType: 'json'
-    //    }).done(function(resp) {
-    //        console.log(resp);
-    //        setTimeout(function () {
-    //            containerNames.forEach(function(containerName){
-    //                $('#' + containerName + 'status').html('<span>已停止</span>');
-    //                $('#' + containerName).find('input[name="chkItem"]').attr('status', '-');
-    //            })
-    //        }, 1000);
-    //    }).fail(function (err) {
-    //        alert('停止失败，请重新启动');
-    //        setTimeout(function () {
-    //            containerNames.forEach(function(containerName){
-    //                $('#' + containerName + 'status').html('<span>运行中</span>');
-    //                $('#' + containerName).find('input[name="chkItem"]').attr('status', '-');
-    //            })
-    //        }, 1000);
-    //    });
-    //});
-
     //删除容器
     $('#iframe').on('click', '#deleteButton', function () {
         if ($(this).hasClass('cursor-drop')) return;
@@ -571,7 +524,6 @@
     });
 
     //限制创建容器个数
-
     var text = document.getElementById("ins-number");
     text.onkeyup = function () {
         if (text.value > 100) {
@@ -580,4 +532,5 @@
             layer.msg('实例数量上限为100');
         }
     }
+    
 })();
