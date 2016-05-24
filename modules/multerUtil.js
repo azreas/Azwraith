@@ -5,7 +5,7 @@ var multer = require('multer');
 var userDao = require('../dao/user');
 var async = require('async');
 var path = require('path');
-var logger = require("../log/log").logger();
+var logger = require("./log/log").logger();
 var fs = require("fs");
 var storage = multer.diskStorage({
     //设置上传后文件路径，upload文件夹会自动创建。
@@ -30,7 +30,7 @@ var storage = multer.diskStorage({
                     if (!err) {
                         if (data.people.profile.avatarname != null) {
                             var upload_dir = path.join(__dirname, "../public/upload");
-                            fs.unlink(upload_dir + data.people.profile.avatarname, function (err) {
+                            fs.unlink(upload_dir+ '/' + data.people.profile.avatarname, function (err) {
                                 if (err) {
                                     logger.info("Delete image failed.");
                                     logger.info(err);
@@ -43,7 +43,7 @@ var storage = multer.diskStorage({
                                     cb(null, putdata.avatarname);
                                 }
                                 else {
-                                    // logger.error(err);
+                                     logger.info(err);
                                 }
                             })
                         }
@@ -59,12 +59,12 @@ var storage = multer.diskStorage({
                         }
                     } else {
 //todo
-//                         logger.error(err);
+                         logger.info(err);
                     }
                 });
             } else {
 //todo
-//                 logger.error(err);
+                 logger.info(err);
             }
         });
     }
