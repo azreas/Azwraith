@@ -4,12 +4,13 @@
 var multer = require('multer');
 var userDao = require('../dao/user');
 var async = require('async');
+var path = require('path');
 // var logger = require("../log/log").logger();
 var fs = require("fs");
 var storage = multer.diskStorage({
     //设置上传后文件路径，upload文件夹会自动创建。
     destination: function (req, file, cb) {
-        var upload_dir = "../public/upload";
+        var upload_dir = path.join(__dirname, "../public/upload");
         // 检查 upload 文件夹是否存在，不存在则自动生成
         if (!fs.existsSync(upload_dir)){
             fs.mkdirSync(upload_dir);

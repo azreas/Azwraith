@@ -56,9 +56,9 @@
             var date = formatDate(titme);
             //console.log(date);
 
-            if(events[i].status == 1){
+            if (events[i].status == 1) {
                 html += '<div class="event"><div class="event-line"><div class="event-status success"><i class="fa fa-check note"></i></div><div class="time-line-content"><div class="time-line-reason event-title"><div class="title-name success">' + events[i].event + '</div><div class="time-line-time"><div class="event-sign"><i class="fa fa-angle-right fa_caret"></i></div><div class="datetimes">' + date + '</div></div><div class="time-line-message" style="display: none;"><p class="list-times">时间：' + date + '</p><p class="list-conent">信息：' + events[i].script + '</p></div></div></div></div></div>';
-            }else if(events[i].status == 2){
+            } else if (events[i].status == 2) {
                 html += '<div class="event"><div class="event-line"><div class="event-status error"><i class="fa fa-times note"></i></div><div class="time-line-content"><div class="time-line-reason event-title"><div class="title-name error">' + events[i].event + '</div><div class="time-line-time"><div class="event-sign"><i class="fa fa-angle-right fa_caret"></i></div><div class="datetimes">' + date + '</div></div><div class="time-line-message" style="display: none;"><p class="list-times">时间：' + date + '</p><p class="list-conent">信息：' + events[i].script + '</p></div></div></div></div></div>';
             }
 
@@ -66,29 +66,29 @@
 
         }
     });
-    setInterval(function () {
-        $.ajax({
-            url: '/container/instance/event/list/' + containerid,
-            type: 'GET'
-        }).done(function (resp) {
-            var events = resp.appevents;
-            //console.log(events);
-            var html = '';
-            for (var i in events) {
-                var titme = new Date(events[i].titme);
-                var date = formatDate(titme);
-                //console.log(date);
-
-                if(events[i].status == 1){
-                    html += '<div class="event"><div class="event-line"><div class="event-status success"><i class="fa fa-check note"></i></div><div class="time-line-content"><div class="time-line-reason event-title"><div class="title-name success">' + events[i].event + '</div><div class="time-line-time"><div class="event-sign"><i class="fa fa-angle-right fa_caret"></i></div><div class="datetimes">' + date + '</div></div><div class="time-line-message" style="display: none;"><p class="list-times">时间：' + date + '</p><p class="list-conent">信息：' + events[i].script + '</p></div></div></div></div></div>';
-                }else if(events[i].status == 2){
-                    html += '<div class="event"><div class="event-line"><div class="event-status error"><i class="fa fa-times note"></i></div><div class="time-line-content"><div class="time-line-reason event-title"><div class="title-name error">' + events[i].event + '</div><div class="time-line-time"><div class="event-sign"><i class="fa fa-angle-right fa_caret"></i></div><div class="datetimes">' + date + '</div></div><div class="time-line-message" style="display: none;"><p class="list-times">时间：' + date + '</p><p class="list-conent">信息：' + events[i].script + '</p></div></div></div></div></div>';
-                }
-
-                $('.containerEvent').html(html);
-            }
-        });
-    }, 5000);
+    //setInterval(function () {
+    //    $.ajax({
+    //        url: '/container/instance/event/list/' + containerid,
+    //        type: 'GET'
+    //    }).done(function (resp) {
+    //        var events = resp.appevents;
+    //        //console.log(events);
+    //        var html = '';
+    //        for (var i in events) {
+    //            var titme = new Date(events[i].titme);
+    //            var date = formatDate(titme);
+    //            //console.log(date);
+    //
+    //            if(events[i].status == 1){
+    //                html += '<div class="event"><div class="event-line"><div class="event-status success"><i class="fa fa-check note"></i></div><div class="time-line-content"><div class="time-line-reason event-title"><div class="title-name success">' + events[i].event + '</div><div class="time-line-time"><div class="event-sign"><i class="fa fa-angle-right fa_caret"></i></div><div class="datetimes">' + date + '</div></div><div class="time-line-message" style="display: none;"><p class="list-times">时间：' + date + '</p><p class="list-conent">信息：' + events[i].script + '</p></div></div></div></div></div>';
+    //            }else if(events[i].status == 2){
+    //                html += '<div class="event"><div class="event-line"><div class="event-status error"><i class="fa fa-times note"></i></div><div class="time-line-content"><div class="time-line-reason event-title"><div class="title-name error">' + events[i].event + '</div><div class="time-line-time"><div class="event-sign"><i class="fa fa-angle-right fa_caret"></i></div><div class="datetimes">' + date + '</div></div><div class="time-line-message" style="display: none;"><p class="list-times">时间：' + date + '</p><p class="list-conent">信息：' + events[i].script + '</p></div></div></div></div></div>';
+    //            }
+    //
+    //            $('.containerEvent').html(html);
+    //        }
+    //    });
+    //}, 5000);
 
     //根据服务ID更新实例列表
     setInterval(function () {
@@ -187,9 +187,9 @@
         $('#address').parent().attr('href', 'http://' + resp.address);
         $('#updateTime').html(updateTime);
         $('#createTime').html(createTime);
-        if(resp.iamgeName == 'zerolinke/siege'){
+        if (resp.iamgeName == 'zerolinke/siege') {
             $('#containerImg').attr('src', '/images/image/siege.svg');
-        }else if (resp.iamgeName == 'alexwhen/docker-2048') {
+        } else if (resp.iamgeName == 'alexwhen/docker-2048') {
             $('#containerImg').attr('src', '/images/image/2048.png');
         } else if (resp.iamgeName == 'zerosky/emt') {
             $('#containerImg').attr('src', '/images/image/emt.png');
@@ -205,16 +205,16 @@
         }
 
         //获取容器伸缩数
-        if(autoscale == "true"){
+        if (autoscale == "true") {
             $('.applocation').removeClass('hide');
             $.ajax({
                 url: '/container/scalecontainer/list/' + containerid,
                 type: 'GET'
             }).done(function (resp) {
                 //console.log(resp);
-                if(resp.result == true){
+                if (resp.result == true) {
                     gauge.update(resp.containers.length);
-                }else if(resp.result == false){
+                } else if (resp.result == false) {
                     gauge.update(0);
                 }
             });
@@ -266,9 +266,9 @@
             $('#address').parent().attr('href', 'http://' + resp.address);
             $('#updateTime').html(updateTime);
             $('#createTime').html(createTime);
-            if(resp.iamgeName == 'zerolinke/siege'){
+            if (resp.iamgeName == 'zerolinke/siege') {
                 $('#containerImg').attr('src', '/images/image/siege.svg');
-            }else if (resp.iamgeName == 'alexwhen/docker-2048') {
+            } else if (resp.iamgeName == 'alexwhen/docker-2048') {
                 $('#containerImg').attr('src', '/images/image/2048.png');
             } else if (resp.iamgeName == 'zerosky/emt') {
                 $('#containerImg').attr('src', '/images/image/emt.png');
@@ -277,19 +277,21 @@
             }
 
             //获取容器伸缩数
-            if(autoscale == "true"){
+            if (autoscale == "true") {
                 $('.applocation').removeClass('hide');
                 $.ajax({
                     url: '/container/scalecontainer/list/' + containerid,
                     type: 'GET'
                 }).done(function (resp) {
                     //console.log(resp);
-                    if(resp.result == true){
+                    if (resp.result == true) {
                         gauge.update(resp.containers.length);
-                    }else if(resp.result == false){
+                    } else if (resp.result == false) {
                         gauge.update(0);
                     }
                 });
+            } else if (autoscale == "false") {
+                $('.applocation').addClass('hide');
             }
         }).fail(function (err) {
             console.log(err);
@@ -334,46 +336,46 @@
         });
     });
 
-    ////获取容器伸缩数
-    //var autoscaleStatus = $('#autoscaleStatus').val();
-    //if(autoscaleStatus == true){
-    //    $('.applocation').removeClass('hide');
-    //    $.ajax({
-    //        url: '/container/scalecontainer/list/' + containerid,
-    //        type: 'GET'
-    //    }).done(function (resp) {
-    //        console.log(resp);
-    //        //var html = '';
-    //        //for (var i in events) {
-    //        //    var titme = new Date(events[i].titme);
-    //        //    var date = formatDate(titme);
-    //        //    //console.log(date);
-    //        //
-    //        //    html += '<div class="event"><div class="event-line"><div class="event-status success"><i class="fa fa-check note"></i></div><div class="time-line-content"><div class="time-line-reason event-title"><div class="title-name success">' + events[i].event + '</div><div class="time-line-time"><div class="event-sign"><i class="fa fa-angle-right fa_caret"></i></div><div class="datetimes">' + date + '</div></div><div class="time-line-message" style="display: none;"><p class="list-times">时间：' + date + '</p><p class="list-conent">信息：' + events[i].script + '</p></div></div></div></div></div>';
-    //        //
-    //        //    $('.containerEvent').html(html);
-    //        //}
-    //    });
-        //setInterval(function () {
-        //    $.ajax({
-        //        url: '/container/instance/event/list/' + containerid,
-        //        type: 'GET'
-        //    }).done(function (resp) {
-        //        var events = resp.appevents;
-        //        //console.log(events);
-        //        var html = '';
-        //        for (var i in events) {
-        //            var titme = new Date(events[i].titme);
-        //            var date = formatDate(titme);
-        //            //console.log(date);
-        //
-        //            html += '<div class="event"><div class="event-line"><div class="event-status success"><i class="fa fa-check note"></i></div><div class="time-line-content"><div class="time-line-reason event-title"><div class="title-name success">' + events[i].event + '</div><div class="time-line-time"><div class="event-sign"><i class="fa fa-angle-right fa_caret"></i></div><div class="datetimes">' + date + '</div></div><div class="time-line-message" style="display: none;"><p class="list-times">时间：' + date + '</p><p class="list-conent">信息：' + events[i].script + '</p></div></div></div></div></div>';
-        //
-        //            $('.containerEvent').html(html);
-        //        }
-        //    });
-        //}, 5000);
-    //}
+    //获取容器伸缩数
+    var autoscaleStatus = $('#autoscaleStatus').val();
+    if(autoscaleStatus == true){
+        $('.applocation').removeClass('hide');
+        $.ajax({
+            url: '/container/scalecontainer/list/' + containerid,
+            type: 'GET'
+        }).done(function (resp) {
+            console.log(resp);
+            //var html = '';
+            //for (var i in events) {
+            //    var titme = new Date(events[i].titme);
+            //    var date = formatDate(titme);
+            //    //console.log(date);
+            //
+            //    html += '<div class="event"><div class="event-line"><div class="event-status success"><i class="fa fa-check note"></i></div><div class="time-line-content"><div class="time-line-reason event-title"><div class="title-name success">' + events[i].event + '</div><div class="time-line-time"><div class="event-sign"><i class="fa fa-angle-right fa_caret"></i></div><div class="datetimes">' + date + '</div></div><div class="time-line-message" style="display: none;"><p class="list-times">时间：' + date + '</p><p class="list-conent">信息：' + events[i].script + '</p></div></div></div></div></div>';
+            //
+            //    $('.containerEvent').html(html);
+            //}
+        });
+    setInterval(function () {
+        $.ajax({
+            url: '/container/instance/event/list/' + containerid,
+            type: 'GET'
+        }).done(function (resp) {
+            var events = resp.appevents;
+            //console.log(events);
+            var html = '';
+            for (var i in events) {
+                var titme = new Date(events[i].titme);
+                var date = formatDate(titme);
+                //console.log(date);
+
+                html += '<div class="event"><div class="event-line"><div class="event-status success"><i class="fa fa-check note"></i></div><div class="time-line-content"><div class="time-line-reason event-title"><div class="title-name success">' + events[i].event + '</div><div class="time-line-time"><div class="event-sign"><i class="fa fa-angle-right fa_caret"></i></div><div class="datetimes">' + date + '</div></div><div class="time-line-message" style="display: none;"><p class="list-times">时间：' + date + '</p><p class="list-conent">信息：' + events[i].script + '</p></div></div></div></div></div>';
+
+                $('.containerEvent').html(html);
+            }
+        });
+    }, 5000);
+    }
 
 })();
 
