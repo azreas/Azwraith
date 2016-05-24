@@ -98,5 +98,5 @@ exports.emailfail = function(req,res) {
  * @param res
  */
 exports.notfound = function(req,res) {
-    res.render('404',{ })
+    res.render('500',{ })
 };
