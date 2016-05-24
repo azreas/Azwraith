@@ -201,7 +201,6 @@ exports.update = function (resourceParams, callback) {
                 resourceParams.name = app.name;
                 resourceParams.image = app.image;
                 resourceParams.imagetag = app.imagetag;
-                resourceParams.autoscale = app.autoscale;
                 resourceParams.command = app.command;
                 resourceParams.env = app.env;
                 resourceParams.network = app.network;

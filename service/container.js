@@ -183,15 +183,22 @@ exports.create = function (appid, creatCount, servicecallback) {
                             createcallback(null, containerid); // 触发下一步，不管事件保存成功与否
                         }, function (containerid, createcallback) { // 启动实例
                             containerDao.start(containerid, function (err, data) {
-                                try {
-                                    if (err) {
-                                        throw new Error(err);
-                                    }
-                                } catch (e) {
-                                    logger.info("启动容器实例 " + containerid + " 失败：" + e);
-                                    createcallback(e);
+                                if(!err){
+                                    logger.debug('启动容器实例'+ containerid + '成功');
+                                    createcallback(null, containerid, null);
+                                }else{
+                                    logger.info("启动容器实例 " + containerid + " 失败：" + err);
+                                    createcallback(null,containerid,err);
                                 }
-                                createcallback(null, containerid, null);
+                                // try {
+                                //     if (err) {
+                                //         throw new Error(err);
+                                //     }
+                                // } catch (e) {
+                                //     logger.info("启动容器实例 " + containerid + " 失败：" + e);
+                                //     createcallback(e);
+                                // }
+                                // createcallback(null, containerid, null);
                             });
                         }, function (containerid, err, createcallback) { // 存储容器实例启动成功或失败事件，若失败，则直接结束“这条线”
                             var eventTitle = "";
