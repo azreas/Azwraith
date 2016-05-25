@@ -26,7 +26,7 @@ log4js.configure({
  * app 配置日志
  * @param app
  */
-var loggerlevel = process.env.loggerlevel || 'DEBUG';
+var loggerlevel = process.env.LOGLEVEL || 'INFO';
 exports.config = function(app){
     var logger = log4js.getLogger();
     logger.setLevel(loggerlevel);

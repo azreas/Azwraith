@@ -1102,9 +1102,9 @@ exports.get = function (req, res) {
                     path: "/v1/setmeal/" + result.app.conflevel
                 }, function (levelResult) {
                     try {
-                        console.log("level result ---> " + levelResult);
+                        // console.log("level result ---> " + levelResult);
                         levelResult = JSON.parse(levelResult);
-                        console.log("level result.result ---> " + levelResult.result);
+                        // console.log("level result.result ---> " + levelResult.result);
                         if (levelResult.result === true) {
                             var resultData = {
                                 memory: levelResult.data.memory + "MB",
@@ -1382,9 +1382,9 @@ exports.listInstanceEventById = function (req, res) {
         path: "/v1/appevent/" + req.params.id
     }, function (containerEventResult) {
         try {
-            console.log("containerEvent result ---> " + containerEventResult);
+            // console.log("containerEvent result ---> " + containerEventResult);
             containerEventResult = JSON.parse(containerEventResult);
-            console.log("containerEvent result.result ---> " + containerEventResult.result);
+            // console.log("containerEvent result.result ---> " + containerEventResult.result);
 
             if (containerEventResult.result === true) {
                 res.json(containerEventResult);

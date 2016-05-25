@@ -38,7 +38,7 @@ var dockerConfig = {
     /*host : '192.168.1.241',
      port : 3375*//*,
      timeout: 6000*/
-    host: process.env.swarmhost || '192.168.1.243',
+    host: process.env.swarmhost || '192.168.1.246',
     port: process.env.swarmport || 3375,
     domain: process.env.domain || "zerocloud.club"
 }
@@ -51,7 +51,7 @@ var userservice = {
      port : 9000*/
     /*host : '192.168.1.236',
      port : 9000*/
-    host: process.env.userservicehost || '192.168.1.121',
+    host: process.env.userservicehost || '192.168.1.243',
     port: process.env.userserviceport || 3001
     // host: '127.0.0.1',
     // port: 9000
@@ -63,7 +63,7 @@ var dockerservice = {
      port : 9001*/
     /*host : 'zerocloud.daoapp.io',
      port : 80*/
-    host: process.env.dockerservicehost || '192.168.1.121',
+    host: process.env.dockerservicehost || '192.168.1.243',
     port: process.env.dockerserviceport || 3000
 };
 var domainservice = {
@@ -74,7 +74,7 @@ var domainservice = {
 
 //
 var dockerapitest = {
-    host: '192.168.1.243',
+    host: '121.201.18.167',
     port: 3375
 }
 // var dockerapitest={
