@@ -52,7 +52,6 @@
         url: '/user',
         type: 'get'
     }).done(function (resp) {
-        console.log(resp);
         if (resp.result == false) {
             layer.msg("请求超时，请重新登录。");
             setTimeout(function () {

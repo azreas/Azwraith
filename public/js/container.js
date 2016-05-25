@@ -48,7 +48,7 @@
     $('.editEnv').on('click', '.removeEnv', function () {
         var envlength = $('.editEnv .envRow').length;
         if (envlength == 1) {
-            layer.msg('最后一条不能删除')
+            layer.msg('最后一条不能删除');
         } else {
             $(this).parents('.envRow').remove();
         }
@@ -140,7 +140,7 @@
                 url: '/image/search/' + searchName,
                 type: 'GET'
             }).done(function (resp) {
-                console.log(resp);
+                //console.log(resp);
                 if (resp.result == false || resp.data.length == 0) {
                     $('#searchImages').html('<div id="nodata"><i>未找到您搜索的镜像，请稍后重试...</i></div>');
                 } else if (resp.result == true) {
@@ -169,8 +169,6 @@
         type: 'GET'
 
     }).done(function (resp) {
-        console.log(resp);
-
         var servers = resp.apps;
         if (resp == 0) {
             layer.msg("请求超时，请重新登录。");
@@ -394,7 +392,7 @@
             //contentType: 'application/json',
             //dataType: 'json'
         }).done(function (resp) {
-            console.log(resp);
+            //console.log(resp);
             if (resp.result == true) {
                 var status = '2';
                 $('input[name="chkItem"]:checked').attr('status', status);
@@ -411,7 +409,7 @@
                 })
             }, 1000);
         }).fail(function (err) {
-            alert('启动失败，请重新启动');
+            layer.msg('启动失败，请重新启动');
             setTimeout(function () {
                 containerNames.forEach(function (containerName) {
                     $('#' + containerName + 'status').html('<span>已停止</span>');
@@ -448,7 +446,7 @@
             //contentType: 'application/json',
             //dataType: 'json'
         }).done(function (resp) {
-            console.log(resp);
+            //console.log(resp);
             if (resp.result == true) {
                 var status = '4';
                 $('input[name="chkItem"]:checked').attr('status', status);
@@ -464,7 +462,7 @@
                 })
             }, 1000);
         }).fail(function (err) {
-            alert('停止失败，请重新启动');
+            layer.msg('停止失败，请重新启动');
             setTimeout(function () {
                 containerNames.forEach(function (containerName) {
                     $('#' + containerName + 'status').html('<span>运行中</span>');
@@ -506,18 +504,14 @@
                 //contentType: 'application/json',
                 //dataType: 'json'
             }).done(function (resp) {
-                console.log(resp);
+                //console.log(resp);
                 if(resp.result == true){
-                    layer.open({
-                        content: '删除成功'
-                    });
+                    layer.msg('删除成功');
                     $('input[name="chkItem"]:checked').parents('.image-item').remove();
 
                     window.location.reload();
                 }else if(resp.result == false){
-                    layer.open({
-                        content: '删除失败，请重新删除'
-                    });
+                    layer.msg('删除失败');
                 }
 
             });
