@@ -200,18 +200,23 @@ exports.update = function (req, res, next) {
                                     res.json({result: false});
                                 }
                             });
+                        }else{
+                            res.json({result: true});
                         }
                     }
                 } else {
                     logger.info(err);
-                    next(err);
+                    // next(err);
+                    res.json({result: false});
                 }
             } catch (e) {
                 logger.info(e);
+                res.json({result: false});
             }
         });
     } catch (e) {
         logger.info(e);
+        res.json({result: false});
     }
 };
 
