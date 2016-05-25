@@ -218,7 +218,7 @@
 
                     var imageName;
                     if (servers[i].image == 'zerolinke/siege') {
-                        imageName = 'siege.png';
+                        imageName = 'siege.svg';
                         appAppend(imageName);
                     } else if (servers[i].image == 'alexwhen/docker-2048') {
                         imageName = '2048.png';
@@ -507,14 +507,19 @@
                 //dataType: 'json'
             }).done(function (resp) {
                 console.log(resp);
-                layer.open({
-                    content: '删除成功'
-                });
-                $('input[name="chkItem"]:checked').parents('.image-item').remove();
+                if(resp.result == true){
+                    layer.open({
+                        content: '删除成功'
+                    });
+                    $('input[name="chkItem"]:checked').parents('.image-item').remove();
 
-                window.location.reload();
-            }).fail(function (err) {
-                alert('删除失败，请重新删除');
+                    window.location.reload();
+                }else if(resp.result == false){
+                    layer.open({
+                        content: '删除失败，请重新删除'
+                    });
+                }
+
             });
 
             $('.dropdown-menu.drop-left').hide();   //隐藏更多操作
