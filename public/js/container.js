@@ -525,10 +525,10 @@
     //限制创建容器个数
     var text = document.getElementById("ins-number");
     text.onkeyup = function () {
-        if (text.value > 100) {
+        if (text.value > 10) {
             //this.value=this.value.replace(/\D/g,'');
-            text.value = 100;
-            layer.msg('实例数量上限为100');
+            text.value = 10;
+            layer.msg('实例数量上限为10');
         }
     }
     
