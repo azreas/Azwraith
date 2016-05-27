@@ -2,13 +2,14 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>零云</title>
+    <title>零云 - 页面不存在</title>
     <link rel="icon" type="image/z-icon" href="/images/favicon.ico">
     <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/stylesheets/index.css"/>
     <script type="text/javascript" src="/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="/stylesheets/layer/layer.js"></script>
     <script type="text/javascript" src="/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/chat_room.js"></script>
     <style>
         .wrapper {
             position: fixed;
@@ -38,7 +39,8 @@
             color: #2276b7;
             margin-top: 30px;
         }
-        .col-xs-12  ul{
+
+        .col-xs-12 ul {
             padding: 10px 0 10px 20px;
         }
     </style>
@@ -62,15 +64,21 @@
                 </div>
                 <div class="navbar-collapse navbar-top-collapse collapse">
                     <ul class="na navbar-nav navbar-right user-navbar">
-                        <!--<li class="header-actions">-->
-                        <!--<a href="/" class="loge-img">-->
-                        <!--<img src="/images/user-avatar.png" class="user-icon username" title="">-->
-                        <!--</a>-->
-                        <!--</li>-->
-                        <li>
+                        <li class="header-actions" style="display: none">
+                            <a href="/account/basic" class="loge-img">
+                                <img src="" class="user-icon username" title="用户中心">
+                                <b class="caret user_caret"></b>
+                            </a>
+                            <div class="select_go">
+                                <div class="rows"></div>
+                                <a href="/container" class="go_console">服务中心</a>
+                                <a href="/logout" class="go_logout">退出</a>
+                            </div>
+                        </li>
+                        <li style="display: none">
                             <a id="login" href="/login" class="font-size" style="padding:5px 15px">登 录</a>
                         </li>
-                        <li>
+                        <li style="display: none">
                             <a id="regist" class="font-size" style="padding:5px 15px;cursor: pointer">注 册</a>
                         </li>
                     </ul>
@@ -118,7 +126,7 @@
     (function () {
         //随机生成404
         var datas = [
-            {'name': '404-1', 'background': '#96d6f7', 'describe': '您要的页面暂时无法打开'},
+            {'name': '404-1', 'background': '#96d6f7', 'describe': '您要的页面不存在'},
             {'name': '404-2', 'background': '#dcecfb', 'describe': '抱歉，您访问的页面不存在'},
             {'name': '404-3', 'background': '#eff7fe', 'describe': ''},
             {'name': '404-4', 'background': '#f6f8f7', 'describe': ''},
@@ -127,15 +135,31 @@
         ];
         var number = Math.floor(Math.random() * datas.length);
         var data = datas[number];
-        $('.wrapper').css('background-color',data.background);
-        $('.contents img').attr('src','/images/'+data.name+'.png');
+        $('.wrapper').css('background-color', data.background);
+        $('.contents img').attr('src', '/images/' + data.name + '.png');
         $('.detail').text(data.describe);
-
-        console.log(data);
-
         //期待更多
         $('.content-navbar li,#regist').on('click', function () {
             layer.msg('更多功能敬请期待！', {icon: 6});
+        });
+
+        //判断是否登录
+        $.ajax({
+            url: '/user',
+            post: 'get'
+        }).done(function (resp) {
+            console.log(resp);
+            if (resp.result == true) {
+                $('li.header-actions').show();
+                var avatarname = resp.people.profile.avatarname;
+                if (avatarname == undefined) {
+                    $('img.user-icon').attr('src', '/images/user-avatar.png');
+                } else {
+                    $('img.user-icon').attr('src', '/upload/' + avatarname);
+                }
+            } else if (resp.result == false) {
+                $('li.header-actions').siblings().show();
+            }
         });
     })();
 </script>

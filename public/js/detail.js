@@ -68,29 +68,29 @@
 
         }
     });
-    //setInterval(function () {
-    //    $.ajax({
-    //        url: '/container/instance/event/list/' + containerid,
-    //        type: 'GET'
-    //    }).done(function (resp) {
-    //        var events = resp.appevents;
-    //        //console.log(events);
-    //        var html = '';
-    //        for (var i in events) {
-    //            var titme = new Date(events[i].titme);
-    //            var date = formatDate(titme);
-    //            //console.log(date);
-    //
-    //            if(events[i].status == 1){
-    //                html += '<div class="event"><div class="event-line"><div class="event-status success"><i class="fa fa-check note"></i></div><div class="time-line-content"><div class="time-line-reason event-title"><div class="title-name success">' + events[i].event + '</div><div class="time-line-time"><div class="event-sign"><i class="fa fa-angle-right fa_caret"></i></div><div class="datetimes">' + date + '</div></div><div class="time-line-message" style="display: none;"><p class="list-times">时间：' + date + '</p><p class="list-conent">信息：' + events[i].script + '</p></div></div></div></div></div>';
-    //            }else if(events[i].status == 2){
-    //                html += '<div class="event"><div class="event-line"><div class="event-status error"><i class="fa fa-times note"></i></div><div class="time-line-content"><div class="time-line-reason event-title"><div class="title-name error">' + events[i].event + '</div><div class="time-line-time"><div class="event-sign"><i class="fa fa-angle-right fa_caret"></i></div><div class="datetimes">' + date + '</div></div><div class="time-line-message" style="display: none;"><p class="list-times">时间：' + date + '</p><p class="list-conent">信息：' + events[i].script + '</p></div></div></div></div></div>';
-    //            }
-    //
-    //            $('.containerEvent').html(html);
-    //        }
-    //    });
-    //}, 5000);
+    setInterval(function () {
+        $.ajax({
+            url: '/container/instance/event/list/' + containerid,
+            type: 'GET'
+        }).done(function (resp) {
+            var events = resp.appevents;
+            //console.log(events);
+            var html = '';
+            for (var i in events) {
+                var titme = new Date(events[i].titme);
+                var date = formatDate(titme);
+                //console.log(date);
+
+                if(events[i].status == 1){
+                    html += '<div class="event"><div class="event-line"><div class="event-status success"><i class="fa fa-check note"></i></div><div class="time-line-content"><div class="time-line-reason event-title"><div class="title-name success">' + events[i].event + '</div><div class="time-line-time"><div class="event-sign"><i class="fa fa-angle-right fa_caret"></i></div><div class="datetimes">' + date + '</div></div><div class="time-line-message" style="display: none;"><p class="list-times">时间：' + date + '</p><p class="list-conent">信息：' + events[i].script + '</p></div></div></div></div></div>';
+                }else if(events[i].status == 2){
+                    html += '<div class="event"><div class="event-line"><div class="event-status error"><i class="fa fa-times note"></i></div><div class="time-line-content"><div class="time-line-reason event-title"><div class="title-name error">' + events[i].event + '</div><div class="time-line-time"><div class="event-sign"><i class="fa fa-angle-right fa_caret"></i></div><div class="datetimes">' + date + '</div></div><div class="time-line-message" style="display: none;"><p class="list-times">时间：' + date + '</p><p class="list-conent">信息：' + events[i].script + '</p></div></div></div></div></div>';
+                }
+
+                $('.containerEvent').html(html);
+            }
+        });
+    }, 5000);
 
     //根据服务ID更新实例列表
     setInterval(function () {

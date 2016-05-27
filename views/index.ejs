@@ -10,6 +10,7 @@
     <script type="text/javascript" src="/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="/stylesheets/layer/layer.js"></script>
     <script type="text/javascript" src="/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/chat_room.js"></script>
 </head>
 <body>
 <div id="wrapper">
@@ -53,15 +54,12 @@
                             <% } %>
                         </ul>
                         <ul class="nav navbar-nav navbar-right content-navbar">
-                            <li>
-                                <a href="javascript:void(0);">产品</a>
-                            </li>
-                            <li>
-                                <a href="javascript:void(0);">价格</a>
-                            </li>
-                            <li>
-                                <a href="javascript:void(0);">服务广场</a>
-                            </li>
+                            <!--<li>-->
+                            <!--<a href="javascript:void(0);">产品</a>-->
+                            <!--</li>-->
+                            <!--<li>-->
+                            <!--<a href="javascript:void(0);">价格</a>-->
+                            <!--</li>-->
                             <li>
                                 <a href="javascript:void(0);">社区</a>
                             </li>
@@ -80,9 +78,9 @@
 
     <section class="screen1">
         <div class="background-video-wrapper">
-            <div id="stage-three" class="header-gradient-bg">
+            <!--<div id="stage-three" class="header-gradient-bg">-->
 
-            </div>
+            <!--</div>-->
         </div>
         <div class="sc-span">
             <div class="container">
@@ -111,10 +109,11 @@
             <div class="col-xs-12">
                 <ul class="porduct">
                     <li>产品</li>
-                    <li>容器服务</li>
-                    <li>代码构建</li>
+                    <li><a href="http://www.zerocloud.cc/" target="_blank">零云</a></li>
+                    <li><a href="http://emt.zerosky.cn:88/" target="_blank">e贸通</a></li>
+                    <li><a href="http://dht.zerosky.cn:88/" target="_blank">电话通</a></li>
                 </ul>
-                <ul class="solutions">
+                <ul class="solutions" style="width: 150px;">
                     <li>社交媒体</li>
                     <li>微博</li>
                     <li>Facebook</li>
@@ -129,11 +128,17 @@
                     <li>关于我们</li>
                     <li>加入我们</li>
                 </ul>
-                <ul class="contactus" style="width: 222px;">
+                <ul class="contactus" style="width: 260px;">
                     <li>联系方式</li>
                     <li>邮箱：zerocloud@zerosky.cn</li>
                     <li>电话：020-38207162</li>
                     <li>地址：广州市天河区建工路9号308</li>
+                </ul>
+                <ul class="contactus" style="width: 200px;">
+                    <li>关注公司微信公共号</li>
+                    <li>
+                        <img src="http://7xukeq.com1.z0.glb.clouddn.com/qrcode.jpg" width="160px">
+                    </li>
                 </ul>
             </div>
         </div>
@@ -144,9 +149,6 @@
     </section>
 
 </div>
-
-<!--<script type="text/javascript" src="js/three.min.js"></script>-->
-<!--<script type="text/javascript" src="js/3d-wave.js"></script>-->
 <script type="text/javascript" src="particles.js/particles.js"></script>
 <script type="text/javascript" src="js/lines-link.js"></script>
 <script type="text/javascript">
@@ -180,6 +182,22 @@
         });
 
     })();
+</script>
+
+<!--聊天窗口接入-->
+<script type='text/javascript'>
+    (function (m, ei, q, i, a, j, s) {
+        m[a] = m[a] || function () {
+                    (m[a].a = m[a].a || []).push(arguments)
+                };
+        j = ei.createElement(q),
+                s = ei.getElementsByTagName(q)[0];
+        j.async = true;
+        j.charset = 'UTF-8';
+        j.src = i + '?v=' + new Date().getUTCDate();
+        s.parentNode.insertBefore(j, s);
+    })(window, document, 'script', '//static.meiqia.com/dist/meiqia.js', '_MEIQIA');
+    _MEIQIA('entId', 4312);
 </script>
 </body>
 </html>
