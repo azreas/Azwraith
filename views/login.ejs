@@ -33,8 +33,8 @@
 
                             <li><a href="/login" class="font_size login" id="llogin" style="padding:5px 15px">登 录</a>
                             </li>
-                            <li><a class="font_size registry" id="register" style="padding:5px 15px;cursor: pointer">注
-                                    册</a></li>
+                            <li><a href="/regist" class="font_size registry" id="register"
+                                   style="padding:5px 15px;cursor: pointer">注册</a></li>
 
                         </ul>
                         <ul class="nav navbar-nav navbar-left z_navbar">
@@ -74,7 +74,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <a id="signup">注册新账户</a>
+                <a href="/regist" id="signup">注册新账户</a>
             </div>
         </div>
     </form>
@@ -119,14 +119,14 @@
         });
         //登录状态返回验证
         var status = $('#status').val();
-//    console.log(status);
+        //console.log(status);
         if (status == '' || status == null) {
 
         } else {
             layer.msg(status);
         }
         //期待更多
-        $('.z_navbar li,#register,#signup').on('click', function () {
+        $('.z_navbar li').on('click', function () {
             layer.msg('更多功能敬请期待！', {icon: 6});
         });
 

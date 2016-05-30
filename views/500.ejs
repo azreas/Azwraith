@@ -79,7 +79,7 @@
                             <a id="login" href="/login" class="font-size" style="padding:5px 15px">登 录</a>
                         </li>
                         <li style="display: none">
-                            <a id="regist" class="font-size" style="padding:5px 15px;cursor: pointer">注 册</a>
+                            <a id="regist" href="/regist" class="font-size" style="padding:5px 15px;cursor: pointer">注 册</a>
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right content-navbar">
@@ -125,7 +125,7 @@
 <script>
     (function () {
         //期待更多
-        $('.content-navbar li,#regist').on('click', function () {
+        $('.content-navbar li').on('click', function () {
             layer.msg('更多功能敬请期待！', {icon: 6});
         });
         //判断是否登录
