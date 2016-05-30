@@ -140,6 +140,9 @@ exports.create = function (appid, creatCount, servicecallback) {
                             "interlock.domain": dockerConfig.domain
                         },
                         HostConfig: {
+                            Binds: [
+                                "/etc/localtime:/etc/localtime:ro"
+                            ],
                             PublishAllPorts: true,
                             MemoryReservation: level.memory,
                             // CpuShares:level.cpu,
@@ -182,12 +185,12 @@ exports.create = function (appid, creatCount, servicecallback) {
                             createcallback(null, containerid); // 触发下一步，不管事件保存成功与否
                         }, function (containerid, createcallback) { // 启动实例
                             containerDao.start(containerid, function (err, data) {
-                                if(!err){
-                                    logger.debug('启动容器实例'+ containerid + '成功');
+                                if (!err) {
+                                    logger.debug('启动容器实例' + containerid + '成功');
                                     createcallback(null, containerid, null);
-                                }else{
+                                } else {
                                     logger.info("启动容器实例 " + containerid + " 失败：" + err);
-                                    createcallback(null,containerid,err);
+                                    createcallback(null, containerid, err);
                                 }
                                 // try {
                                 //     if (err) {
@@ -201,7 +204,7 @@ exports.create = function (appid, creatCount, servicecallback) {
                             });
                         }, function (containerid, err, createcallback) { // 存储容器实例启动成功或失败事件，若失败，则直接结束“这条线”
                             var eventTitle = "";
-                            var script,status;
+                            var script, status;
                             var time = new Date().getTime();
                             var containerEventConfig = {
                                 containerid: containerid,
@@ -212,7 +215,7 @@ exports.create = function (appid, creatCount, servicecallback) {
                             if (!err) {
                                 eventTitle = "启动成功";
                                 script = "start container " + containerid + " success";
-                                status=1;
+                                status = 1;
                                 containerEventConfig.title = eventTitle;
                                 containerEventConfig.script = script;
                                 containerDao.saveEvent(containerEventConfig, function (err, data) {
@@ -225,7 +228,7 @@ exports.create = function (appid, creatCount, servicecallback) {
                             } else {
                                 eventTitle = "启动失败";
                                 script = "start container " + containerid + " error";
-                                status=2;
+                                status = 2;
                             }
                             var serverEventConfig = {
                                 appid: app.id,
@@ -337,22 +340,22 @@ exports.create = function (appid, creatCount, servicecallback) {
                     }
                 );
             },
-     /*       function (containerSuccessCounter, callback) { // 若有实例启动成功，则映射子域名
-                if (containerSuccessCounter <= 0) {
-                    callback(null, containerSuccessCounter); // 触发下一步，并传容器实例创建成功个数
-                } else {
-                    serveDao.createDomain({subdomain: app.subdomain}, function (err, data) {
-                        if (err) {
-                            logger.info('映射子域名err' + err);
-                            return callback(err);
-                        }
-                        else {
-                            logger.debug('映射子域名成功');
-                            callback(null, containerSuccessCounter); // 触发下一步，并传容器实例创建成功个数
-                        }
-                    });
-                }
-            },*/
+            /*       function (containerSuccessCounter, callback) { // 若有实例启动成功，则映射子域名
+             if (containerSuccessCounter <= 0) {
+             callback(null, containerSuccessCounter); // 触发下一步，并传容器实例创建成功个数
+             } else {
+             serveDao.createDomain({subdomain: app.subdomain}, function (err, data) {
+             if (err) {
+             logger.info('映射子域名err' + err);
+             return callback(err);
+             }
+             else {
+             logger.debug('映射子域名成功');
+             callback(null, containerSuccessCounter); // 触发下一步，并传容器实例创建成功个数
+             }
+             });
+             }
+             },*/
             function (containerSuccessCounter, callback) { // 根据容器实例创建情况，更新服务配置信息
 
                 if (containerSuccessCounter <= 0) { // 表示服务启动失败，更新状态为：5.启动失败
@@ -368,7 +371,7 @@ exports.create = function (appid, creatCount, servicecallback) {
                             throw new Error(err);
                         }
                     } catch (e) {
-                        logger.debug("更新服务配置失败",e);
+                        logger.debug("更新服务配置失败", e);
                         return callback(e);
                     }
                     logger.debug("更新服务配置成功");
