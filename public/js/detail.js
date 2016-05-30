@@ -48,8 +48,8 @@
         type: 'GET'
     }).done(function (resp) {
         var events = resp.appevents;
-        // console.log(events);
         // console.log(resp);
+        $('.containerEvent').attr('value',events.length);
         var html = '';
         for (var i in events) {
             var titme = new Date(events[i].titme);
@@ -75,19 +75,25 @@
         }).done(function (resp) {
             var events = resp.appevents;
             //console.log(events);
-            var html = '';
-            for (var i in events) {
-                var titme = new Date(events[i].titme);
-                var date = formatDate(titme);
-                //console.log(date);
+            var elength = $('.containerEvent').attr('value');
+            if(events.length == elength){
 
-                if(events[i].status == 1){
-                    html += '<div class="event"><div class="event-line"><div class="event-status success"><i class="fa fa-check note"></i></div><div class="time-line-content"><div class="time-line-reason event-title"><div class="title-name success">' + events[i].event + '</div><div class="time-line-time"><div class="event-sign"><i class="fa fa-angle-right fa_caret"></i></div><div class="datetimes">' + date + '</div></div><div class="time-line-message" style="display: none;"><p class="list-times">时间：' + date + '</p><p class="list-conent">信息：' + events[i].script + '</p></div></div></div></div></div>';
-                }else if(events[i].status == 2){
-                    html += '<div class="event"><div class="event-line"><div class="event-status error"><i class="fa fa-times note"></i></div><div class="time-line-content"><div class="time-line-reason event-title"><div class="title-name error">' + events[i].event + '</div><div class="time-line-time"><div class="event-sign"><i class="fa fa-angle-right fa_caret"></i></div><div class="datetimes">' + date + '</div></div><div class="time-line-message" style="display: none;"><p class="list-times">时间：' + date + '</p><p class="list-conent">信息：' + events[i].script + '</p></div></div></div></div></div>';
+            }else {
+                var html = '';
+                $('.containerEvent').attr('value',events.length);
+                for (var i in events) {
+                    var titme = new Date(events[i].titme);
+                    var date = formatDate(titme);
+                    //console.log(date);
+
+                    if(events[i].status == 1){
+                        html += '<div class="event"><div class="event-line"><div class="event-status success"><i class="fa fa-check note"></i></div><div class="time-line-content"><div class="time-line-reason event-title"><div class="title-name success">' + events[i].event + '</div><div class="time-line-time"><div class="event-sign"><i class="fa fa-angle-right fa_caret"></i></div><div class="datetimes">' + date + '</div></div><div class="time-line-message" style="display: none;"><p class="list-times">时间：' + date + '</p><p class="list-conent">信息：' + events[i].script + '</p></div></div></div></div></div>';
+                    }else if(events[i].status == 2){
+                        html += '<div class="event"><div class="event-line"><div class="event-status error"><i class="fa fa-times note"></i></div><div class="time-line-content"><div class="time-line-reason event-title"><div class="title-name error">' + events[i].event + '</div><div class="time-line-time"><div class="event-sign"><i class="fa fa-angle-right fa_caret"></i></div><div class="datetimes">' + date + '</div></div><div class="time-line-message" style="display: none;"><p class="list-times">时间：' + date + '</p><p class="list-conent">信息：' + events[i].script + '</p></div></div></div></div></div>';
+                    }
+
+                    $('.containerEvent').html(html);
                 }
-
-                $('.containerEvent').html(html);
             }
         });
     }, 5000);
