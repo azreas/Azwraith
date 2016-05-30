@@ -150,15 +150,12 @@ header ul.user-navbar li a.font-size {
 }
 
 .screen1 .sc-span {
-    width: 100%;
     vertical-align: middle;
-    display: table-cell;
     overflow: hidden;
     color: #fff;
     border: 0;
     z-index: 3;
-    position: absolute;
-    top: 35%;
+    margin: 17% auto 0 auto;
 }
 
 .screen1 .sourehan {
