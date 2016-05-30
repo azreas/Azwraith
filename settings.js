@@ -74,8 +74,8 @@ var domainservice = {
 
 //
 var dockerapitest = {
-    host: '121.201.18.167',
-    port: 3375
+    host: '192.168.1.240',
+    port: 2375
 }
 // var dockerapitest={
 //     host:'127.0.0.1',

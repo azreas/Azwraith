@@ -400,7 +400,11 @@ exports.getavatar = function (token, callback) {
 };
 
 
+exports.usercode = function (callback) {
+    return userDao.usecode(callback);
+}
 
 
-
-
+exports.verifycode = function (inviteCode, callback) {
+    return userDao.verifycode(inviteCode, callback);
+}

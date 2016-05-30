@@ -12,5 +12,8 @@ userservicehost=121.201.18.171
 userserviceport=3001
 
 #swarm
-swarmhost=121.201.18.171
+swarmhost=121.201.18.167
 swarmport=3375
+
+#log
+LOGLEVEL=DEBUG

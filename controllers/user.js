@@ -86,27 +86,56 @@ exports.get = function (req, res) {
  */
 exports.regist = function (req, res, next) {
     try {
-        var user = {
-            account: {
-                email: req.body.email,
-                password: req.body.passwd
-            }
-        };
-        userService.regist(user, function (err, data) {
-            try {
-                if (err) {
-                    throw new Error(err);
-                }
-                logger.info("用户 [" + user.account.email + "] 注册成功");
-                // 注册成功，跳到 登录 页面
-                res.redirect("/login");
-            } catch (e) {
-                logger.info("用户 [" + user.account.email + "] 注册失败");
-                logger.error(e);
-                // 注册失败，返回 注册页面 带着提示信息和回显信息
-                res.render('regist', {
-                    status: data.info.script ? data.info.script : "注册失败"
+        async.waterfall([
+            function (waterfallCallback) {
+                var isNeedCode = false;
+                userService.usercode(function (err, result) {
+                    if (!err) {
+                        isNeedCode = true;
+                    }
+                    waterfallCallback(null, isNeedCode);
                 });
+            }, function (isNeedCode, waterfallCallback) {
+                if (isNeedCode) {
+                    userService.verifycode(req.body.inviteCode, function (err, data) {
+                        if (!err) {
+                            waterfallCallback(null);
+                        } else {
+                            res.render('regist', {
+                                status: "邀请码无效"
+                            });
+                            waterfallCallback(err);
+                        }
+                    });
+                }
+            }
+        ], function (err) {
+            if (!err) {
+                var user = {
+                    account: {
+                        email: req.body.email,
+                        password: req.body.passwd
+                    }
+                };
+                userService.regist(user, function (err, data) {
+                    try {
+                        if (err) {
+                            throw new Error(err);
+                        }
+                        logger.info("用户 [" + user.account.email + "] 注册成功");
+                        // 注册成功，跳到 登录 页面
+                        res.redirect("/login");
+                    } catch (e) {
+                        logger.info("用户 [" + user.account.email + "] 注册失败");
+                        logger.error(e);
+                        // 注册失败，返回 注册页面 带着提示信息和回显信息
+                        res.render('regist', {
+                            status: data.info.script ? data.info.script : "注册失败"
+                        });
+                    }
+                });
+            } else {
+                logger.info(err);
             }
         });
     } catch (e) {
@@ -376,7 +405,7 @@ exports.avatarupload = function (req, res, next) {
         } else {
             return res.json({
                 result: true,
-                filename:req.file.filename,
+                filename: req.file.filename,
                 info: {
                     code: 1,
                     script: "Avatar upload sucess."

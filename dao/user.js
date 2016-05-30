@@ -223,4 +223,37 @@ exports.avatarname = function (postdata, callback) {
         }
         return callback(null, data);
     });
+};
+
+/**
+ * 检查要不要邀请码
+ */
+exports.usecode = function (callback) {
+    rest.get('http://' + userservice.host + ':' + userservice.port + '/v1/people/regist/usecode').on('complete', function (data, response) {
+        try {
+            if (data.result !== true) {
+                throw new Error(data);
+            }
+        } catch (e) {
+            return callback(e.message, data);
+        }
+        return callback(null, data);
+    });
+};
+
+/**
+ * 验证邀请码
+ *
+ */
+exports.verifycode = function (inviteCode, callback) {
+    rest.get('http://' + userservice.host + ':' + userservice.port + '/v1/people/regist/verifycode/' + inviteCode).on('complete', function (data, response) {
+        try {
+            if (data.result !== true) {
+                throw new Error(data);
+            }
+        } catch (e) {
+            return callback(e.message, data);
+        }
+        return callback(null, data);
+    });
 }
