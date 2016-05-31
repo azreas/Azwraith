@@ -231,7 +231,7 @@ exports.avatarname = function (postdata, callback) {
 exports.usecode = function (callback) {
     rest.get('http://' + userservice.host + ':' + userservice.port + '/v1/people/regist/usecode').on('complete', function (data, response) {
         try {
-            if (data.result !== true) {
+            if (data.result !== true && data.result !== false) {
                 throw new Error(data);
             }
         } catch (e) {

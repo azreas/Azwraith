@@ -89,11 +89,14 @@ exports.regist = function (req, res, next) {
         async.waterfall([
             function (waterfallCallback) {
                 var isNeedCode = false;
-                userService.usercode(function (err, result) {
+                userService.usercode(function (err, data) {
                     if (!err) {
-                        isNeedCode = true;
+                        isNeedCode = data.result;
+                        waterfallCallback(null, isNeedCode);
+                    } else {
+                        res.render('500', {});
+                        waterfallCallback(err);
                     }
-                    waterfallCallback(null, isNeedCode);
                 });
             }, function (isNeedCode, waterfallCallback) {
                 if (isNeedCode) {
@@ -136,10 +139,12 @@ exports.regist = function (req, res, next) {
                 });
             } else {
                 logger.info(err);
+                // next(err);
             }
         });
     } catch (e) {
         logger.error(e);
+        // res.render('500', {});
         next(e);
     }
 };
