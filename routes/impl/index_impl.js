@@ -100,3 +100,12 @@ exports.emailfail = function(req,res) {
 exports.notfound = function(req,res) {
     res.render('500',{ })
 };
+
+/**
+ * 邀请码页面
+ * @param req
+ * @param res
+ */
+exports.code = function(req,res) {
+    res.render('codeServe',{ })
+};

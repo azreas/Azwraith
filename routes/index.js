@@ -37,6 +37,9 @@ module.exports = function(app){
   //404页面
   router.get('/notfound',index_impl.notfound);
 
+  //邀请码页面
+  router.get('/code',index_impl.code);
+
   // 测试界面
   router.get('/test', index_impl.test);
 
