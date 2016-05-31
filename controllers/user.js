@@ -129,7 +129,9 @@ exports.regist = function (req, res, next) {
                             if (!err) {
                                 logger.debug("用户 [" + user.account.email + "] 注册成功");
                                 // 注册成功，跳到 登录 页面
-                                res.redirect("/login");
+                                res.render("login", {
+                                    status: "恭喜注册成功，请登录"
+                                });
                             } else {
                                 logger.info(err);
                                 logger.info(data);
