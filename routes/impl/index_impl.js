@@ -5,7 +5,7 @@
 
 var mongoPool = require("../../modules/db/mongodb").mongoPool;
 var httpUtil = require("../../modules/util/httpUtil");
-
+var userService = require('../../service/user');
 var logger = require("../../modules/log/log").logger();
 
 /**
@@ -13,8 +13,8 @@ var logger = require("../../modules/log/log").logger();
  * @param req
  * @param res
  */
-exports.center = function(req, res) {
-    res.render('servesCenter', { });
+exports.center = function (req, res) {
+    res.render('servesCenter', {});
 };
 
 /**
@@ -22,8 +22,8 @@ exports.center = function(req, res) {
  * @param req
  * @param res
  */
-exports.container = function(req, res) {
-    res.render('container', { });
+exports.container = function (req, res) {
+    res.render('container', {});
 };
 
 /**
@@ -31,8 +31,8 @@ exports.container = function(req, res) {
  * @param req
  * @param res
  */
-exports.build = function(req, res) {
-    res.render('build', { });
+exports.build = function (req, res) {
+    res.render('build', {});
 };
 
 /**
@@ -40,8 +40,8 @@ exports.build = function(req, res) {
  * @param req
  * @param res
  */
-exports.square = function(req, res) {
-    res.render('square', { });
+exports.square = function (req, res) {
+    res.render('square', {});
 };
 
 /**
@@ -49,9 +49,9 @@ exports.square = function(req, res) {
  * @param req
  * @param res
  */
-exports.test = function(req, res) {
+exports.test = function (req, res) {
     logger.info("开始访问测试页");
-    res.render('test', { title: '测试' });
+    res.render('test', {title: '测试'});
 };
 
 /**
@@ -59,8 +59,8 @@ exports.test = function(req, res) {
  * @param req
  * @param res
  */
-exports.detail = function(req,res) {
-    res.render('detail',{id : req.params.id})
+exports.detail = function (req, res) {
+    res.render('detail', {id: req.params.id})
 };
 
 /**
@@ -68,8 +68,8 @@ exports.detail = function(req,res) {
  * @param req
  * @param res
  */
-exports.account = function(req,res) {
-    res.render('account',{
+exports.account = function (req, res) {
+    res.render('account', {
         value: req.params.id
     })
 };
@@ -79,8 +79,8 @@ exports.account = function(req,res) {
  * @param req
  * @param res
  */
-exports.emailsuccess = function(req,res) {
-    res.render('emailSuccess',{ })
+exports.emailsuccess = function (req, res) {
+    res.render('emailSuccess', {})
 };
 
 /**
@@ -88,8 +88,8 @@ exports.emailsuccess = function(req,res) {
  * @param req
  * @param res
  */
-exports.emailfail = function(req,res) {
-    res.render('emailFail',{ })
+exports.emailfail = function (req, res) {
+    res.render('emailFail', {})
 };
 
 /**
@@ -97,8 +97,8 @@ exports.emailfail = function(req,res) {
  * @param req
  * @param res
  */
-exports.notfound = function(req,res) {
-    res.render('500',{ })
+exports.notfound = function (req, res) {
+    res.render('500', {})
 };
 
 /**
@@ -106,6 +106,20 @@ exports.notfound = function(req,res) {
  * @param req
  * @param res
  */
-exports.code = function(req,res) {
-    res.render('codeServe',{ })
+exports.code = function (req, res) {
+    try {
+        userService.issuedcode(function (err, data) {
+            if (!err) {
+                res.render("codeServe", {
+                    code: data.data.invitecode
+                });
+            } else {
+                next(err);
+            }
+        });
+    }
+    catch (e) {
+        logger.info(e);
+        next(e);
+    }
 };

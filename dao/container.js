@@ -7,7 +7,7 @@
 var rest = require('restler');
 var dockerservice = require('../settings').dockerservice;
 var dockerConfig = require("../settings").dockerConfig;
-
+var http = require('http');
 
 /**
  * 保存容器配置
@@ -238,7 +238,7 @@ exports.remove = function (id, callback) {
 
 /**
  * 根据appid查找scalecontainer
- * @param appid 
+ * @param appid
  * @param callback
  */
 exports.findscalecontainer = function (appid, callback) {
@@ -272,10 +272,61 @@ exports.scalecontainersave = function (scalecontainer, callback) {
     });
 };
 
+/**
+ *
+ * @param containerId
+ * @param postdata
+ * @param callback
+ */
+exports.creatExec = function (containerId, postdata, callback) {
+    rest.postJson('http://' + dockerservice.host + ':' + dockerservice.port + '/containers/' + containerId + '/exec', postdata)
+        .on('complete', function (data, response) {
+            try {
+                if (response.statusCode !== 201) {
+                    throw new Error(data);
+                }
+            } catch (e) {
+                return callback(e.message, data);
+            }
+            return callback(null, data);
+        });
+};
 
-
-
-
+/**
+ * 开启容器控制台，需要调用req.end()手动关闭
+ * @param execId
+ * @param postdata
+ * @param callback
+ * @returns {*}
+ */
+exports.startExec = function (execId, postData, callback) {
+    var options = {
+        hostname: dockerConfig.host,//主机地址
+        port: dockerConfig.port,//主机端口
+        path: '/exec/' + execId + '/start',//路径
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+    var req = http.request(options, function (res) {
+        res.setEncoding('utf-8');
+        console.log('HEADERS: ' + JSON.stringify(res.headers));
+        if (res.statusCode === 200) {
+            console.log('正常')
+        } else {
+            console.log('请求失败' + res.statusCode);
+        }
+        res.on('data', function (chunk) {
+            console.log(chunk);
+        });
+    });
+    req.on('error', function (e) {
+        return callback(e);
+    });
+    req.write(JSON.stringify(postData));
+    return callback(null, req);
+};
 
 
 

@@ -476,3 +476,27 @@ exports.getavatar = function (req, res) {
         });
     }
 };
+
+/**
+ * 显示邀请码
+ * @param req
+ * @param res
+ * @param next
+ */
+exports.issuedcode = function (req, res, next) {
+    try {
+        userService.issuedcode(function (err, data) {
+            if (!err) {
+                res.render("codeServe", {
+                    code: data.data.invitecode
+                });
+            } else {
+                next(err);
+            }
+        });
+    }
+    catch (e) {
+        logger.info(e);
+        next(e);
+    }
+}

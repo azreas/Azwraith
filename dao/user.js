@@ -275,3 +275,16 @@ exports.delcode = function (inviteCode, callback) {
         return callback(null, data);
     });
 };
+
+exports.issuedcode = function (callback) {
+    rest.get('http://' + userservice.host + ':' + userservice.port + '/v1/people/regist/issuedcode').on('complete', function (data, response) {
+        try {
+            if (data.result !== true) {
+                throw new Error(data.info.script);
+            }
+        } catch (e) {
+            return callback(e.message, data);
+        }
+        return callback(null, data);
+    });
+}

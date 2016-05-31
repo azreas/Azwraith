@@ -413,3 +413,7 @@ exports.verifycode = function (inviteCode, callback) {
 exports.delcode = function (inviteCode, callback) {
     return userDao.delcode(inviteCode, callback);
 }
+
+exports.issuedcode = function (callback) {
+    return userDao.issuedcode(callback);
+}
