@@ -1983,28 +1983,6 @@ exports.stop = function (req, res) {
                         callback(null, containerSuccessCounter); // 触发下一步，并传容器实例创建成功个数
                     }
                 );
-            }, function (containerSuccessCounter, callback) { // 若服务停止成功，则删除网络
-                if (containerSuccessCounter <= 0) {
-                    callback(null, containerSuccessCounter); // 触发下一步，并传容器实例创建成功个数
-                } else {
-                    httpUtil.delete({
-                        host: dockerservice.host,
-                        port: dockerservice.port,
-                        path: "/v1/domain/" + app.subdomain
-                    }, function (result) {
-                        try {
-                            console.log("delete domain result ---> " + result);
-                            result = JSON.parse(result);
-
-                            if (result.result !== true) {
-                                throw new Error("删除服务 " + app.name + " 网络失败");
-                            }
-                            callback(null, containerSuccessCounter); // 触发下一步，并传容器实例创建成功个数
-                        } catch (e) {
-                            callback(e);
-                        }
-                    });
-                }
             }, function (containerSuccessCounter, callback) { // 根据容器实例停止情况，更新服务状态和时间信息
                 if (containerSuccessCounter <= 0) { // 表示服务停止失败，更新状态为：6.停止失败
                     app.status = 6;

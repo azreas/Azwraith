@@ -279,7 +279,7 @@ exports.scalecontainersave = function (scalecontainer, callback) {
  * @param callback
  */
 exports.creatExec = function (containerId, postdata, callback) {
-    rest.postJson('http://' + dockerservice.host + ':' + dockerservice.port + '/containers/' + containerId + '/exec', postdata)
+    rest.postJson('http://' + dockerConfig.host + ':' + dockerConfig.port + '/containers/' + containerId + '/exec', postdata)
         .on('complete', function (data, response) {
             try {
                 if (response.statusCode !== 201) {
@@ -299,10 +299,10 @@ exports.creatExec = function (containerId, postdata, callback) {
  * @param callback
  * @returns {*}
  */
-exports.startExec = function (execId, postData, callback) {
+exports.startExec = function (execId, nodeinfo, postData, callback) {
     var options = {
-        hostname: dockerConfig.host,//主机地址
-        port: dockerConfig.port,//主机端口
+        hostname: nodeinfo.host,//主机地址
+        port: nodeinfo.port,//主机端口
         path: '/exec/' + execId + '/start',//路径
         method: 'POST',
         headers: {
