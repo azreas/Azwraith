@@ -152,6 +152,15 @@
 
     }, 3000);
 
+    //获取本地镜像
+    var imagesInfo;
+    $.ajax({
+        url: '/image/list/label/kind',
+        type: 'GET'
+    }).done(function (resp) {
+        //console.log(resp);
+        imagesInfo = resp.data;
+    });
     //根据服务ID实时更新服务详情数据
     $.ajax({
         url: '/container/get/' + containerid,
@@ -195,15 +204,15 @@
         $('#address').parent().attr('href', 'http://' + resp.address);
         $('#updateTime').html(updateTime);
         $('#createTime').html(createTime);
-        if (resp.iamgeName == 'zerolinke/siege') {
-            $('#containerImg').attr('src', '/images/image/siege.svg');
-        } else if (resp.iamgeName == 'alexwhen/docker-2048') {
-            $('#containerImg').attr('src', '/images/image/2048.png');
-        } else if (resp.iamgeName == 'zerosky/emt') {
-            $('#containerImg').attr('src', '/images/image/emt.png');
-        } else {
-            $('#containerImg').attr('src', 'https://hub.docker.com/public/images/official/' + resp.iamgeName + '.png');
+
+        var imageName = '/images/blue-large.png';
+        for (var m in imagesInfo) {
+            if (resp.iamgeName == imagesInfo[m].name) {
+                imageName = imagesInfo[m].icon;
+            }
         }
+        $('#containerImg').attr('src', imageName);
+
         for (var k in resp.environment) {
             //console.log(resp.environment[k][0]);
             //console.log(resp.environment[k][1]);

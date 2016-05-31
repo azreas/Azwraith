@@ -55,15 +55,16 @@
         <section class="detail-succeed">
             <div class="icon-img">
                 <div class="type-icon">
-                    <% if(image == 'zerolinke/siege'){ %>
-                    <img src="/images/image/siege.svg" height="100%">
-                    <% }else if(image == 'alexwhen/docker-2048'){ %>
-                    <img src="/images/image/2048.png" height="100%">
-                    <% }else if(image == 'zerosky/emt'){ %>
-                    <img src="/images/image/emt.png" height="100%">
-                    <% }else { %>
-                    <img src="https://hub.docker.com/public/images/official/<%= image %>.png" height="100%">
-                    <% } %>
+                    <img class="containerImageSrc" src="" height="100%">
+                    <!--<% if(image == 'zerolinke/siege'){ %>-->
+                    <!--<img src="/images/image/siege.svg" height="100%">-->
+                    <!--<% }else if(image == 'alexwhen/docker-2048'){ %>-->
+                    <!--<img src="/images/image/2048.png" height="100%">-->
+                    <!--<% }else if(image == 'zerosky/emt'){ %>-->
+                    <!--<img src="/images/image/emt.png" height="100%">-->
+                    <!--<% }else { %>-->
+                    <!--<img src="https://hub.docker.com/public/images/official/<%= image %>.png" height="100%">-->
+                    <!--<% } %>-->
                 </div>
             </div>
             <ul class="succeed-content pull-left" style="margin-left:20px">
@@ -259,18 +260,12 @@
 
     <input type="hidden" id="master" value="<%= name %>">
     <input type="hidden" id="creationTime" value="2016-04-13 09:33:26">
-
     <input type="hidden" id="containerID" value="<%= containerId %>">
-
+    <input type="hidden" id="containerImageSrc" value="<%= image %>">
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/instanceDetail.js"></script>
 <script src="/js/header.js"></script>
-
-<script>
-
-</script>
-
 </body>
 </html>

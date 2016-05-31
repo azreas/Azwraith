@@ -1,32 +1,32 @@
 /**
  * Created by HC on 2016/4/13.
  */
-(function(){
+(function () {
 
     $('.nav-menu li').eq(1).addClass('item-click');
 
-    $('.baseInfo a').click(function(){
+    $('.baseInfo a').click(function () {
         $(this).addClass('btn-prim').siblings().removeClass('btn-prim');
         var index_a = $(this).index();
         $('#detail-content-box>div').eq(index_a).show().siblings().hide();
     });
 
-    $(document).on('click','.event-sign',function(){
-        if(!$(this).hasClass('live')){
+    $(document).on('click', '.event-sign', function () {
+        if (!$(this).hasClass('live')) {
             $(this).addClass('live');
             $(this).parent().siblings('.time-line-message').slideDown();
-        }else{
+        } else {
             $(this).removeClass('live');
             $(this).parent().siblings('.time-line-message').slideUp();
         }
     });
-    $(document).on('click','.event-title',function(){
+    $(document).on('click', '.event-title', function () {
 
-        if(!$(this).hasClass('live')){
+        if (!$(this).hasClass('live')) {
             $(this).addClass('live').find('.event-sign').addClass('live');
 
             $(this).find('.time-line-message').slideDown('fast');
-        }else{
+        } else {
             $(this).removeClass('live').find('.event-sign').removeClass('live');
             $(this).find('.time-line-message').slideUp('fast');
         }
@@ -40,19 +40,19 @@
     //console.log(containerid);
 
     //添加实例实时监控，日志
-    $('.MONITOR,.LOG').click(function(){
+    $('.MONITOR,.LOG').click(function () {
         //连接websocket后端服务器
-        var socket = io.connect('ws://'+window.location.host);
+        var socket = io.connect('ws://' + window.location.host);
 
         $("#podLogs").text('');
         // 监听服务端发来的日志
-        socket.on('log', function(data){
+        socket.on('log', function (data) {
             //console.log(data.log);
-            if(data.log == ''){
-                var dbtr=$('<div style="color: rgba(55, 252, 52, 0.58);"><font style="color: rgba(55, 252, 52, 0.58)">没有日志产生。</font></div>');
+            if (data.log == '') {
+                var dbtr = $('<div style="color: rgba(55, 252, 52, 0.58);"><font style="color: rgba(55, 252, 52, 0.58)">没有日志产生。</font></div>');
                 dbtr.appendTo($("#podLogs"));
-            }else{
-                var dbtr=$('<div style="color: rgba(55, 252, 52, 0.58);"><font style="color: rgba(255, 255, 0, 0.58)">[历史记录]</font><font style="color: rgba(55, 252, 52, 0.58)">'+data.log+'</font></div>');
+            } else {
+                var dbtr = $('<div style="color: rgba(55, 252, 52, 0.58);"><font style="color: rgba(255, 255, 0, 0.58)">[历史记录]</font><font style="color: rgba(55, 252, 52, 0.58)">' + data.log + '</font></div>');
                 dbtr.appendTo($("#podLogs"));
             }
         });
@@ -75,10 +75,10 @@
                 animation: Highcharts.svg,
                 marginRight: 10,
                 events: {
-                    load: function() {
+                    load: function () {
                         var series = this.series[0];
 
-                        socket.on('monitor', function(data){
+                        socket.on('monitor', function (data) {
                             //console.log("cpu ---> "+data.cpu);
                             //console.log("memory ---> "+data.memory);
                             //console.log("netRx ---> "+data.netRx);
@@ -143,7 +143,7 @@
                 marker: {
                     enabled: false  // 显不显示线小圆点儿
                 },
-                data: (function() { //初始化
+                data: (function () { //初始化
                     var data = [],
                         time = (new Date()).getTime(),
                         i;
@@ -168,10 +168,10 @@
                 animation: Highcharts.svg,
                 marginRight: 10,
                 events: {
-                    load: function() {
+                    load: function () {
                         var series = this.series[0];
 
-                        socket.on('monitor', function(data){
+                        socket.on('monitor', function (data) {
                             //console.log("cpu ---> "+data.cpu);
                             //console.log("memory ---> "+data.memory);
                             //console.log("netRx ---> "+data.netRx);
@@ -236,7 +236,7 @@
                 marker: {
                     enabled: false  // 显不显示线小圆点儿
                 },
-                data: (function() { //初始化
+                data: (function () { //初始化
                     var data = [],
                         time = (new Date()).getTime(),
                         i;
@@ -261,10 +261,10 @@
                 animation: Highcharts.svg,
                 marginRight: 10,
                 events: {
-                    load: function() {
+                    load: function () {
                         var series = this.series[0];
 
-                        socket.on('monitor', function(data){
+                        socket.on('monitor', function (data) {
                             //console.log("cpu ---> "+data.cpu);
                             //console.log("memory ---> "+data.memory);
                             //console.log("netRx ---> "+data.netRx);
@@ -329,7 +329,7 @@
                 marker: {
                     enabled: false  // 显不显示线小圆点儿
                 },
-                data: (function() { //初始化
+                data: (function () { //初始化
                     var data = [],
                         time = (new Date()).getTime(),
                         i;
@@ -354,10 +354,10 @@
                 animation: Highcharts.svg,
                 marginRight: 10,
                 events: {
-                    load: function() {
+                    load: function () {
                         var series = this.series[0];
 
-                        socket.on('monitor', function(data){
+                        socket.on('monitor', function (data) {
                             //console.log("cpu ---> "+data.cpu);
                             //console.log("memory ---> "+data.memory);
                             //console.log("netRx ---> "+data.netRx);
@@ -422,7 +422,7 @@
                 marker: {
                     enabled: false  // 显不显示线小圆点儿
                 },
-                data: (function() { //初始化
+                data: (function () { //初始化
                     var data = [],
                         time = (new Date()).getTime(),
                         i;
@@ -444,7 +444,24 @@
         socket.emit('getLogByInstanceId', containerid);
     });
 
-
+    //获取本地镜像
+    $.ajax({
+        url: '/image/list/label/kind',
+        type: 'GET'
+    }).done(function (resp) {
+        //console.log(resp);
+        var imagesInfo = resp.data;
+        var containerImageSrc = $('#containerImageSrc').val();
+        for (var m in imagesInfo) {
+            if (containerImageSrc == imagesInfo[m].name) {
+                var imageName = imagesInfo[m].icon;
+                $('.containerImageSrc').attr('src', imageName);
+                return;
+            } else {
+                $('.containerImageSrc').attr('src', '/images/blue-large.png');
+            }
+        }
+    });
 
 
 })();
