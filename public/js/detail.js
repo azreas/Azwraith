@@ -205,13 +205,16 @@
         $('#updateTime').html(updateTime);
         $('#createTime').html(createTime);
 
-        var imageName = '/images/blue-large.png';
         for (var m in imagesInfo) {
             if (resp.iamgeName == imagesInfo[m].name) {
-                imageName = imagesInfo[m].icon;
+                var imageName = imagesInfo[m].icon;
+                $('#containerImg').attr('src', imageName);
+                return;
+            }else{
+                $('#containerImg').attr('src', '/images/blue-large.png');
             }
         }
-        $('#containerImg').attr('src', imageName);
+
 
         for (var k in resp.environment) {
             //console.log(resp.environment[k][0]);

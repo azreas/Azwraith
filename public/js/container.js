@@ -56,25 +56,25 @@
 
     //创建
     $('#createButton').click(function () {
-        var containerName = $('#containerName').val();
+        var name = $('#containerName').val();
         var envName = $('.envName');
         var envVal = $('.envVal');
-        if (containerName === "") {
-            layer.msg("服务名称不能为空！");
+        if (!name || name.length < 1) {
+            layer.tips('容器名称不能为空', '#containerName', {tips: [1, '#3595CC']});
+            $('#containerName').focus();
+            return;
+        }
+        name = name.toLowerCase();
+        if (name.search(/^[a-z][a-z0-9-]*$/) === -1) {
+            layer.tips('容器名称只能由字母、数字及横线组成，且首字母不能为数字及横线。', '#containerName', {tips: [1, '#3595CC'], time: 3000});
+            $('#containerName').focus();
+            return;
+        }
+        if (name.length > 50 || name.length < 3) {
+            layer.tips('容器名称为3~50个字符', '#containerName', {tips: [1, '#3595CC'], time: 3000});
+            $('#containerName').focus();
+            return;
         } else {
-            //for(var i=0;i<envName.length;i++){
-            //    if(envName.eq(i).val() == ''){
-            //        layer.msg("环境变量名不能为空！");
-            //        return;
-            //    }
-            //}
-            //for(var j=0;j<envVal.length;j++){
-            //    if(envVal.eq(j).val() == ''){
-            //        layer.msg("环境变量值不能为空！");
-            //        return;
-            //    }
-            //}
-
             var typeX = $('#createContainerForm>li').eq(2).find('.active>.up_style').text().toLowerCase();
             $('#typeX').val(typeX);
             //alert($('#typeX').val());
@@ -223,7 +223,7 @@
                     }
                     appAppend(imageName);
                     function appAppend(imageName) {
-                        var dbtr = $('<div class="image-item col-xs-6 col-sm-6"> <span style="position: absolute;top: 25px;right: 25px;"> <input type="checkbox" name="chkItem" value="' + servers[i].name + '" aria-expanded="false" val="' + servers[i].id + '" status="' + servers[i].status + '"> </span> <span class="img_icon span4" style="text-align: inherit;width:34%;margin: 25px 10px 25px 0;max-width:138px"> <img src="' + imageName +'"> </span> <span class="span6 type" type="runtime"> <div class="list-item-description"> <div class="name h4"> 服务名称：' + servers[i].name + ' </div> <span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"> 镜像名：' + servers[i].image + ' </span> <span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"> 状态：<span id="' + servers[i].name + 'status">' + status + ' </span></span> <span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"> 地址：<a  target="_blank" href="http://' + servers[i].address + '" class="cluster_mirrer_name">' + servers[i].address + '</a><span class="span9">查看二维码：<a target="' + servers[i].address + '" class="showCode" title="点击查看二维码" style="cursor: pointer"><i class="fa fa-external-link-square"></i></a></span> </span> <span class="span9" style="margin: 10px 0;"><a class="btn btn-info" href="/detail/' + servers[i].id + '">查看服务详情</a></span> </div> </span> </div>');
+                        var dbtr = $('<div class="image-item col-xs-6 col-sm-6"> <span style="position: absolute;top: 25px;right: 25px;"> <input type="checkbox" name="chkItem" value="' + servers[i].name + '" aria-expanded="false" val="' + servers[i].id + '" status="' + servers[i].status + '"> </span> <span class="img_icon span4" style="text-align: inherit;width:34%;margin: 25px 10px 25px 0;max-width:138px"> <img src="' + imageName + '"> </span> <span class="span6 type" type="runtime"> <div class="list-item-description"> <div class="name h4"> 服务名称：' + servers[i].name + ' </div> <span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"> 镜像名：' + servers[i].image + ' </span> <span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"> 状态：<span id="' + servers[i].name + 'status">' + status + ' </span></span> <span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"> 地址：<a  target="_blank" href="http://' + servers[i].address + '" class="cluster_mirrer_name">' + servers[i].address + '</a><span class="span9">查看二维码：<a target="' + servers[i].address + '" class="showCode" title="点击查看二维码" style="cursor: pointer"><i class="fa fa-external-link-square"></i></a></span> </span> <span class="span9" style="margin: 10px 0;"><a class="btn btn-info" href="/detail/' + servers[i].id + '">查看服务详情</a></span> </div> </span> </div>');
                         dbtr.appendTo($('#dbtable'));
                     }
                 }
@@ -499,12 +499,12 @@
                 //dataType: 'json'
             }).done(function (resp) {
                 //console.log(resp);
-                if(resp.result == true){
+                if (resp.result == true) {
                     layer.msg('删除成功');
                     $('input[name="chkItem"]:checked').parents('.image-item').remove();
 
                     window.location.reload();
-                }else if(resp.result == false){
+                } else if (resp.result == false) {
                     layer.msg('删除失败');
                 }
 
@@ -525,5 +525,5 @@
             layer.msg('实例数量上限为10');
         }
     }
-    
+
 })();
