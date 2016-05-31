@@ -51,7 +51,7 @@ var userservice = {
      port : 9000*/
     /*host : '192.168.1.236',
      port : 9000*/
-    host: process.env.userservicehost || '192.168.1.243',
+    host: process.env.userservicehost || '192.168.1.253',
     port: process.env.userserviceport || 3001
     // host: '127.0.0.1',
     // port: 9000
