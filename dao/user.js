@@ -249,11 +249,29 @@ exports.verifycode = function (inviteCode, callback) {
     rest.get('http://' + userservice.host + ':' + userservice.port + '/v1/people/regist/verifycode/' + inviteCode).on('complete', function (data, response) {
         try {
             if (data.result !== true) {
-                throw new Error(data);
+                throw new Error(data.info.script);
             }
         } catch (e) {
             return callback(e.message, data);
         }
         return callback(null, data);
     });
-}
+};
+
+/**
+ * 删除邀请码
+ * @param inviteCode
+ * @param callback
+ */
+exports.delcode = function (inviteCode, callback) {
+    rest.del('http://' + userservice.host + ':' + userservice.port + '/v1/people/regist/delcode/' + inviteCode).on('complete', function (data, response) {
+        try {
+            if (data.result !== true && data.result !== false) {
+                throw new Error(data.info.script);
+            }
+        } catch (e) {
+            return callback(e.message, data);
+        }
+        return callback(null, data);
+    });
+};

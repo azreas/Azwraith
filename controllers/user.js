@@ -125,9 +125,16 @@ exports.regist = function (req, res, next) {
                         if (err) {
                             throw new Error(err);
                         }
-                        logger.info("用户 [" + user.account.email + "] 注册成功");
-                        // 注册成功，跳到 登录 页面
-                        res.redirect("/login");
+                        userService.delcode(req.body.inviteCode, function (err, data) {
+                            if (!err) {
+                                logger.debug("用户 [" + user.account.email + "] 注册成功");
+                                // 注册成功，跳到 登录 页面
+                                res.redirect("/login");
+                            } else {
+                                logger.info(err);
+                                logger.info(data);
+                            }
+                        });
                     } catch (e) {
                         logger.info("用户 [" + user.account.email + "] 注册失败");
                         logger.error(e);
