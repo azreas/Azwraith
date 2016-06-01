@@ -109,6 +109,11 @@
         $('.dialog .blankApp').eq(index).removeClass('hidden').siblings().addClass('hidden');
     });
 
+    //我的镜像-期待更多
+    $('.create-my-image button').on('click', function () {
+        layer.msg('更多功能敬请期待！', {icon: 6});
+    });
+
     //获取本地镜像
     var imagesInfo;
     $.ajax({
