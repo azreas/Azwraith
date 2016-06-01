@@ -212,25 +212,13 @@
         $('#updateTime').html(updateTime);
         $('#createTime').html(createTime);
         $('#health').html(health);
-        //图片
-        for (var m in imagesInfo) {
-            if (resp.iamgeName == imagesInfo[m].name) {
-                var imageName = imagesInfo[m].icon;
-                $('#containerImg').attr('src', imageName);
-                return;
-            }else{
-                $('#containerImg').attr('src', '/images/blue-large.png');
-            }
-        }
         //环境变量
         for (var k in resp.environment) {
             //console.log(resp.environment[k][0]);
             //console.log(resp.environment[k][1]);
             var elem = $('<tr class="envRow new"><td id="envName">' + resp.environment[k][0] + '</td><td id="envVal">' + resp.environment[k][1] + '</td></tr>');
-
             elem.appendTo($('#envList .BORDER'));
         }
-
         //获取容器伸缩数
         if (autoscale == "true") {
             $('input[name="autoscale"]').eq(1).attr('checked','checked');
@@ -250,7 +238,16 @@
             $('input[name="autoscale"]').eq(0).attr('checked','checked');
             $('.applocation').addClass('hide');
         }
-
+        //图片
+        for (var m in imagesInfo) {
+            if (resp.iamgeName == imagesInfo[m].name) {
+                var imageName = imagesInfo[m].icon;
+                $('#containerImg').attr('src', imageName);
+                return;
+            }else{
+                $('#containerImg').attr('src', '/images/blue-large.png');
+            }
+        }
     }).fail(function (err) {
         console.log(err);
     });
@@ -297,27 +294,16 @@
             $('#address').parent().attr('href', 'http://' + resp.address);
             $('#updateTime').html(updateTime);
             $('#createTime').html(createTime);
-            //图片
-            for (var m in imagesInfo) {
-                if (resp.iamgeName == imagesInfo[m].name) {
-                    var imageName = imagesInfo[m].icon;
-                    $('#containerImg').attr('src', imageName);
-                    return;
-                }else{
-                    $('#containerImg').attr('src', '/images/blue-large.png');
-                }
-            }
             //环境变量
             for (var k in resp.environment) {
                 //console.log(resp.environment[k][0]);
                 //console.log(resp.environment[k][1]);
                 var elem = $('<tr class="envRow new"><td id="envName">' + resp.environment[k][0] + '</td><td id="envVal">' + resp.environment[k][1] + '</td></tr>');
-
                 elem.appendTo($('#envList .BORDER'));
             }
-
             //获取容器伸缩数
             if (autoscale == "true") {
+                $('input[name="autoscale"]').eq(1).attr('checked','checked');
                 $('.applocation').removeClass('hide');
                 $.ajax({
                     url: '/container/scalecontainer/list/' + containerid,
@@ -331,7 +317,18 @@
                     }
                 });
             } else if (autoscale == "false") {
+                $('input[name="autoscale"]').eq(0).attr('checked','checked');
                 $('.applocation').addClass('hide');
+            }
+            //图片
+            for (var m in imagesInfo) {
+                if (resp.iamgeName == imagesInfo[m].name) {
+                    var imageName = imagesInfo[m].icon;
+                    $('#containerImg').attr('src', imageName);
+                    return;
+                }else{
+                    $('#containerImg').attr('src', '/images/blue-large.png');
+                }
             }
         }).fail(function (err) {
             console.log(err);
