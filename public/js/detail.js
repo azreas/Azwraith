@@ -166,7 +166,7 @@
         url: '/container/get/' + containerid,
         type: 'get'
     }).done(function (resp) {
-        //console.log(resp);
+        console.log(resp);
         //console.log(resp.iamgeName);
         var autoscale = resp.autoscale;
         var update = new Date(resp.updateTime);
@@ -225,6 +225,7 @@
 
         //获取容器伸缩数
         if (autoscale == "true") {
+            $('input[name="autoscale"]').eq(1).attr('checked','checked');
             $('.applocation').removeClass('hide');
             $.ajax({
                 url: '/container/scalecontainer/list/' + containerid,
@@ -238,6 +239,7 @@
                 }
             });
         } else if (autoscale == "false") {
+            $('input[name="autoscale"]').eq(0).attr('checked','checked');
             $('.applocation').addClass('hide');
         }
 
