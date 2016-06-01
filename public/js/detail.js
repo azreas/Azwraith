@@ -204,7 +204,7 @@
         $('#address').parent().attr('href', 'http://' + resp.address);
         $('#updateTime').html(updateTime);
         $('#createTime').html(createTime);
-
+        //图片
         for (var m in imagesInfo) {
             if (resp.iamgeName == imagesInfo[m].name) {
                 var imageName = imagesInfo[m].icon;
@@ -214,8 +214,7 @@
                 $('#containerImg').attr('src', '/images/blue-large.png');
             }
         }
-
-
+        //环境变量
         for (var k in resp.environment) {
             //console.log(resp.environment[k][0]);
             //console.log(resp.environment[k][1]);
@@ -288,14 +287,23 @@
             $('#address').parent().attr('href', 'http://' + resp.address);
             $('#updateTime').html(updateTime);
             $('#createTime').html(createTime);
-            if (resp.iamgeName == 'zerolinke/siege') {
-                $('#containerImg').attr('src', '/images/image/siege.svg');
-            } else if (resp.iamgeName == 'alexwhen/docker-2048') {
-                $('#containerImg').attr('src', '/images/image/2048.png');
-            } else if (resp.iamgeName == 'zerosky/emt') {
-                $('#containerImg').attr('src', '/images/image/emt.png');
-            } else {
-                $('#containerImg').attr('src', 'https://hub.docker.com/public/images/official/' + resp.iamgeName + '.png');
+            //图片
+            for (var m in imagesInfo) {
+                if (resp.iamgeName == imagesInfo[m].name) {
+                    var imageName = imagesInfo[m].icon;
+                    $('#containerImg').attr('src', imageName);
+                    return;
+                }else{
+                    $('#containerImg').attr('src', '/images/blue-large.png');
+                }
+            }
+            //环境变量
+            for (var k in resp.environment) {
+                //console.log(resp.environment[k][0]);
+                //console.log(resp.environment[k][1]);
+                var elem = $('<tr class="envRow new"><td id="envName">' + resp.environment[k][0] + '</td><td id="envVal">' + resp.environment[k][1] + '</td></tr>');
+
+                elem.appendTo($('#envList .BORDER'));
             }
 
             //获取容器伸缩数
