@@ -31,20 +31,23 @@
           </div>
           <div class="navbar-collapse navbar-top-collapse collapse" style="height: 1px;">
             <ul class="nav navbar-nav navbar-right c_navbar">
-
-              <li><a href="/login" class="font_size login" id="llogin" style="padding:5px 15px">登 录</a>
+              <li>
+                <a href="/login" class="font_size login" id="llogin" style="padding:5px 15px">登 录</a>
               </li>
-              <li><a href="/regist" class="font_size registry" id="register" style="padding:5px 15px">注册</a></li>
-
+              <li>
+                <a href="/regist" class="font_size registry" id="register" style="padding:5px 15px">注册</a>
+              </li>
             </ul>
             <ul class="nav navbar-nav navbar-left z_navbar">
-              <li class="header-products"><a href="javascript:void(0);">服务中心</a>
-
+              <li class="header-products mmore">
+                <a href="javascript:void(0);">服务中心</a>
               </li>
               <li class="header-solutions">
-                <a href="javascript:void(0);" target="_block">社区</a>
+                <a href="http://www.zerocloud.club:88/" target="_blank">社区</a>
               </li>
-              <li><a href="javascript:void(0);">文档</a></li>
+              <li class="mmore">
+                <a href="javascript:void(0);">文档</a>
+              </li>
             </ul>
           </div>
         </div>
@@ -72,7 +75,7 @@
 <script>
   (function(){
     //期待更多
-    $('.z_navbar li').on('click', function () {
+    $('.z_navbar li.mmore').on('click', function () {
       layer.msg('更多功能敬请期待！', {icon: 6});
     });
   })();

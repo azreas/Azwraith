@@ -174,25 +174,32 @@
         var create = new Date(resp.createTime);
         var createTime = formatDate(create);
         var status = "";
+        var health = "";
         switch (resp.status) {
             //1.启动中，2.运行中，3.停止中，4.已停止,5.启动失败,6.停止失败
             case 1:
                 status = "启动中";
+                health = "-";
                 break;
             case 2:
                 status = "运行中";
+                health = "健康";
                 break;
             case 3:
                 status = "停止中";
+                health = "-";
                 break;
             case 4:
                 status = "已停止";
+                health = "-";
                 break;
             case 5:
                 status = "启动失败";
+                health = "-";
                 break;
             case 6:
                 status = "停止失败";
+                health = "-";
                 break;
         }
         $('#memory').html(resp.memory);
@@ -204,6 +211,7 @@
         $('#address').parent().attr('href', 'http://' + resp.address);
         $('#updateTime').html(updateTime);
         $('#createTime').html(createTime);
+        $('#health').html(health);
         //图片
         for (var m in imagesInfo) {
             if (resp.iamgeName == imagesInfo[m].name) {

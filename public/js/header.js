@@ -43,7 +43,7 @@
     }
 
     //期待更多
-    $('.work').on('click', function () {
+    $('.mmore').on('click', function () {
         layer.msg('更多功能敬请期待！', {icon: 6});
     });
 
