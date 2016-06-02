@@ -81,4 +81,33 @@ exports.findscalecontainer = function (req, res, next) {
             });
         }
     });
+};
+
+
+exports.exec = function (server) {
+    var io = require('socket.io')(server);
+    console.log('exec container start');
+    // var execCli = io.of('/exec').on('connection', function (socket) {
+    //
+    // });
+    io.of('/exec').on('connection', function (socket) {
+        // socket.name = uuid.v4();
+        socket.on('execContainerStart', function (containerID) {
+            containerService.exec(containerID, function (err, request, response) {
+                if (!err) {
+                    request.write('ps\n');
+                    response.on('data', function (chunk) {
+                        socket.emit("execContainerMonitor", chunk);
+                    });
+                } else {
+
+                }
+            });
+
+        });
+
+
+    });
+
+
 }

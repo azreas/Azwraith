@@ -41,8 +41,9 @@ module.exports = function(app){
   router.get('/code',index_impl.code);
 
   // 测试界面
-  router.get('/test', index_impl.test);
+  // router.get('/test', index_impl.test);
 
+  router.get('/exec', index_impl.test);
   // router 命名空间
   app.use('/', router);
 };

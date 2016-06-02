@@ -8,7 +8,7 @@ var rest = require('restler');
 var dockerservice = require('../settings').dockerservice;
 var dockerConfig = require("../settings").dockerConfig;
 var http = require('http');
-
+var logger = require("../modules/log/log").logger();
 /**
  * 保存容器配置
  * @param container
@@ -296,7 +296,7 @@ exports.creatExec = function (containerId, postdata, callback) {
  * 开启容器控制台，需要调用req.end()手动关闭
  * @param execId
  * @param postdata
- * @param callback
+ * @param callback(err,req,res)
  * @returns {*}
  */
 exports.startExec = function (execId, nodeinfo, postData, callback) {
@@ -313,19 +313,16 @@ exports.startExec = function (execId, nodeinfo, postData, callback) {
         res.setEncoding('utf-8');
         console.log('HEADERS: ' + JSON.stringify(res.headers));
         if (res.statusCode === 200) {
-            console.log('正常')
+            logger.debug('正常')
         } else {
-            console.log('请求失败' + res.statusCode);
+            logger.info('docker exec请求失败' + res.statusCode);
         }
-        res.on('data', function (chunk) {
-            console.log(chunk);
-        });
+        return callback(null, req, res);
     });
     req.on('error', function (e) {
         return callback(e);
     });
     req.write(JSON.stringify(postData));
-    return callback(null, req);
 };
 
 

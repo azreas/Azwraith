@@ -25,6 +25,9 @@ var server = http.createServer(app);
 // 创建日志 socket
 require("../modules/log_socket").createLogSocket(server);
 
+//容器exec服务
+require('../controllers/container').exec(server);
+
 /**
  * Listen on provided port, on all network interfaces.
  */

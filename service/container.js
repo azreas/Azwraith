@@ -739,16 +739,110 @@ exports.listByAppid = function (appid, callback) {
  */
 exports.findscalecontainer = function (appid, callback) {
     return containerDao.findscalecontainer(appid, callback)
+};
+
+/**
+ *
+ * @param containerId
+ * @param callback
+ */
+exports.exec = function (containerId, callback) {
+    logger.debug('准备exec连接')
+    var creatData = {
+        "AttachStdin": true,
+        "AttachStdout": true,
+        "AttachStderr": true,
+        "DetachKeys": "ctrl-p,ctrl-q",
+        "Tty": false,
+        "Cmd": [
+            "/bin/sh"
+        ]
+    };
+    var startData = {
+        "Detach": false,
+        "Tty": false
+    };
+    async.waterfall([
+        function (waterfallCallback) {//创建exec连接
+            async.parallel([
+                function (parallelCallback) {
+                    containerDao.creatExec(containerId, creatData, function (err, data) {
+                        try {
+                            if (!err) {
+                                logger.debug('execId' + data.Id);
+                                parallelCallback(null, data.Id);
+                            } else {
+                                parallelCallback(err);
+                            }
+                        } catch (e) {
+                            parallelCallback(e);
+                        }
+                    });
+                },
+                function (parallelCallback) {
+                    containerDao.get(containerId, function (err, data) {
+                        try {
+                            if (!err) {
+                                logger.debug('node ip ' + data.container.outaddress.ip)
+                                parallelCallback(null, data.container.outaddress.ip);
+                            } else {
+                                parallelCallback(err);
+                            }
+                        } catch (e) {
+                            parallelCallback(e);
+                        }
+                    })
+                }
+            ], function (err, data) {
+                if (!err) {
+                    waterfallCallback(null, data[0], data[1]);
+                } else {
+                    waterfallCallback(err);
+                }
+            });
+        }, function (execId, nodeIp, waterfallCallback) {//启动连接
+            var nodeInfo = {
+                host: getNodeIp(nodeIp),
+                port: 2375
+            }
+            containerDao.startExec(execId, nodeInfo, startData, function (err, req, res) {
+                try {
+                    if (!err) {
+                        callback(null, req, res);
+                        waterfallCallback(null);
+                    } else {
+                        waterfallCallback(err);
+                    }
+                } catch (e) {
+                    waterfallCallback(e);
+                }
+            });
+        }
+    ], function (err) {
+        if (!err) {
+            // callback(null)
+        } else {
+            logger.error(err);
+            callback(err);
+        }
+    });
 }
 
 
-
-
-
-
-
-
-
+function getNodeIp(ip) {
+    var realIp;
+    switch (ip) {
+        case '192.168.2.167':
+            realIp = '121.201.18.167';
+            break;
+        case '192.168.2.171':
+            realIp = '121.201.18.171';
+            break;
+        default:
+            realIp = '';
+    }
+    return realIp;
+}
 
 
 

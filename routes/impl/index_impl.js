@@ -50,8 +50,7 @@ exports.square = function (req, res) {
  * @param res
  */
 exports.test = function (req, res) {
-    logger.info("开始访问测试页");
-    res.render('test', {title: '测试'});
+    res.render('execTest', {title: '测试'});
 };
 
 /**
