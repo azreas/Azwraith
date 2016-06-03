@@ -40,6 +40,20 @@
             color: #fff;
             cursor: auto;
         }
+
+        .applocation {
+            text-align: right;
+            position: absolute;
+            top: 35px;
+            right: 40px;
+            width: 50%;
+            padding-right: 20px;
+        }
+
+        .btn-primary {
+            background: #00afdd;
+            border-color: #00afdd;
+        }
     </style>
 </head>
 <body>
@@ -50,6 +64,8 @@
     <div class="container-right">
         <div class="contentTitle">
             <div class="dbserver">
+                <i class="fa fa-reply" aria-hidden="true"></i>
+                <a href="#" onClick="javascript :history.back(-1);">返回</a>
             </div>
         </div>
         <section class="detail-succeed">
@@ -74,7 +90,10 @@
                 <!--<li>更新时间：2016-04-13 09:33:26</li>-->
             </ul>
             <!--<div class="applocation">-->
-            <!--<a href="http://china-zds038.tenxapp.com" target="_blank" class="open"><i class="fa fa-toggle-on"></i>&nbsp;打开应用</a>-->
+                <!--<span class="btn btn-primary console-code-modal" style="vertical-align: top;padding: 0px;height:46px; font-size: 16px;line-height: 46px; width: 150px;"-->
+                      <!--onclick="showConsole()">-->
+                    <!--<i class="fa fa-desktop"></i>&nbsp; 打开控制台-->
+                <!--</span>-->
             <!--</div>-->
         </section>
 
@@ -221,8 +240,9 @@
                     <!--</div>-->
                 </div>
                 <div class="weblog">
-                    <pre id="podLogs"
-                         style="background:none repeat scroll 0 0 black;color: #37fc34; border:0; font-size: 12px;">Loading...</pre>
+                    <pre id="podLogs" style="background:none repeat scroll 0 0 black;color: #37fc34; border:0; font-size: 12px;">
+                        Loading...
+                    </pre>
                 </div>
             </div>
 
@@ -257,7 +277,7 @@
     </div>
     <div style="position: fixed;bottom: 0;right: 0;"><script type="text/javascript" src="/js/cnzz.js"></script></div>
     <input type="hidden" id="master" value="<%= name %>">
-    <input type="hidden" id="creationTime" value="2016-04-13 09:33:26">
+    <input type="hidden" id="creationTime" value="<%= date %>">
     <input type="hidden" id="containerID" value="<%= containerId %>">
     <input type="hidden" id="containerImageSrc" value="<%= image %>">
 </div>
@@ -265,5 +285,11 @@
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/instanceDetail.js"></script>
 <script src="/js/header.js"></script>
+<script>
+    //打开控制台
+    function showConsole(){
+        window.open('/exec', 'console', 'height=500, width=900, top=20, left=500, location=yes,status=yes');
+    }
+</script>
 </body>
 </html>

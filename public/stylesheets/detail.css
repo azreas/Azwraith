@@ -86,12 +86,12 @@ pre{white-space: pre-wrap;word-wrap:break-word }
 
 .icon-img{
     width:130px;height: 130px;
-    background: #fefefe;
     border-radius: 20px;
     float: left;
     text-align: center;
     margin-left: 1%;
     color: #fff;
+    padding:0;
 }
 .icon-img.Ready{background: #2EB966}
 .icon-img.Not-Ready{background: #EDAB20}
@@ -102,10 +102,10 @@ pre{white-space: pre-wrap;word-wrap:break-word }
     margin: 30px auto 10px auto;
 }
 .type-icon{
-    width: 80%;
-    height: 80px;
-    margin: 25px auto;
+    width: 130px;
+    height: 130px;
     overflow: hidden;
+    border-radius: 20px;
 }
 .type-icon>img{
     max-width: 100%;
