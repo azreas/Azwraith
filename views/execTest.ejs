@@ -2,27 +2,42 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>零云 - 控制台</title>
     <script src="/jquery/dist/jquery.min.js"></script>
-
+    <link type="text/css" rel="stylesheet" href="/stylesheets/exec.css">
 </head>
 <body>
-<input type="text" id="id">
-<input type="button" id="start" value="start">
+<div id="podLogs" style="background:none repeat scroll 0 0 black;color: #37fc34; border:0; font-size: 12px;">
+    Loading...
+</div>
+
+<div class="input-content">
+    &gt;&nbsp;<input type="text" id="id" onkeypress="if(event.keyCode==13) {contentSubmit()}">
+    <!--<input type="button" id="start" value="start">-->
+</div>
+
 </body>
 <script src="/socket.io/socket.io.js"></script>
 <script>
+    //控制台输出 d4ed2767056eca6aadfcc0c41e115652ed1db3f107b07c2adce47356c0598f12
     var socket = io.connect('ws://' + window.location.host + '/exec');
     //    socket.emit('execContainerStart', 'e7a08e1f1a67');
     socket.on('execContainerMonitor', function (data) {
         console.log(data);
+        $('#podLogs').html('');
+
+        var dbtr = $('<div style="color: rgba(55, 252, 52, 0.58);"><font style="color: rgba(255, 255, 0, 0.58)"></font><font style="color: rgba(55, 252, 52, 0.58)">' + data + '</font></div>');
+        dbtr.appendTo($("#podLogs"));
+
     });
     function send(id) {
         socket.emit('execContainerStart', id);
     }
-    $('#start').click(function () {
+
+    function contentSubmit() {
         var id = $('#id').val();
         send(id);
-    })
+    }
+    $('#id').onfocus();
 </script>
 </html>
