@@ -22,11 +22,12 @@ app.set('port', port);
 
 var server = http.createServer(app);
 
+var io = require('socket.io')(server)
 // 创建日志 socket
-require("../modules/log_socket").createLogSocket(server);
+require("../modules/log_socket").createLogSocket(io);
 
-//容器exec服务
-require('../controllers/container').exec(server);
+//容器exec socket
+require('../controllers/container').exec(io);
 
 /**
  * Listen on provided port, on all network interfaces.

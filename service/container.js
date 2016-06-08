@@ -755,7 +755,7 @@ exports.exec = function (containerId, callback) {
         "DetachKeys": "ctrl-p,ctrl-q",
         "Tty": false,
         "Cmd": [
-            "/bin/sh"
+            "bash"
         ]
     };
     var startData = {

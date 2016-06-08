@@ -42,7 +42,7 @@
     //添加实例实时监控，日志
     $('.MONITOR,.LOG').click(function () {
         //连接websocket后端服务器
-        var socket = io.connect('ws://' + window.location.host);
+        var socket = io.connect('http://' + window.location.host+'/monitor');
 
         $("#podLogs").text('');
         // 监听服务端发来的日志

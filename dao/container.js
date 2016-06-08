@@ -313,7 +313,7 @@ exports.startExec = function (execId, nodeinfo, postData, callback) {
         res.setEncoding('utf-8');
         console.log('HEADERS: ' + JSON.stringify(res.headers));
         if (res.statusCode === 200) {
-            logger.debug('正常')
+            logger.debug('docker exec请求成功')
         } else {
             logger.info('docker exec请求失败' + res.statusCode);
         }

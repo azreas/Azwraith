@@ -4,6 +4,8 @@
  */
 var containerService = require('../service/container');
 var logger = require("../modules/log/log").logger();
+var events = require('events');
+var emitter = new events.EventEmitter();
 
 /**
  * 获取当前用户所属服务列表
@@ -83,31 +85,42 @@ exports.findscalecontainer = function (req, res, next) {
     });
 };
 
-
-exports.exec = function (server) {
-    var io = require('socket.io')(server);
-    console.log('exec container start');
-    // var execCli = io.of('/exec').on('connection', function (socket) {
-    //
-    // });
-    io.of('/exec').on('connection', function (socket) {
-        // socket.name = uuid.v4();
-        socket.on('execContainerStart', function (containerID) {
-            containerService.exec(containerID, function (err, request, response) {
-                if (!err) {
-                    request.write('ps\n');
-                    response.on('data', function (chunk) {
-                        socket.emit("execContainerMonitor", chunk);
-                    });
-                } else {
-
-                }
+/**
+ * 容器EXEC
+ * @param server
+ */
+exports.exec = function (io) {
+    // var io = require('socket.io')(server);
+    logger.debug('exec container start');
+    io.of('/exec')
+        .on('connection', function (socket) {
+            logger.debug('exec connect');
+            // socket.name = uuid.v4();
+            socket.on('execContainerStart', function (containerID) {
+                containerService.exec(containerID, function (err, request, response) {
+                    if (!err) {
+                        // request.write('ps\n');
+                        response.on('data', function (chunk) {
+                            socket.emit("execContainerMonitor", chunk);
+                        });
+                        socket.on('execCommand', function (command) {
+                            request.write(command + '\n');
+                        });
+                    } else {
+                        socket.emit("execContainerError", err);
+                    }
+                    //断开docker连接
+                    emitter.once('destroy', function () {
+                        response.destroy();
+                        request.end();
+                    })
+                });
             });
+            socket.on('disconnect', function () {
+                logger.debug('exec disconnect');
+                emitter.emit('destroy');
+            })
 
         });
-
-
-    });
-
 
 }
