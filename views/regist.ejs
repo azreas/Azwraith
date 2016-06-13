@@ -61,12 +61,6 @@
             <div class="form-group">
                 <p class="signup-title">注 册</p>
             </div>
-            <div class="form-group" style="position: relative">
-                <div class="passwd-input">
-                    <input id="inviteCode" type="text" name="inviteCode" placeholder="邀请码">
-                    <span style="position: absolute;right: 8px;top: 0;width: 76px;font-size: 13px;color: #FF9500;">内测期间仅供持有邀请码用户注册</span>
-                </div>
-            </div>
             <div class="form-group">
                 <div class="passwd-input">
                     <input id="email" type="email" name="email" placeholder="邮箱">
@@ -112,14 +106,6 @@
                 return false;
             } else if (p != cp) {
                 return false;
-            }
-        });
-        //邀请码验证
-        $('#inviteCode').blur(function () {
-            var inviteCode = $(this).val();
-            if (!inviteCode || inviteCode.trim() === '') {
-                layer.tips('邀请码不能为空', $(this), {tips: [1, '#EF6578']});
-                return;
             }
         });
         // 邮箱验证

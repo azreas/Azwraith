@@ -98,19 +98,6 @@ exports.regist = function (req, res, next) {
                         waterfallCallback(err);
                     }
                 });
-            }, function (isNeedCode, waterfallCallback) {
-                if (isNeedCode) {
-                    userService.verifycode(req.body.inviteCode, function (err, data) {
-                        if (!err) {
-                            waterfallCallback(null);
-                        } else {
-                            res.render('regist', {
-                                status: "邀请码无效"
-                            });
-                            waterfallCallback(err);
-                        }
-                    });
-                }
             }
         ], function (err) {
             if (!err) {
