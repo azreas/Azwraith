@@ -27,16 +27,7 @@ exports.container = function (req, res) {
 };
 
 /**
- * 进入代码构建界面
- * @param req
- * @param res
- */
-exports.build = function (req, res) {
-    res.render('build', {});
-};
-
-/**
- * 进入代码构建界面
+ * 进入服务广场界面
  * @param req
  * @param res
  */
@@ -60,6 +51,24 @@ exports.test = function (req, res) {
  */
 exports.detail = function (req, res) {
     res.render('detail', {id: req.params.id})
+};
+
+/**
+ * 创建服务界面
+ * @param req
+ * @param res
+ */
+exports.create = function (req, res) {
+    res.render('create', {})
+};
+
+/**
+ * 构建镜像界面
+ * @param req
+ * @param res
+ */
+exports.build = function (req, res) {
+    res.render('buildCreate', {})
 };
 
 /**

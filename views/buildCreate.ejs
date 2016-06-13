@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>零云 - 代码构建</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    <link rel="stylesheet" href="/stylesheets/dashboard.css">
+    <link rel="stylesheet" href="/stylesheets/build.css">
+    <script src="/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/stylesheets/layer/layer.js"></script>
+    <script type="text/javascript" src="/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/stylesheets/layer/skin/layer.css" id="layui_layer_skinlayercss">
+    <script type="text/javascript" src="/js/chat_room.js"></script>
+</head>
+<body>
+
+<% include header.ejs %>
+
+<div class="page-container container">
+    <article>
+        <div class="contentTitle">
+            <div class="createPadding">
+                <a onClick="javascript :history.back(-1);" class="btn btn-default" style="margin-right:30px;">
+                    <i class="fa fa-reply" aria-hidden="true"></i> 返回
+                </a>
+            </div>
+        </div>
+        <div class="item-obj">
+            <form id="buildForm" method="post" action="/image/build" role="form">
+                <h4>快速构建</h4>
+                <ul class="depot-name">
+                    <li class="w60">镜像名称</li>
+                    <li class="w40">
+                        <!--性质-->
+                        <!--<a href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title=""-->
+                           <!--style="color: rgba(102, 102, 102, 1)" data-original-title="公有镜像所有人可见，私有镜像仅自己可见">-->
+                            <!--<i class="fa fa-warning"></i>-->
+                        <!--</a>-->
+                    </li>
+                    <li class="w60">
+                        <span class="name-note"></span>
+                        <input type="hidden" id="img-last" name="imgFirst">
+                        <input id="repoName" name="imgLast" type="text" class="name-input" value=""> :
+                        <input id="tag" name="tag" type="text" value="latest" class="name-input">
+                    </li>
+                    <li class="w40">
+                        <!--<span class="btn-groups">-->
+                          <!--<span case="public" class="btns btn-public">公有</span>-->
+                          <!--<span case="private" class="btns btn-private">私有</span>-->
+                        <!--</span>-->
+                        <!--<input type="hidden" id="isPrivate" name="isPrivate" value="public">-->
+                        <!--<input type="hidden" id="isRepoPrivate" name="isRepoPrivate" value="">-->
+                    </li>
+                </ul>
+                <div class="autoHide">
+                    <ul class="code-depot">
+                        <li>简介</li>
+                        <li>
+                            <input id="ciSummary" name="ciSummary" type="text" required="">
+                        </li>
+                        <li>代码仓库地址</li>
+                        <li>
+                            <input id="repoUrl" name="repoUrl" type="text" style="width:100%;height:40px;"
+                                   placeholder="例如：https://github.com/zertcloud/2048.git">
+                            <h5 class="" style="color:rgba(102, 102, 102, 0.63);line-height:20px">
+                                <i class="fa fa-warning"></i>
+                                请您手动填写代码仓库HTTPS/SSH地址，现支持所有基于GIT的代码仓库构建，包括但不限于Bitbucket、Coding、OSChina、私有Gitlab，需手动添加部署公钥。
+                            </h5>
+                        </li>
+                    </ul>
+                    <section class="registryinfo">
+                        <table class="table registry">
+                            <tbody>
+                            <tr>
+                                <td class="first-info"><b style="font-weight: 500;">基本信息</b></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="reg-text">项目名称</span>
+                                    <input id="projectName" name="projectName" type="text" value="" class="reg-input">
+                                </td>
+                                <td>
+                                    <span class="reg-text">Dockerfile位置</span>
+                                    <input id="dockerfileLocation" name="dockerfileLocation" type="text" class="reg-input" value="/">
+                                </td>
+                                <td>
+                                    <span class="code-branch">代码分支</span>
+                                    <span class="btns-group">
+                                      <select id="imageBranch" name="imageBranch" class="reg-input" style="width:189px;">
+                                          <option>master</option>
+                                      </select>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="reg-text">程序类型</span>
+                                    <select id="imageType" name="imageType" class="reg-input" placeholder="项目使用哪种语言编写" style="width:163px;">
+                                        <option selected=""></option>
+                                        <option>java</option>
+                                        <option>php</option>
+                                        <option>go</option>
+                                        <option>Node.js</option>
+                                        <option>python</option>
+                                        <option>other</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <span class="reg-text">Docker的版本&nbsp;</span>
+                                    <input id="dockerVersion" name="dockerVersion" type="text" class="reg-input" value="1.6" disabled="disabled">
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                    <br>
+                    <div class="pull-right">
+                        <span id="buildBtn" class="btn btn-primary">创建</span>
+                    </div>
+                </div>
+                <input id="repoType" name="repoType" type="hidden" value="latest">
+                <input id="codeOwner" name="codeOwner" type="hidden" value="">
+            </form>
+        </div>
+    </article>
+</div>
+<div style="position: fixed;bottom: 0;right: 0;">
+    <script type="text/javascript" src="/js/cnzz.js"></script>
+</div>
+<script src="/js/header.js"></script>
+<script src="/js/build_create.js"></script>
+</body>
+</html>

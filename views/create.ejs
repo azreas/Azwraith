@@ -1,199 +1,327 @@
-<div class="page-container">
-  <article>
-    <div id="home-main" class="modalCrealApp" style="background:#fff;min-height:100%;">
-      <div class="steps-main">
-        <div class="progre">
-          <div style="padding:0 4rem;">
-            <div class="radius_step action">
-              <span>1</span>
-              镜像来源
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css?rev=0.1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <!--浏览器窗口图标-->
+    <link rel="icon" type="image/z-icon" href="/images/favicon.ico">
+    <link rel="stylesheet" href="/stylesheets/dashboard.css?rev=0.1.0">
+    <script src="/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/stylesheets/layer/layer.js"></script>
+    <link id="console_main_css" rel="stylesheet" href="/stylesheets/container/main.css?rev=0.1.0">
+    <link rel="stylesheet" href="/stylesheets/layer/skin/layer.css" id="layui_layer_skinlayercss">
+    <script type="text/javascript" src="/stylesheets/layer/layer.js"></script>
+    <script type="text/javascript" src="/js/chat_room.js"></script>
+    <title>零云 - 创建</title>
+</head>
+<body>
+
+<% include header.ejs %>
+
+<div class="page-container container">
+    <article>
+        <div class="contentTitle">
+            <div class="createPadding">
+                <a onClick="javascript :history.back(-1);" class="btn btn-default" style="margin-right:30px;">
+                    <i class="fa fa-reply" aria-hidden="true"></i> 返回
+                </a>
             </div>
-            <div class="radius_step">
-              <span>2</span>
-              容器配置
-              <div class="triangle"></div>
-            </div>
-            <div class="hide">
-              <span class="STEPS"></span>
-              <span class="STEPS"></span>
-            </div>
-          </div>
         </div>
-        <div class="step-inner">
+        <div id="home-main" class="modalCrealApp" style="background:#fff;min-height:100%;">
+            <div class="steps-main">
+                <div class="progre">
+                    <div style="padding:0 4rem;">
+                        <div class="radius_step action">
+                            <span>1</span>
+                            镜像来源
+                        </div>
+                        <div class="radius_step">
+                            <span>2</span>
+                            容器配置
+                            <div class="triangle"></div>
+                        </div>
+                        <div class="hide">
+                            <span class="STEPS"></span>
+                            <span class="STEPS"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="step-inner">
 
-          <!--创建页面第一部分-->
-          <div class="host_step1">
-            <div class="progre">
-              <div>
-                <div class="choose radius_step action select-img" style="width: 33.33%;cursor:pointer">
-                  推荐镜像
-                </div>
-                <div class="choose radius_step" style="width: 33.33%;cursor:pointer">
-                  我的镜像
-                </div>
-                <div class="choose radius_step" style="width: 33.33%;cursor:pointer">
-                  镜像仓库
-                </div>
-                <div class="hide">
-                  <span class="STEPS"></span>
-                  <span class="STEPS"></span>
-                  <span class="STEPS"></span>
-                </div>
-              </div>
-            </div>
-            <ul class="dialog">
-              <li class="blankApp">
-                <ul class="select_ul" style="width:100%;">
-                  <li id="systemImages" class="list-wrapper"></li>
-                </ul>
-              </li>
-              <li class="blankApp hidden">
-                <div class="create-my-image">
-                  <button class="btn btn-info">创建镜像</button>
-                </div>
-              </li>
-              <li class="blankApp hidden">
-                <section class="info-class" style="text-align: center">
-                  <span class="search container-search" style="margin:0;width: 250px">
-                  <div class="search-group-inner">
-                    <input type="text" id="search-img" placeholder="搜索镜像" style="width:225px;height:36px;">
-                    <button type="submit" class="btn btn-primary btn-send"
-                            style="height:36px;line-height:22px;position: absolute;top:0px;right: 0;">搜索
-                    </button>
-                  </div>
-                  </span>
-                </section>
-                <ul class="select_ul" style="width:100%;margin-top: 30px">
-                  <li id="searchImages" class="list-wrapper hideimage"></li>
-                </ul>
-              </li>
-            </ul>
-          </div>
+                    <!--创建页面第一部分-->
+                    <div class="host_step1">
+                        <div class="progre">
+                            <div>
+                                <div class="choose radius_step action select-img" style="width: 33.33%;cursor:pointer">
+                                    推荐镜像
+                                </div>
+                                <div class="choose radius_step my-img" style="width: 33.33%;cursor:pointer">
+                                    我的镜像
+                                </div>
+                                <div class="choose radius_step" style="width: 33.33%;cursor:pointer">
+                                    镜像仓库
+                                </div>
+                                <div class="hide">
+                                    <span class="STEPS"></span>
+                                    <span class="STEPS"></span>
+                                    <span class="STEPS"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="dialog">
+                            <!-- 推荐镜像 -->
+                            <li class="blankApp">
+                                <ul class="select_ul" style="width:100%;">
+                                    <li id="systemImages" class="list-wrapper"></li>
+                                </ul>
+                            </li>
+                            <!-- 我的镜像 -->
+                            <li class="blankApp hidden">
+                                <div class="showlist">
+                                    <div class="aption">
+                                        <a href="javascript:void(0)" id="refreshInst"><i class="fa_refresh"></i></a>
+                                        <!--<a href="javascript:void(0)" id="addcode">添加源代码</a>-->
+                                        <a href="/build" class="btn btn-quick">快速构建</a>
+                                        <!--<a href="http://doc.tenxcloud.com/doc/v1/ci/faq-how-to-build-private-code-repositories.html" target="_blank"><i class="fa fa-question-circle"></i> 构建私有代码仓库提示</a>-->
+                                    </div>
+                                    <div class="itemTable">
+                                        <table class="table ci-table ">
+                                            <thead>
+                                            <tr>
+                                                <th>
+                                                    <div class="table-head">
+                                                        <table class="table" style="margin:0px;">
+                                                            <thead>
+                                                            <tr style="height:40px;">
+                                                                <th style="width: 15%; text-indent:30px;">项目名称</th>
+                                                                <th style="width: 12%;text-indent: 15px;">构建状态</th>
+                                                                <th style="width: 15%;text-indent: 20px;">代码源</th>
+                                                                <!--<th style="width: 12%;">上次构建时间</th>-->
+                                                                <!-- <th style='width: 10%;text-indent: 7px;'>语言</th> -->
+                                                                <!--<th style="width: 10%;  text-indent: 8px;">持续时间</th>-->
+                                                                <th style="width: 15%;text-indent: 10px;">镜像</th>
+                                                                <th style="width: 18%;text-indent: 10px;">功能</th>
+                                                            </tr>
+                                                            </thead>
+                                                        </table>
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="projectsBody">
+                                            <tr>
+                                                <td>
+                                                    <div class="content-table">
+                                                        <table class="table tables">
+                                                            <tbody>
+                                                            <tr class="ci-listTr" style="cursor:auto" id="2c9af4db-7077-467f-b3ff-3ab472e7494c" tag="latest">
+                                                                <td style="width: 15%; text-indent:22px;">
+                                                                    <a href="#" title="查看详细信息">php-sample</a>
+                                                                </td>
+                                                                <td style="width: 12%;">
+                                                                    <i class="fa_success"></i>
+                                                                    <span>成功</span>
+                                                                    <!--<img src="/images/loading4.gif">-->
+                                                                </td>
+                                                                <td style="width: 15%;">
+                                                                    <a data-toggle="tooltip" data-placement="left" title="" target="_blank" href="javascript:void(0);" data-original-title="查看源代码">
+                                                                        <span class="bj-code-source">
+                                                                          <i class="fa fa-github fa-lg"></i>
+                                                                          github
+                                                                        </span>
+                                                                    </a>
+                                                                </td>
+                                                                <!--<td style="width: 12%;">-->
+                                                                    <!--几秒前-->
+                                                                <!--</td>-->
+                                                                <!--<td style="width: 10%;">-->
+                                                                    <!--07分37秒-->
+                                                                <!--</td>-->
+                                                                <td style="width: 15%;">
+                                                                  <span title="镜像不存在" style="cursor:no-drop">
+                                                                    php-sample
+                                                                  </span>
+                                                                </td>
+                                                                <td style="width:18%">
+                                                                  <span class="bj-green" data-toggle="tooltip" data-placement="right" title="" data-original-title="重新构建">
+                                                                    构建&nbsp;&nbsp;
+                                                                    <i class="fa fa-arrow-circle-right"></i>
+                                                                  </span>
+                                                                </td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </li>
+                            <!-- 镜像仓库 -->
+                            <li class="blankApp hidden">
+                                <section class="info-class" style="text-align: center">
+                                   <span class="search container-search" style="margin:0;width: 250px">
+                                   <div class="search-group-inner">
+                                       <input type="text" id="search-img" placeholder="搜索镜像" style="width:225px;height:36px;">
+                                       <button type="submit" class="btn btn-primary btn-send" style="height:36px;line-height:22px;position: absolute;top:0px;right: 0;">搜索
+                                       </button>
+                                   </div>
+                                  </span>
+                                </section>
+                                <ul class="select_ul" style="width:100%;margin-top: 30px">
+                                    <li id="searchImages" class="list-wrapper hideimage"></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
 
-          <!--创建页面第二部分-->
-          <div class="host_step2" style="display:none">
-            <!--<i class="tips">载入容器配置中...</i>-->
-            <ul class="safeSet">
-              <!--提交镜像名，版本，服务名-->
-              <form id="createContainerForm" method="post" action="/serve/create">
-                <li class="line-h-3">
-                  <span class="ve_top">镜像名称：</span>
-                  <span class="imageName"></span>
-                  <input id="getImageName" type="hidden" name="image" value="">
-                  <!--<input id="getImageName" type="hidden" name="image" value="alexwhen/docker-2048">-->
-                </li>
-                <li class="line-h-3">
-                  <span class="ve_top">服务名称：</span>
-                  <input name="name" type="text" value="" class="in_style" id="containerName">
-                </li>
-              <li class="line-h-3" style="min-height:109px;padding-top: 10px;">
-                <input name="conflevel" id="typeX" type="hidden" value="">
-                <span class="ve_top display-block">容器配置：</span>
-                <section class="set_container active" config="60m,256Mi,10GB">
-                  <div class="up_style">1X</div>
-                  <ul class="text-center parameter">
-                    <li>256 MB 内存</li>
-                    1 CPU (共享)
-                  </ul>
-                </section>
-                <section class="set_container" config="125m,512Mi,10GB">
-                  <div class="up_style">2X</div>
-                  <ul class="text-center parameter">
-                    <li>512 MB 内存</li>
-                    <span>1 CPU (共享)</span>
-                  </ul>
-                </section>
-                <section class="set_container" config="250m,1024Mi,10GB">
-                  <div class="up_style">4X</div>
-                  <ul class="text-center parameter">
-                    <li>1 GB 内存</li>
-                    <span>1 CPU (共享)</span>
-                  </ul>
-                </section>
-                <section class="set_container" config="500m,2048Mi,10GB">
-                  <div class="up_style">8X</div>
-                  <ul class="text-center parameter">
-                    <li>2 GB 内存</li>
-                    <span>1 CPU (共享)</span>
-                  </ul>
-                </section>
-                <section class="set_container" config="1000m,4096Mi,10GB" disabled="">
-                  <div class="up_style">16X</div>
-                  <ul class="text-center parameter">
-                    <li>4 GB 内存</li>
-                    <span>1 CPU</span>
-                  </ul>
-                </section>
-                <section class="set_container" config="2000m,8192Mi,10GB" disabled="">
-                  <div class="up_style">32X</div>
-                  <ul class="text-center parameter">
-                    <li>8 GB 内存</li>
-                    <span>2 CPU</span>
-                  </ul>
-                </section>
-              </li>
-              <li class="line-h-3" id="instsize">
-                <div class="param-set">
-                  <span class="number-title">实例数量：</span>
-                  <input id="ins-number" type="number" value="1" class="number" name="instance" min="1" autocomplete="off" placeholder="1">
-                  <span class="unit">个</span>
-                  <span id="instanceTip" style="color:rgba(102, 102, 102, 0.63);margin-left: 40px;"></span>
-                </div>
-              </li>
-              <li class="line-h-3 param_form">
-                <span class="paramSet">参数设置</span>
-                <ol id="param_list"></ol>
-              </li>
-              <li id="service_type">
-                <span class="ve_top">拓展方式：</span>
+                    <!--创建页面第二部分-->
+                    <div class="host_step2" style="display:none">
+                        <!--<i class="tips">载入容器配置中...</i>-->
+                        <ul class="safeSet">
+                            <!--提交镜像名，版本，服务名-->
+                            <form id="createContainerForm" method="post" action="/serve/create">
+                                <li class="line-h-3">
+                                    <span class="ve_top">镜像名称：</span>
+                                    <span class="imageName"></span>
+                                    <input id="getImageName" type="hidden" name="image" value="">
+                                    <!--<input id="getImageName" type="hidden" name="image" value="alexwhen/docker-2048">-->
+                                </li>
+                                <li class="line-h-3">
+                                    <span class="ve_top">服务名称：</span>
+                                    <input name="name" type="text" value="" class="in_style" id="containerName">
+                                </li>
+                                <li class="line-h-3" style="min-height:109px;padding-top: 10px;">
+                                    <input name="conflevel" id="typeX" type="hidden" value="">
+                                    <span class="ve_top display-block">容器配置：</span>
+                                    <section class="set_container active" config="60m,256Mi,10GB">
+                                        <div class="up_style">1X</div>
+                                        <ul class="text-center parameter">
+                                            <li>256 MB 内存</li>
+                                            1 CPU (共享)
+                                        </ul>
+                                    </section>
+                                    <section class="set_container" config="125m,512Mi,10GB">
+                                        <div class="up_style">2X</div>
+                                        <ul class="text-center parameter">
+                                            <li>512 MB 内存</li>
+                                            <span>1 CPU (共享)</span>
+                                        </ul>
+                                    </section>
+                                    <section class="set_container" config="250m,1024Mi,10GB">
+                                        <div class="up_style">4X</div>
+                                        <ul class="text-center parameter">
+                                            <li>1 GB 内存</li>
+                                            <span>1 CPU (共享)</span>
+                                        </ul>
+                                    </section>
+                                    <section class="set_container" config="500m,2048Mi,10GB">
+                                        <div class="up_style">8X</div>
+                                        <ul class="text-center parameter">
+                                            <li>2 GB 内存</li>
+                                            <span>1 CPU (共享)</span>
+                                        </ul>
+                                    </section>
+                                    <section class="set_container" config="1000m,4096Mi,10GB" disabled="">
+                                        <div class="up_style">16X</div>
+                                        <ul class="text-center parameter">
+                                            <li>4 GB 内存</li>
+                                            <span>1 CPU</span>
+                                        </ul>
+                                    </section>
+                                    <section class="set_container" config="2000m,8192Mi,10GB" disabled="">
+                                        <div class="up_style">32X</div>
+                                        <ul class="text-center parameter">
+                                            <li>8 GB 内存</li>
+                                            <span>2 CPU</span>
+                                        </ul>
+                                    </section>
+                                </li>
+                                <li class="line-h-3" id="instsize">
+                                    <div class="param-set">
+                                        <span class="number-title">实例数量：</span>
+                                        <input id="ins-number" type="number" value="1" class="number" name="instance"
+                                               min="1" autocomplete="off" placeholder="1">
+                                        <span class="unit">个</span>
+                                        <span id="instanceTip"
+                                              style="color:rgba(102, 102, 102, 0.63);margin-left: 40px;"></span>
+                                    </div>
+                                </li>
+                                <li class="line-h-3 param_form">
+                                    <span class="paramSet">参数设置</span>
+                                    <ol id="param_list"></ol>
+                                </li>
+                                <li id="service_type">
+                                    <span class="ve_top">拓展方式：</span>
                 <span class="update-mi">
                   <input name="autoscale" type="radio" id="state_service" value="false" checked>
                   <label for="state_service"><font color="blue" title="">手动</font></label>
                   <input name="autoscale" type="radio" id="state_service" value="true">
                   <label for="state_service"><font color="blue" title="">自动</font></label>
                 </span>
-              </li>
-              <li class="line-h-3">
-                <span class="ve_top">执行命令：</span>
-                <span class="update-mi"><input id="execmd" type="text" style="width:230px;height:27px;cursor:no-drop;padding:0px;margin:0px;" class="cmdtext" disabled="">&nbsp;&nbsp; <input type="radio" class="execmd" name="defaultcmd" value="default" checked=""> 镜像默认&nbsp;&nbsp; <input type="radio" class="execmd" name="defaultcmd" value="self"> 自定义 </span>
-              </li>
-              <li class="line-h-3">
-                <span class="ve_top">环境变量：</span>
-                <div class="editEnv">
-                  <div class="editEnv-title">
-                    <div style="width: 35%"> 变量名</div>
-                    <div style="width: 35%"> 变量值</div>
-                    <div style="width: 10%"> 操作</div>
-                  </div>
-                  <div class="envRow">
-                    <div style="width: 35%">
-                      <input placeholder="name" class="envName" type="text" name="envName">
-                    </div>
-                    <div style="width: 35%">
-                      <input placeholder="value" class="envVal" type="text" name="envVal">
-                    </div>
-                    <div style="width: 10%">
-                      <span class="addEnv cursor" data-toggle="tooltip" data-placement="top" title="" data-original-title="添加">
+                                </li>
+                                <li class="line-h-3">
+                                    <span class="ve_top">执行命令：</span>
+                                    <span class="update-mi"><input id="execmd" type="text"
+                                                                   style="width:230px;height:27px;cursor:no-drop;padding:0px;margin:0px;"
+                                                                   class="cmdtext" disabled="">&nbsp;&nbsp; <input
+                                                type="radio" class="execmd" name="defaultcmd" value="default"
+                                                checked=""> 镜像默认&nbsp;&nbsp; <input type="radio" class="execmd"
+                                                                                    name="defaultcmd" value="self"> 自定义 </span>
+                                </li>
+                                <li class="line-h-3">
+                                    <span class="ve_top">环境变量：</span>
+                                    <div class="editEnv">
+                                        <div class="editEnv-title">
+                                            <div style="width: 35%"> 变量名</div>
+                                            <div style="width: 35%"> 变量值</div>
+                                            <div style="width: 10%"> 操作</div>
+                                        </div>
+                                        <div class="envRow">
+                                            <div style="width: 35%">
+                                                <input placeholder="name" class="envName" type="text" name="envName">
+                                            </div>
+                                            <div style="width: 35%">
+                                                <input placeholder="value" class="envVal" type="text" name="envVal">
+                                            </div>
+                                            <div style="width: 10%">
+                      <span class="addEnv cursor" data-toggle="tooltip" data-placement="top" title=""
+                            data-original-title="添加">
                         <i class="fa fa-plus"></i>
                       </span>&nbsp;&nbsp;
-                      <span class="removeEnv cursor" data-toggle="tooltip" data-placement="top" title="" data-original-title="删除">
+                      <span class="removeEnv cursor" data-toggle="tooltip" data-placement="top" title=""
+                            data-original-title="删除">
                         <i class="fa fa-times"></i>
                       </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </form>
+                        </ul>
+                        <div style="height: 80px !important;"></div>
                     </div>
-                  </div>
                 </div>
-              </li>
-              </form>
-            </ul>
-            <div style="height: 80px !important;"></div>
-          </div>
+            </div>
+            <div class="createPadding hide">
+                <button class="btn btn-default go_backs01 hide" style="margin-right:30px;">上一步</button>
+                <button class="btn btn-default go_backs02 hide" style="margin-right:30px;">上一步</button>
+                <button id="createButton" class="pull-right btn btn-primary pull_confirm hide">创建</button>
+            </div>
         </div>
-      </div>
-      <div class="createPadding hide">
-        <button class="btn btn-default go_backs01 hide" style="margin-right:30px;">上一步</button>
-        <button class="btn btn-default go_backs02 hide" style="margin-right:30px;">上一步</button>
-        <button id="createButton" class="pull-right btn btn-primary pull_confirm hide">创建</button>
-      </div>
-    </div>
-  </article>
+    </article>
 </div>
+
+
+<div style="position: fixed;bottom: 0;right: 0;">
+    <script type="text/javascript" src="/js/cnzz.js"></script>
+</div>
+<script src="/js/creat.js"></script>
+<script src="/js/header.js"></script>
+</body>
+</html>

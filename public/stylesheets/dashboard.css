@@ -948,9 +948,10 @@ i.fa_btn_plus{
 .create-my-image{
   text-align: center;
 }
-.create-my-image button{
+.create-my-image a{
   width: 250px;
   height: 50px;
+  line-height: 36px;
   font-size: 20px;
 }
 .screen2 {
