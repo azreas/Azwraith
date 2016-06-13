@@ -38,7 +38,7 @@ var dockerConfig = {
     /*host : '192.168.1.241',
      port : 3375*//*,
      timeout: 6000*/
-    host: process.env.swarmhost || '192.168.1.246',
+    host: process.env.swarmhost || '121.201.18.171',
     port: process.env.swarmport || 3375,
     domain: process.env.domain || "zerocloud.club"
 }
@@ -51,7 +51,7 @@ var userservice = {
      port : 9000*/
     /*host : '192.168.1.236',
      port : 9000*/
-    host: process.env.userservicehost || '192.168.1.253',
+    host: process.env.userservicehost || '121.201.18.56',
     port: process.env.userserviceport || 3001
     // host: '127.0.0.1',
     // port: 9000
@@ -66,16 +66,22 @@ var dockerservice = {
     host: process.env.dockerservicehost || '192.168.1.243',
     port: process.env.dockerserviceport || 3000
 };
-var domainservice = {
-    host: process.env.PORT || '192.168.1.253',
-    port: 3000
+var buildService = {
+    host: process.env.BUILD_HOST || '192.168.1.241',
+    port: process.env.dockerserviceport || 2375,
+    userName: process.env.BUILD_USERNAME || 'root',
+    password: process.env.BUILD_PASS || 'docker'
 };
+var registry = {
+    host: process.env.REGISTRY_HOST || '192.168.1.142',
+    port: process.env.REGISTRY_PORT || 5000
+}
 /********************* request docker service end *********************/
 
 //
 var dockerapitest = {
-    host: '192.168.1.240',
-    port: 2375
+    host: '121.201.18.171',
+    port: 3375
 }
 // var dockerapitest={
 //     host:'127.0.0.1',
@@ -89,6 +95,7 @@ module.exports = {
     userservice: userservice,
     dockerservice: dockerservice,
     dockerapitest: dockerapitest,
-    domainservice: domainservice
+    buildService: buildService,
+    registry: registry
 }
 

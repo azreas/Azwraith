@@ -21,6 +21,12 @@ module.exports = function (app) {
     // 到 docker hub 搜索镜像（返回 json）
     router.get('/search/:term', image_impl.search);
 
+    //构建镜像
+    router.post('/build', imageController.buildImage);
+
+    //获取构建镜像
+    router.get('/list/build', imageController.getBuildImage);
+
     // router 命名空间
     app.use('/image', router);
 };

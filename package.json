@@ -23,6 +23,7 @@
     "restler": "^3.4.0",
     "serve-favicon": "~2.3.0",
     "socket.io": "^1.4.5",
+    "ssh2shell": "^1.4.8",
     "websocket": "^1.0.23"
   },
   "devDependencies": {
