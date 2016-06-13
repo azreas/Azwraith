@@ -41,10 +41,10 @@ exports.listByQuery = function (req, res, next) {
  * @param next
  */
 exports.buildImage = function (req, res, next) {
-    var imageName = req.body.imageName;
-    var gitAddress = req.body.gitAddress;
-    var tag = req.body.tag;
-    var detail = req.body.detail;
+    var imageName = req.body.imgFirst+'/'+req.body.imgLast;
+    var gitAddress = req.body.repoUrl;
+    var tag = req.body.repoType;
+    var detail = req.body.ciSummary;
     try {
         async.waterfall([
             function (waterfallCallback) {
@@ -70,7 +70,7 @@ exports.buildImage = function (req, res, next) {
                     "tag": tag,
                     "ownerid": userId,
                     "createdate": new Date().getTime()
-                }
+                };
                 imageDao.saveBuildImage(buildImage, function (err, data) {
                     waterfallCallback(err);
                 });
@@ -79,7 +79,7 @@ exports.buildImage = function (req, res, next) {
             if (!err) {
                 res.json({result: true});
             } else {
-                logger.info(err)
+                logger.info(err);
                 res.json({result: false});
             }
         });

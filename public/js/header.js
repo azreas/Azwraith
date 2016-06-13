@@ -60,6 +60,8 @@
         }else{
             var userName = resp.people.profile.name;
             $('.namespace').html(userName);
+            $('.name-note').html(userName+'&nbsp;/&nbsp;');
+            $('#img-last').val(userName);
         }
     });
 })();

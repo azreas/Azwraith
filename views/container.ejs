@@ -1,37 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta charset="UTF-8">
-  <meta name="renderer" content="webkit">
-  <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css?rev=0.1.0">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-  <!--浏览器窗口图标-->
-  <link rel="icon" type="image/z-icon" href="/images/favicon.ico">
-  <link rel="stylesheet" href="/stylesheets/dashboard.css?rev=0.1.0">
-  <script src="/jquery/dist/jquery.min.js"></script>
-  <script type="text/javascript" src="/stylesheets/layer/layer.js"></script>
-  <link id="console_main_css" rel="stylesheet" href="/stylesheets/container/main.css?rev=0.1.0">
-  <link rel="stylesheet" href="/stylesheets/layer/skin/layer.css" id="layui_layer_skinlayercss">
-  <script type="text/javascript" src="/stylesheets/layer/layer.js"></script>
-  <script type="text/javascript" src="/js/chat_room.js"></script>
-  <title>零云 - 容器服务</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css?rev=0.1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <!--浏览器窗口图标-->
+    <link rel="icon" type="image/z-icon" href="/images/favicon.ico">
+    <link rel="stylesheet" href="/stylesheets/dashboard.css?rev=0.1.0">
+    <script src="/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/stylesheets/layer/layer.js"></script>
+    <link id="console_main_css" rel="stylesheet" href="/stylesheets/container/main.css?rev=0.1.0">
+    <link rel="stylesheet" href="/stylesheets/layer/skin/layer.css" id="layui_layer_skinlayercss">
+    <script type="text/javascript" src="/stylesheets/layer/layer.js"></script>
+    <script type="text/javascript" src="/js/chat_room.js"></script>
+    <title>零云 - 容器服务</title>
 </head>
-  <body>
+<body>
 
-    <% include header.ejs %>
+<% include header.ejs %>
 
-    <div class="part01 container">
-      <% include containerList.ejs %>
-    </div>
-    <div class="part02 container" style="display: none">
-      <% include create.ejs %>
-    </div>
-    <div style="position: fixed;bottom: 0;right: 0;"><script type="text/javascript" src="/js/cnzz.js"></script></div>
-    <!--<input id="userId" type="hidden" value="">-->
-  <script src="/js/container.js"></script>
-  <script src="/js/header.js"></script>
-  <script src="/js/qrcode.min.js"></script>
+<div class="container">
+    <% include containerList.ejs %>
+</div>
 
-  </body>
+<div style="position: fixed;bottom: 0;right: 0;">
+    <script type="text/javascript" src="/js/cnzz.js"></script>
+</div>
+
+<script src="/js/container.js"></script>
+<script src="/js/header.js"></script>
+<script src="/js/qrcode.min.js"></script>
+</body>
 </html>
