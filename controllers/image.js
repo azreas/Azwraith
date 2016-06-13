@@ -72,7 +72,7 @@ exports.buildImage = function (req, res, next) {
                     "createdate": new Date().getTime()
                 }
                 imageDao.saveBuildImage(buildImage, function (err, data) {
-
+                    waterfallCallback(err);
                 });
             }
         ], function (err) {
