@@ -72,6 +72,7 @@ exports.buildImage = function (req, res, next) {
                     "name": imageName,
                     "detail": detail,
                     "tag": tag,
+                    "gitAddress": gitAddress,
                     "status": 0,//镜像构建状态 0 构建中 1 构建成功 -1 构建失败
                     "ownerid": userId,
                     "createdate": creatDate,
@@ -89,11 +90,11 @@ exports.buildImage = function (req, res, next) {
             },
             //将镜像推进公有仓库
             function (waterfallCallback) {
-                imageService.pushImageOnPublicRegistry(imageName, tag, function (err, imageName) {
-                    waterfallCallback(err, imageName);
+                imageService.pushImageOnPublicRegistry(imageName, tag, function (err, createImageName) {
+                    waterfallCallback(err, createImageName);
                 });
             }
-        ], function (error, imageName) {
+        ], function (error, createImageName) {
             var status;
             if (!error) {
                 status = 1;
@@ -105,8 +106,10 @@ exports.buildImage = function (req, res, next) {
             var buildImage = {
                 "id": imageId,
                 "name": imageName,
+                "createImageName": createImageName,
                 "detail": detail,
                 "tag": tag,
+                "gitAddress": gitAddress,
                 "status": status,
                 "err": error,
                 "ownerid": userId,
