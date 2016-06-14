@@ -41,51 +41,90 @@ exports.listByQuery = function (req, res, next) {
  * @param next
  */
 exports.buildImage = function (req, res, next) {
-    var imageName = req.body.imgFirst+'/'+req.body.imgLast;
+    var imageName = req.body.imgFirst + '/' + req.body.imgLast;
     var gitAddress = req.body.repoUrl;
     var tag = req.body.repoType;
     var detail = req.body.ciSummary;
+    var dockerfilePath;
+    var path = req.body.dockerfilePath;
+    if (path) {
+        dockerfilePath = '.' + path;
+    } else {
+        dockerfilePath = '.';
+    }
     try {
+        var userId;
+        var creatDate;
+        var imageId = uuid.v4();
+        creatDate = new Date().getTime();
         async.waterfall([
-            function (waterfallCallback) {
-                imageService.buildImage(imageName, gitAddress, function (err) {
-                    waterfallCallback(err);
-                });
-            },
-            function (waterfallCallback) {
-                imageService.pushImageOnPublicRegistry(imageName, tag, function (err) {
-                    waterfallCallback(err);
-                });
-            },
+            //获取用户ID
             function (waterfallCallback) {
                 userDao.getIdByToken(req.cookies.token, function (err, data) {
-                    waterfallCallback(err, data.id);
+                    userId = data.id
+                    waterfallCallback(err);
                 });
             },
-            function (userId, waterfallCallback) {
+            //保存构建镜像信息
+            function (waterfallCallback) {
                 var buildImage = {
-                    "id": uuid.v4(),
+                    "id": imageId,
                     "name": imageName,
                     "detail": detail,
                     "tag": tag,
+                    "status": 0,//镜像构建状态 0 构建中 1 构建成功 -1 构建失败
                     "ownerid": userId,
-                    "createdate": new Date().getTime()
+                    "createdate": creatDate,
+                    "updatedate": creatDate
                 };
-                imageDao.saveBuildImage(buildImage, function (err, data) {
+                imageDao.saveBuildImage(buildImage, function (err) {
                     waterfallCallback(err);
                 });
+            },
+            //构建镜像
+            function (waterfallCallback) {
+                imageService.buildImage(imageName, gitAddress, dockerfilePath, function (err) {
+                    waterfallCallback(err);
+                });
+            },
+            //将镜像推进公有仓库
+            function (waterfallCallback) {
+                imageService.pushImageOnPublicRegistry(imageName, tag, function (err, imageName) {
+                    waterfallCallback(err, imageName);
+                });
             }
-        ], function (err) {
-            if (!err) {
-                res.json({result: true});
+        ], function (error, imageName) {
+            var status;
+            if (!error) {
+                status = 1;
             } else {
-                logger.info(err);
-                res.json({result: false});
+                status = -1;
+                logger.info(error);
             }
+            //修改构建镜像状态
+            var buildImage = {
+                "id": imageId,
+                "name": imageName,
+                "detail": detail,
+                "tag": tag,
+                "status": status,
+                "err": err,
+                "ownerid": userId,
+                "createdate": creatDate,
+                "updatedate": new Date().getTime()
+            }
+            imageDao.updateBuildImage(buildImage, function (err, data) {
+                if (!err) {
+                    res.json({result: true, error: err});
+                } else {
+                    res.json({result: false, error: err});
+                    logger.info(err);
+                }
+            });
         });
     } catch (e) {
         logger.info(e);
-        next(e)
+        next(e);
     }
 };
 
@@ -99,7 +138,7 @@ exports.getBuildImage = function (req, res, next) {
     try {
         async.waterfall([
             function (waterfallCallback) {
-                userDao.getIdByToken(req.cookie.token, function (err, data) {
+                userDao.getIdByToken(req.cookies.token, function (err, data) {
                     waterfallCallback(err, data.id)
                 });
             },

@@ -109,11 +109,12 @@ exports.pullImage = function (imageName, tag, callback) {
 /**
  * 镜像构建DAO层，连接服务器并执行命令
  * @param server
- * @param commands
+ * @param commandArray
  */
 exports.buildImage = function (commands, callback) {
+    var err = null;
     var host = {
-        idleTimeOut: 30000,//超时定时器设置
+        // idleTimeOut: 15000,//超时定时器设置
         server: buildService,//主机配置
         commands: commands,//执行命令
         msg: {//构造消息
@@ -121,38 +122,57 @@ exports.buildImage = function (commands, callback) {
                 console.log(message);
             }
         },
-        onCommandTimeout: function (command, response, sshObj, stream, connection) {
-            console.log('onCommandTimeout');
-            //optional code for responding to command timeout
-            //response is the text response from the command up to it timing out
-            //stream object used  to respond to the timeout without having to close the connection
-            //connection object gives access to close the shell using connection.end()
+        onCommandTimeout: function (command, response, stream, connection) {
+            logger.info('commandTimeout command : ' + command);
+            logger.info('commandTimeout response : ' + command);
+            //git地址错误或需要验证
+            if (command.indexOf("git clone") !== -1 && response.indexOf("Username") !== -1) {
+                logger.info(response);
+                err = 'git地址错误或需要验证';
+                connection.end();
+            }
         },
         //命令执行结束监听事件
         onCommandComplete: function (command, response, sshObj) {
             sshObj.msg.send(response);
-            if (command === commands[2]) {
+            if (command.indexOf('git clone') !== -1) {
                 if (response.indexOf('Checking connectivity... done.') === -1) {
                     logger.info('git clone fail');
-                    return;
+                    err = 'git clone fail';
+                    // return callback('git clone fail');
                 }
             }
-            if (command === commands[4]) {
+            if (command.indexOf('docker build') !== -1) {
                 if (response.indexOf('Successfully built ') === -1) {
                     logger.info('build image fail');
-                    return;
+                    err = 'build image fail';
+                    // return callback('build image fail');
                 }
             }
         },
         //连接结束监听事件
         onEnd: function (sessionText, sshObj) {
-            // console.log(sshObj.server.host + " this:\n\n" + sessionText);
-            callback(null);
+            if (sshObj.commands.length > 0 && !err) {
+                err = 'build fail';
+            }
+            return callback(err);
         }
     };
     var SSH2Shell = require('ssh2shell'),
         SSH = new SSH2Shell(host);
     SSH.connect();
+    //连接超时监听
+    // SSH.on("commandTimeout", function onCommandTimeout(command, response, stream, connection) {
+    //     logger.info('commandTimeout command : ' + command);
+    //     logger.info('commandTimeout response : ' + command);
+    //     //git地址错误或需要验证
+    //     if (command.indexOf("git clone") !== -1 && response.indexOf("Username") !== -1) {
+    //         logger.info(response);
+    //         err = 'git地址错误或需要验证';
+    //         connection.end();
+    //         // return callback('git地址错误或需要验证');
+    //     }
+    // });
 };
 
 /**
@@ -172,6 +192,24 @@ exports.saveBuildImage = function (buildImage, callback) {
         return callback(null, data);
     });
 };
+
+/**
+ * 修改数据库保存构建镜像信息
+ * @param buildImage
+ * @param callback
+ */
+exports.updateBuildImage = function (buildImage, callback) {
+    rest.putJson('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/registry', buildImage).on('complete', function (data, response) {
+        try {
+            if (data.result !== true) {
+                throw new Error(data.info.script);
+            }
+        } catch (e) {
+            return callback(e.message, data);
+        }
+        return callback(null, data);
+    });
+}
 
 /**
  * 数据取出镜像信息
@@ -221,8 +259,8 @@ exports.delBuildImageById = function (buildImageId, callback) {
  * @param callback
  */
 exports.tag = function (imageName, tag, callback) {
-    var newName = registry.host + ':' + registry.port + '/' + imageName
-    rest.postJson('http://' + buildService.host + ':' + buildService.port + '/images/' + imageName + '/tag?repo=' + newName + '&tag=' + tag, null).on('complete', function (data, response) {
+    var newName = registry.host + ':' + registry.port + '/' + imageName;
+    rest.postJson('http://' + buildService.host + ':' + buildService.docker_port + '/images/' + imageName + '/tag?repo=' + newName + '&tag=' + tag, null).on('complete', function (data, response) {
         try {
             if (response.statusCode !== 201) {
                 throw new Error(response.statusCode);
@@ -253,7 +291,7 @@ exports.push = function (imageName, callback) {
 
     var options = {
         hostname: buildService.host,
-        port: buildService.port,
+        port: buildService.docker_port,
         path: '/images/' + imageName + '/push',
         method: 'POST',
         headers: {

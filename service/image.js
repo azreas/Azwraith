@@ -34,14 +34,14 @@ exports.listByCondition = function (condition, callback) {
  * @param gitAddress
  * @param callback
  */
-exports.buildImage = function (imageName, gitAddress, callback) {
+exports.buildImage = function (imageName, gitAddress, dockerfilePath, callback) {
     var commands = [
         'mkdir /imageBuild',
         'cd "$_"',
         'git clone ' + gitAddress + ' ' + imageName.replace(/\//g, '_'),
         'cd ' + imageName.replace(/\//g, '_'),
-        'docker build -t ' + imageName + ' .',
-        'rm -r /imageBuild/' + imageName.replace(/\//g, '_'),
+        'docker build -t ' + imageName + ' ' + dockerfilePath,
+        'rm -r /imageBuild/' + imageName.replace(/\//g, '_')
     ];
     imageDao.buildImage(commands, function (err) {
         try {
@@ -68,7 +68,7 @@ exports.pushImageOnPublicRegistry = function (imageName, tag, callback) {
         if (!err) {
             imageDao.push(newName, function (err) {
                 if (!err) {
-                    callback(null);
+                    callback(null, newName);
                 }
                 else {
                     callback('push err :' + err);

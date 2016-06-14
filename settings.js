@@ -68,7 +68,8 @@ var dockerservice = {
 };
 var buildService = {
     host: process.env.BUILD_HOST || '192.168.1.241',
-    port: process.env.dockerserviceport || 2375,
+    port: process.env.BUILD_SSH_PORT || 22,
+    docker_port: process.env.BUILD_DOCKER_PORT || 2375,
     userName: process.env.BUILD_USERNAME || 'root',
     password: process.env.BUILD_PASS || 'docker'
 };
