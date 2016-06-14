@@ -108,7 +108,7 @@ exports.buildImage = function (req, res, next) {
                 "detail": detail,
                 "tag": tag,
                 "status": status,
-                "err": err,
+                "err": error,
                 "ownerid": userId,
                 "createdate": creatDate,
                 "updatedate": new Date().getTime()
