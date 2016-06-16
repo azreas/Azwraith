@@ -80,3 +80,14 @@ exports.pushImageOnPublicRegistry = function (imageName, tag, callback) {
     });
 };
 
+/**
+ * 删除构建镜像
+ * @param imageId
+ * @param callback
+ */
+exports.deleteBuildImage = function (imageId, callback) {
+//TODO仅清除了数据库，没有物理删除
+    imageDao.delBuildImageById(imageId, function (err, data) {
+        return callback(err, data);
+    });
+}

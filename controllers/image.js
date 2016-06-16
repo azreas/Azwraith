@@ -61,7 +61,7 @@ exports.buildImage = function (req, res, next) {
             //获取用户ID
             function (waterfallCallback) {
                 userDao.getIdByToken(req.cookies.token, function (err, data) {
-                    userId = data.id
+                    userId = data.id;
                     waterfallCallback(err);
                 });
             },
@@ -163,3 +163,20 @@ exports.getBuildImage = function (req, res, next) {
         next(e);
     }
 };
+
+exports.delBuildImage = function (req, res, next) {
+    try {
+        imageService.deleteBuildImage(req.params.imageId, function (err, data) {
+            logger.debug('err : ' + err);
+            logger.debug('data : ' + JSON.stringify(data));
+            if (!err) {
+                res.json({result: true});
+            } else {
+                res.json({result: false, err: err});
+            }
+        });
+    } catch (e) {
+        logger.info(e);
+        next(e);
+    }
+}

@@ -27,6 +27,10 @@ module.exports = function (app) {
     //获取构建镜像
     router.get('/list/build', imageController.getBuildImage);
 
+    //删除构建镜像
+    // router.del("/build/:imageId", imageController.delBuildImage);
+    router.route('/build/:imageId').delete(imageController.delBuildImage);
+
     // router 命名空间
     app.use('/image', router);
 };
