@@ -22,13 +22,6 @@
 
 <div class="page-container container">
     <article>
-        <div class="contentTitle">
-            <div class="createPadding">
-                <a onClick="javascript :history.back(-1);" class="btn btn-default" style="margin-right:30px;">
-                    <i class="fa fa-reply" aria-hidden="true"></i> 返回
-                </a>
-            </div>
-        </div>
         <div class="item-obj">
             <form id="buildForm" method="post" action="/image/build" role="form">
                 <h4>快速构建</h4>
@@ -118,6 +111,9 @@
                         </table>
                     </section>
                     <br>
+                    <div class="pull-left">
+                        <a href="/create/2" class="btn btn-default" style="margin-right:30px;">上一步</a>
+                    </div>
                     <div class="pull-right">
                         <span id="buildBtn" class="btn btn-primary">创建</span>
                     </div>

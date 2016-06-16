@@ -84,6 +84,7 @@ exports.buildImage = function (req, res, next) {
             },
             //构建镜像
             function (waterfallCallback) {
+                res.redirect('/create/2');
                 imageService.buildImage(imageName, gitAddress, dockerfilePath, function (err) {
                     waterfallCallback(err);
                 });
@@ -115,12 +116,13 @@ exports.buildImage = function (req, res, next) {
                 "ownerid": userId,
                 "createdate": creatDate,
                 "updatedate": new Date().getTime()
-            }
+            };
             imageDao.updateBuildImage(buildImage, function (err, data) {
                 if (!err) {
-                    res.json({result: true, error: err});
+                    //res.redirect('/create/2');
+                    logger.info("build success >>>>>>>>>>>>>>");
                 } else {
-                    res.json({result: false, error: err});
+                    //res.render('build',{});
                     logger.info(err);
                 }
             });

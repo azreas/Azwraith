@@ -21,11 +21,32 @@
         $('.host_step1').hide();
         $('.host_step2').show();
         $('.radius_step').eq(1).addClass('action').siblings().removeClass('action');
-        $('.createPadding,.createPadding .go_backs01,.createPadding .two_step,.createPadding #createButton').removeClass('hide');
+        $('.createPadding').addClass('hide');
+        $('#home-main .createPadding,.createPadding .go_backs01,.createPadding .two_step,.createPadding #createButton').removeClass('hide');
         //容器配置
         $('.imageName').text(name);
         $('#getImageName').val(name);
         $('#getVersion').val($('.version-text').text());
+    });
+    $('.dialog').on('click', 'span[data-placement="right"]', function () {
+        var name = $(this).parent('td').find('input[data-toggle="imgName"]').val();  //取镜像名
+        var createImageName = $(this).parent('td').find('input[data-toggle="createImageName"]').val();
+        var status = $(this).parent('td').find('input[data-toggle="id"]').val();
+        if (status === '-1') {
+            layer.msg('抱歉！您的镜像构建失败，请重新构建或者删除');
+        } else if (status === '0') {
+            layer.msg('抱歉！您的镜像正在构建中，请等候');
+        } else if (status === '1') {
+            $('.host_step1').hide();
+            $('.host_step2').show();
+            $('.radius_step').eq(1).addClass('action').siblings().removeClass('action');
+            $('.createPadding').addClass('hide');
+            $('#home-main .createPadding,.createPadding .go_backs01,.createPadding .two_step,.createPadding #createButton').removeClass('hide');
+            //容器配置
+            $('.imageName').text(name);
+            $('#getImageName').val(createImageName);
+            $('#getVersion').val($('.version-text').text());
+        }
     });
     //添加环境变量
     $('.editEnv').on('click', '.addEnv', function () {
@@ -67,25 +88,12 @@
             $("#createContainerForm").submit();
         }
     });
-    $('.createPadding .two_step').click(function () {
-        $('.host_step2').hide();
-        $('.host_step3').removeClass('hide');
-        $('.radius_step').eq(2).addClass('action').siblings().removeClass('action');
-        $('.createPadding .go_backs01').addClass('hide');
-        $('.createPadding .go_backs02').removeClass('hide');
-    });
     $('.go_backs01').click(function () {
         $('.host_step1').show();
         $('.host_step2').hide();
         $('.radius_step').eq(0).addClass('action').siblings().removeClass('action');
-        $('.createPadding,.createPadding .go_backs01,.createPadding .two_step,.createPadding #createButton').addClass('hide');
-    });
-    $('.go_backs02').click(function () {
-        $('.host_step2').show();
-        $('.host_step3').addClass('hide');
-        $('.radius_step').eq(1).addClass('action').siblings().removeClass('action');
-        $('.createPadding .go_backs02').addClass('hide');
-        $('.createPadding .go_backs01').removeClass('hide');
+        $('.createPadding').removeClass('hide');
+        $('#home-main .createPadding,.createPadding .go_backs01,.createPadding .two_step,.createPadding #createButton').addClass('hide');
     });
     //选择镜像来源
     $('.choose').click(function () {
@@ -110,18 +118,101 @@
         }
     });
     //获取我的构建镜像
-    $('.my-img').on('click', function () {
+    $.ajax({
+        url: '/image/list/build',
+        type: 'GET'
+    }).done(function (resp) {
+        console.log(resp);
+        if (resp == '') {
+            $('.showlist .itemTable #projectsBody').html('');
+            //var tips = '<div id="nodata" class="nodata" style="display: block;padding-top:20px">服务列表加载失败，请刷新页面</div>';
+            var tips = '<div id="nodata" class="nodata" style="display: block;padding-top:20px">提示：点击上方"快速构建"按钮构建自己的镜像。</div><div style="color:#FF9900;margin: 15px 30px;"><i class="fa fa-hand-o-right"></i> Tips: <span style="color:#FF9900;font-size:20px">您当前还未构建自己的镜像，您可以新建一个自己的镜像</span></div>';
+            $('.showlist .itemTable #projectsBody').html(tips);
+        } else {
+            $('.showlist .itemTable #projectsBody').html('');
+            for (var i in resp) {
+                var status;
+                var statuslogo;
+                var cDate = new Date(resp[i].createdate);
+                var date = formatDate(cDate);
+                switch (resp[i].status) {
+                    //1.启动中，2.运行中，3.停止中，4.已停止,5.启动失败,6.停止失败
+                    case 1:
+                        status = "成功";
+                        statuslogo = "fa_run";
+                        break;
+                    case -1:
+                        status = "失败";
+                        statuslogo = "fa_stop";
+                        break;
+                    case 0:
+                        status = "构建中";
+                        statuslogo = "fa_createing";
+                        break;
+                }
+                var part = '<tr> <td> <div class="content-table"> <table class="table tables"> <tbody> <tr class="ci-listTr" style="cursor:auto" id="2c9af4db-7077-467f-b3ff-3ab472e7494c" tag="latest"> <td style="width: 15%; text-indent:22px;"> <a style="width: 108px;display: inline-block;word-wrap: break-word;text-indent: 0px;">' + resp[i].name + '</a> </td> <td style="width: 12%;"> <i class="' + statuslogo + '"></i> <span>' + status + '</span> <input type="hidden" id="' + resp[i].id + '" value="' + resp[i].status + '"></td> <td style="width: 15%;"> <a data-toggle="tooltip" data-placement="left" title="" target="_blank" href="' + resp[i].gitAddress + '" data-original-title="查看源代码"> <span class="bj-code-source"> <i class="fa fa-github fa-lg"></i> github </span> </a> </td> <td style="width: 15%;"> <span>' + date + '</span> </td> <td style="width:18%"> <span class="bj-green" data-toggle="tooltip" data-placement="right" title="" data-original-title="部署"> 部署 </span>&nbsp;&nbsp;<span class="bj-green" id="delete-build" data-id="' + resp[i].id + '" style="background:#ff9500"> 删除 </span> <input type="hidden" data-toggle="createImageName" value="' + resp[i].createImageName + '"> <input type="hidden" data-toggle="imgName" value="' + resp[i].name + '"><input type="hidden" data-toggle="id" value="' + resp[i].status + '"> </td> </tr> </tbody> </table> </div> </td> </tr>';
+                $('.showlist .itemTable #projectsBody').append(part);
+            }
+        }
+    });
+    setInterval(function () {
         $.ajax({
-            url: '/image/list/all',
+            url: '/image/list/build',
             type: 'GET'
         }).done(function (resp) {
-            console.log(resp);
-            //if (resp.info.code == 11) {
-            //    $('#dbtable').html('');
-            //    //var tips = '<div id="nodata" class="nodata" style="display: block;padding-top:20px">服务列表加载失败，请刷新页面</div>';
-            //    var tips = '<div id="nodata" class="nodata" style="display: block;padding-top:20px">提示：点击上方"+创建"按钮创建容器应用。</div><div style="color:#FF9900;margin: 15px 30px;"><i class="fa fa-hand-o-right"></i> Tips: <span style="color:#FF9900;font-size:20px">您当前还未创建服务，您可以新建一个服务</span></div>';
-            //    $('#dbtable').html(tips);
-            //}
+            if (resp == '') {
+
+            } else {
+                for (var i in resp) {
+                    var id = resp[i].id;
+                    var status = resp[i].status;
+                    var statu = $('#' + id).val();
+                    if (status == statu) {
+                    } else {
+                        $('#' + id).val(status);
+                        var s, l;
+                        switch (status) {
+                            //1.启动中，2.运行中，3.停止中，4.已停止,5.启动失败,6.停止失败
+                            case 1:
+                                s = "成功";
+                                l = "fa_run";
+                                break;
+                            case -1:
+                                s = "失败";
+                                l = "fa_stop";
+                                break;
+                            case 0:
+                                s = "构建中";
+                                l = "fa_createing";
+                                break;
+                        }
+                        $('#' + id).siblings().remove();
+                        var part = '<i class="' + l + '"></i> <span>' + s + '</span>';
+                        $('#' + id).before(part);
+                    }
+                }
+            }
+        });
+    }, 5000);
+    //删除构建镜像
+    $('.dialog').on('click', 'span[id="delete-build"]', function () {
+        var buildId = $(this).attr('data-id');
+        layer.confirm('确定删除容器', {
+            icon: 3,
+            btn: ['确定', '取消']
+        }, function (index) {
+            layer.close(index);
+            $.ajax({
+                url: '/image/build/' + buildId,
+                type: 'delete'
+            }).done(function (resp) {
+                if (resp.result === true) {
+                    layer.msg('删除成功');
+                    $('#' + buildId).parents('.content-table').parents('tr').remove();
+                } else {
+                    layer.msg('删除失败，请重新删除');
+                }
+            });
         });
     });
     //搜索dockerhub镜像
@@ -166,6 +257,12 @@
             layer.msg('实例数量上限为10');
         }
     };
+    //镜像选择定位
+    var tag = $('#tag').val();
+    if (tag === '2') {
+        $('.choose').eq(1).addClass('action').siblings().removeClass('action');
+        $('.dialog .blankApp').eq(1).removeClass('hidden').siblings().addClass('hidden');
+    }
     //时间格式化
     function formatDate(now) {
         var year = now.getFullYear();

@@ -59,7 +59,9 @@ exports.detail = function (req, res) {
  * @param res
  */
 exports.create = function (req, res) {
-    res.render('create', {})
+    res.render('create', {
+        tag: req.params.id
+    })
 };
 
 /**

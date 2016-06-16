@@ -23,7 +23,7 @@ module.exports = function (app) {
     router.get('/detail/:id', index_impl.detail);
 
     // 进入创建服务界面
-    router.get('/create', index_impl.create);
+    router.get('/create/:id', index_impl.create);
 
     // 进入构建镜像界面
     router.get('/build', index_impl.build);

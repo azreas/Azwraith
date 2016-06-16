@@ -25,7 +25,7 @@
     <article>
         <div class="contentTitle">
             <div class="createPadding">
-                <a onClick="javascript :history.back(-1);" class="btn btn-default" style="margin-right:30px;">
+                <a href="/container" class="btn btn-default" style="margin-right:30px;">
                     <i class="fa fa-reply" aria-hidden="true"></i> 返回
                 </a>
             </div>
@@ -82,10 +82,9 @@
                             <li class="blankApp hidden">
                                 <div class="showlist">
                                     <div class="aption">
-                                        <a href="javascript:void(0)" id="refreshInst"><i class="fa_refresh"></i></a>
+                                        <a href="/create/2" id="refreshInst"><i class="fa_refresh"></i></a>
                                         <!--<a href="javascript:void(0)" id="addcode">添加源代码</a>-->
-                                        <a href="/build" class="btn btn-quick">快速构建</a>
-                                        <!--<a href="http://doc.tenxcloud.com/doc/v1/ci/faq-how-to-build-private-code-repositories.html" target="_blank"><i class="fa fa-question-circle"></i> 构建私有代码仓库提示</a>-->
+                                        <a href="/build" class="btn btn-quick" style="background:#008CD6">快速构建</a>
                                     </div>
                                     <div class="itemTable">
                                         <table class="table ci-table ">
@@ -96,13 +95,13 @@
                                                         <table class="table" style="margin:0px;">
                                                             <thead>
                                                             <tr style="height:40px;">
-                                                                <th style="width: 15%; text-indent:30px;">项目名称</th>
+                                                                <th style="width: 15%; text-indent:30px;">镜像名称</th>
                                                                 <th style="width: 12%;text-indent: 15px;">构建状态</th>
                                                                 <th style="width: 15%;text-indent: 20px;">代码源</th>
                                                                 <!--<th style="width: 12%;">上次构建时间</th>-->
                                                                 <!-- <th style='width: 10%;text-indent: 7px;'>语言</th> -->
                                                                 <!--<th style="width: 10%;  text-indent: 8px;">持续时间</th>-->
-                                                                <th style="width: 15%;text-indent: 10px;">镜像</th>
+                                                                <th style="width: 15%;text-indent: 10px;">创建时间</th>
                                                                 <th style="width: 18%;text-indent: 10px;">功能</th>
                                                             </tr>
                                                             </thead>
@@ -112,51 +111,7 @@
                                             </tr>
                                             </thead>
                                             <tbody id="projectsBody">
-                                            <tr>
-                                                <td>
-                                                    <div class="content-table">
-                                                        <table class="table tables">
-                                                            <tbody>
-                                                            <tr class="ci-listTr" style="cursor:auto" id="2c9af4db-7077-467f-b3ff-3ab472e7494c" tag="latest">
-                                                                <td style="width: 15%; text-indent:22px;">
-                                                                    <a href="#" title="查看详细信息">php-sample</a>
-                                                                </td>
-                                                                <td style="width: 12%;">
-                                                                    <i class="fa_success"></i>
-                                                                    <span>成功</span>
-                                                                    <!--<img src="/images/loading4.gif">-->
-                                                                </td>
-                                                                <td style="width: 15%;">
-                                                                    <a data-toggle="tooltip" data-placement="left" title="" target="_blank" href="javascript:void(0);" data-original-title="查看源代码">
-                                                                        <span class="bj-code-source">
-                                                                          <i class="fa fa-github fa-lg"></i>
-                                                                          github
-                                                                        </span>
-                                                                    </a>
-                                                                </td>
-                                                                <!--<td style="width: 12%;">-->
-                                                                    <!--几秒前-->
-                                                                <!--</td>-->
-                                                                <!--<td style="width: 10%;">-->
-                                                                    <!--07分37秒-->
-                                                                <!--</td>-->
-                                                                <td style="width: 15%;">
-                                                                  <span title="镜像不存在" style="cursor:no-drop">
-                                                                    php-sample
-                                                                  </span>
-                                                                </td>
-                                                                <td style="width:18%">
-                                                                  <span class="bj-green" data-toggle="tooltip" data-placement="right" title="" data-original-title="重新构建">
-                                                                    构建&nbsp;&nbsp;
-                                                                    <i class="fa fa-arrow-circle-right"></i>
-                                                                  </span>
-                                                                </td>
-                                                            </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </td>
-                                            </tr>
+
                                             </tbody>
                                         </table>
                                     </div>
@@ -258,12 +213,12 @@
                                 </li>
                                 <li id="service_type">
                                     <span class="ve_top">拓展方式：</span>
-                <span class="update-mi">
-                  <input name="autoscale" type="radio" id="state_service" value="false" checked>
-                  <label for="state_service"><font color="blue" title="">手动</font></label>
-                  <input name="autoscale" type="radio" id="state_service" value="true">
-                  <label for="state_service"><font color="blue" title="">自动</font></label>
-                </span>
+                                    <span class="update-mi">
+                                      <input name="autoscale" type="radio" id="state_service" value="false" checked>
+                                      <label for="state_service"><font color="blue" title="">手动</font></label>
+                                      <input name="autoscale" type="radio" id="state_service" value="true">
+                                      <label for="state_service"><font color="blue" title="">自动</font></label>
+                                    </span>
                                 </li>
                                 <li class="line-h-3">
                                     <span class="ve_top">执行命令：</span>
@@ -290,14 +245,14 @@
                                                 <input placeholder="value" class="envVal" type="text" name="envVal">
                                             </div>
                                             <div style="width: 10%">
-                      <span class="addEnv cursor" data-toggle="tooltip" data-placement="top" title=""
-                            data-original-title="添加">
-                        <i class="fa fa-plus"></i>
-                      </span>&nbsp;&nbsp;
-                      <span class="removeEnv cursor" data-toggle="tooltip" data-placement="top" title=""
-                            data-original-title="删除">
-                        <i class="fa fa-times"></i>
-                      </span>
+                                              <span class="addEnv cursor" data-toggle="tooltip" data-placement="top" title=""
+                                                    data-original-title="添加">
+                                                <i class="fa fa-plus"></i>
+                                              </span>&nbsp;&nbsp;
+                                              <span class="removeEnv cursor" data-toggle="tooltip" data-placement="top" title=""
+                                                    data-original-title="删除">
+                                                <i class="fa fa-times"></i>
+                                              </span>
                                             </div>
                                         </div>
                                     </div>
@@ -310,13 +265,12 @@
             </div>
             <div class="createPadding hide">
                 <button class="btn btn-default go_backs01 hide" style="margin-right:30px;">上一步</button>
-                <button class="btn btn-default go_backs02 hide" style="margin-right:30px;">上一步</button>
                 <button id="createButton" class="pull-right btn btn-primary pull_confirm hide">创建</button>
             </div>
         </div>
     </article>
 </div>
-
+<input type="hidden" id="tag" value="<%= tag %>">
 
 <div style="position: fixed;bottom: 0;right: 0;">
     <script type="text/javascript" src="/js/cnzz.js"></script>

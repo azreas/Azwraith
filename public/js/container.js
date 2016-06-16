@@ -10,13 +10,6 @@
     }).done(function (resp) {
         //console.log(resp);
         imagesInfo = resp.data;
-        var cDate = new Date();
-        var date = formatDate(cDate);
-        for (var i in imagesInfo) {
-            var imageDiv;
-            imageDiv = $('<div class="image-item col-xs-6 col-sm-6" style="padding-bottom: 20px;"><span class="img_icon span5" style="width: 80px;height:80px;margin: 25px 10px 25px 0;"><img src="' + imagesInfo[i].icon + '"></span><span class="span5 type" type="runtime"><div class="list-item-description"><div class="name h4" style="height: 38px;overflow: hidden;">镜像名称：' + imagesInfo[i].name + '<a title="点击查看镜像详情" target="_blank" href="' + imagesInfo[i].detail + '"><i class="fa fa-external-link-square"></i></a></div><span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">版本：' + imagesInfo[i].tag + '</span><span class="span9" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + date + '</span></div></span><span class="span2"><div class="list-item-description"><span class="pull-deploy btn btn-primary">部署<i class="fa fa-arrow-circle-o-right margin fa-lg"></i></span></div></span><input class="container-name" type="hidden" value="' + imagesInfo[i].name + '"></div>');
-            imageDiv.appendTo($('#systemImages'));
-        }
     });
     //添加已创建服务列表
     //预添加加载图标

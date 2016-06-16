@@ -149,8 +149,6 @@
     </section>
 
 </div>
-<script type="text/javascript" src="particles.js/particles.js"></script>
-<script type="text/javascript" src="js/lines-link.js"></script>
 <script type="text/javascript">
     (function () {
         //监听滚动事件
@@ -168,12 +166,16 @@
         var w = window.innerWidth - 17;
         $('.screen1').css('height', h);
         $('.screen1').css('width', w);
+        $('#stage-three').css('height', h);
+        $('#stage-three').css('width', w);
 
         $(window).resize(function () {
             var h = window.innerHeight;
             var w = document.body.clientWidth;
             $('.screen1').css('height', h);
             $('.screen1').css('width', w);
+            $('#stage-three').css('height', h);
+            $('#stage-three').css('width', w);
         })
 
         //期待更多
@@ -183,5 +185,7 @@
 
     })();
 </script>
+<script type="text/javascript" src="particles.js/particles.js"></script>
+<script type="text/javascript" src="js/lines-link.js"></script>
 </body>
 </html>
