@@ -38,6 +38,9 @@ require('./routes/serve')(app);
 
 // 引入 container controller
 require('./routes/container')(app);
+
+// 引入 composer controller
+require('./routes/composer')(app);
 /*************************** 需经过登录认证的请求结束 *******************************/
 
 

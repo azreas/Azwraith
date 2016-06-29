@@ -51,7 +51,7 @@ var userservice = {
      port : 9000*/
     /*host : '192.168.1.236',
      port : 9000*/
-    host: process.env.userservicehost || '121.201.18.56',
+    host: process.env.userservicehost || '192.168.1.243',
     port: process.env.userserviceport || 3001
     // host: '127.0.0.1',
     // port: 9000
@@ -81,7 +81,7 @@ var registry = {
 
 //
 var dockerapitest = {
-    host: '121.201.18.171',
+    host: '192.168.1.240',
     port: 3375
 }
 // var dockerapitest={
@@ -97,6 +97,7 @@ module.exports = {
     dockerservice: dockerservice,
     dockerapitest: dockerapitest,
     buildService: buildService,
-    registry: registry
+    registry: registry,
+    swarmUrl: dockerConfig.host + ':' + dockerConfig.port
 }
 
