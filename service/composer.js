@@ -13,18 +13,18 @@ let logger = require("../modules/log/log").logger();
 var serveService = require('../service/serve');
 var containerService = require('../service/container');
 let moment = require('moment');
-
+var stringUtil = require('../modules/util/stringUtil');
 /**
  * 生成服务配置
  * @param serverName
  * @param createParameter
  * @param cb
  */
-function generateServeConfig(serverName, createParameter, cb) {
+function generateServeConfig(serverName, userComposeName, createParameter, cb) {
     let serveConfig = {
         id: uuid.v4(), // 服务 id
         owner: "", // 用户 id，通过 token 获取
-        name: serverName, // 服务名称
+        name: userComposeName, // 服务名称
         image: '', // 镜像名称
         imagetag: 'latest', // 镜像版本
         conflevel: '', // 配置级别
@@ -39,7 +39,7 @@ function generateServeConfig(serverName, createParameter, cb) {
         createtime: new Date().getTime(), // 创建时间
         updatetime: new Date().getTime(), // 更新时间
         address: "-", // 服务地址
-        aliasesName: ''
+        aliasesName: serverName
 
     };
     //判断镜像名是否带tag
@@ -48,18 +48,15 @@ function generateServeConfig(serverName, createParameter, cb) {
     if (imageName.length > 1) {
         serveConfig.imagetag = imageName[1];
     }
-    let aliasesName = serverName.split('-');
-    aliasesName = aliasesName[aliasesName.length - 1];
-    serveConfig.aliasesName = aliasesName;
     logger.debug('serveConfig=============');
     logger.debug(serveConfig);
     cb(serveConfig);
 }
 
-function serverCreate(token, network, serverName, createParameter, conflevel, cb) {
+function serverCreate(token, network, serverName, userComposeName, createParameter, conflevel, cb) {
     async.waterfall([
         waterfallCallback=> {//获取服务配置
-            generateServeConfig(serverName, createParameter, serveConfig=> {
+            generateServeConfig(serverName, userComposeName, createParameter, serveConfig=> {
                 serveConfig.conflevel = conflevel;
                 serveConfig.network = network.name;
                 serveConfig.subdomain = network.name;
@@ -114,7 +111,8 @@ function serverCreate(token, network, serverName, createParameter, conflevel, cb
  */
 function startByList(composeName, startList, createDatas, conflevel, token, callback) {
     let startFirst = startList.startFirst,
-        startLater = startList.startLater;
+        startLater = startList.startLater,
+        suffix = stringUtil.randomString(5);
     async.waterfall([
         waterfallCallback=> {
             userDao.getIdByToken(token, function (err, result) {
@@ -166,9 +164,9 @@ function startByList(composeName, startList, createDatas, conflevel, token, call
             startFirst.forEach(serverName=> {//启动容器
                 logger.debug('startFirst serverName ' + serverName);
                 let createParameter = createDatas.get(serverName);
-                let userComposeName = composeName + '-' + serverName;//服务名
+                let userComposeName = composeName + '-' + serverName + '-' + suffix;//服务名
                 createParameter = _.defaultsDeep(createParameter, network.config);
-                serverCreate(token, network, userComposeName, createParameter, conflevel, err=> {
+                serverCreate(token, network, serverName, userComposeName, createParameter, conflevel, err=> {
                     if (!err) {
                         waterfallCallback(null, network);
                     } else {
@@ -181,8 +179,9 @@ function startByList(composeName, startList, createDatas, conflevel, token, call
             if (startLater.length > 0) {
                 startLater.forEach(serverName=> {
                     let createParameter = createDatas.get(serverName);
+                    let userComposeName = composeName + '-' + serverName + '-' + suffix;//服务名
                     createParameter = _.defaultsDeep(createParameter, network.config);
-                    serverCreate(token, network, composeName + '-' + serverName, createParameter, conflevel, err=> {
+                    serverCreate(token, network, serverName, userComposeName, createParameter, conflevel, err=> {
                         if (!err) {
                             waterfallCallback(null);
                         } else {

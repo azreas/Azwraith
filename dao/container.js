@@ -148,7 +148,9 @@ exports.getEvent = function (id, callback) {
  * @param callback
  */
 exports.create = function (containerOpts, callback) {
-    rest.postJson('http://' + dockerConfig.host + ':' + dockerConfig.port + '/containers/create', containerOpts).on('complete', function (data, response) {
+    let date = new Date().getTime();
+    ;
+    rest.postJson('http://' + dockerConfig.host + ':' + dockerConfig.port + '/containers/create?name=' + date, containerOpts).on('complete', function (data, response) {
         try {
             if (response.statusCode !== 201) {
                 throw new Error(data);
