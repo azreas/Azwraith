@@ -5,33 +5,33 @@
 
 var http = require('http');
 // var rest = require('restler');
-var dockerapitest=require('../../../../../settings').dockerapitest;
+var dockerapitest = require('../../../../../settings').dockerapitest;
 
-var containerid='52d724c0ccdf';
+var containerid = 'bd50b3eee146b8362f200bad0564d36684f6ae426e6d092ddfc55e464e742330';
 
 var headers = {
-    'Content-Type' : 'application/plain; charset=utf-8'
+    'Content-Type': 'application/plain; charset=utf-8'
 };
 var options = {
-    host : dockerapitest.host,
-    port : dockerapitest.port,
-    path : '/containers/'+containerid+'/stats?stream=1',
-    method : 'GET',
-    headers : headers
+    host: dockerapitest.host,
+    port: dockerapitest.port,
+    path: '/containers/' + containerid + '/stats?stream=0',
+    method: 'GET',
+    headers: headers
 }
-var reqGet = http.request(options, function(resGet) {
+var reqGet = http.request(options, function (resGet) {
     // logDockerRes[socket.name] = resGet; // docker 连接
-    resGet.on('data', function(data) {
+    resGet.on('data', function (data) {
         console.log(data.toString());
         // 向指定页面发日志
         // socket.emit("log", {log : data.toString()});
     });
-    resGet.on('end', function() {
+    resGet.on('end', function () {
         resGet.destroy(); // 断开 docker 连接
     });
 });
 reqGet.end();
-reqGet.on('error', function(e) {
+reqGet.on('error', function (e) {
     console.error(e);
 });
 

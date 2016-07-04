@@ -56,7 +56,7 @@ exports.create = function (req, res, next) {
             address: "-" // 服务地址
 
         };
-        serveService.create(req.cookies.token, serveConfig, function (err, result) {
+        serveService.create(req.cookies.token, serveConfig, false, function (err, result) {
             try {
                 if (!err) {// 保存服务配置成功，则发异步请求创建实例
                     serveConfig = result;
@@ -78,7 +78,7 @@ exports.create = function (req, res, next) {
     } catch (e) {
         next(e);
     }
-}
+};
 
 /**
  * 服务删除
@@ -93,17 +93,17 @@ exports.remove = function (req, res, next) {
         for (var i in ids) {
             console.log(ids[i]);
             var id = ids[i];
-/*            serveService.removeDomainByAppid(id, function (err) {
-                try {
-                    if (!err) {
+            /*            serveService.removeDomainByAppid(id, function (err) {
+             try {
+             if (!err) {
 
-                    } else {
-                        errorCount++;
-                    }
-                } catch (e) {
-                    next(e);
-                }
-            });*/
+             } else {
+             errorCount++;
+             }
+             } catch (e) {
+             next(e);
+             }
+             });*/
             serveService.remove(id, function (err, result) {
                 try {
                     if (!err) {
@@ -200,7 +200,7 @@ exports.update = function (req, res, next) {
                                     res.json({result: false});
                                 }
                             });
-                        }else{
+                        } else {
                             res.json({result: true});
                         }
                     }

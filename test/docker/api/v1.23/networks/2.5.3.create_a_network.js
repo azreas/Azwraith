@@ -6,7 +6,7 @@
 var rest = require('restler');
 var dockerapitest=require('../../../../../settings').dockerapitest;
 var postdata=     {
-    "Name":"xzj", // 网络名
+    "Name":"one_net", // 网络名
     "Driver":"overlay",
     "EnableIPv6": false,
     /*"IPAM":{
@@ -20,7 +20,7 @@ var postdata=     {
     },*/
     "Internal":false
 };
-rest.postJson('http://'+dockerapitest.host+':'+dockerapitest.port+'/networks/create', postdata).on('complete', function(data, response) {
+rest.postJson('http://192.168.1.240:3375/networks/create', postdata).on('complete', function(data, response) {
     console.log(response.statusCode );
     console.log(data);
 });

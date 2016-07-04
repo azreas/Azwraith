@@ -95,6 +95,6 @@ module.exports = function multiCreateDatas(composeYml, callback) {
     }
     startList = {startFirst: [...startFirst], startLater: [...startLater]};
     logger.debug(startList);
-    logger.debug(createDatas);
+    // logger.debug(createDatas);
     return callback(startList, createDatas);
 };

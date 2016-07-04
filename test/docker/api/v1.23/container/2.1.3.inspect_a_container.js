@@ -8,7 +8,7 @@ var dockerapitest=require('../../../../../settings').dockerapitest;
 //GET /containers/(id or name)/json
 //参数
 //size      1/True/true or 0/False/false       是否返回 SizeRw,SizeRootFs，默认false
-var name='fa3f14d48516fb0240e39847e60d395db5ab088a6c479b79eb010aacd02f5414';
+var name='62ddff9ea341';
 var x={
     result:null,
     count:0
@@ -20,7 +20,6 @@ rest.get('http://'+dockerapitest.host+':'+dockerapitest.port+'/containers/'+name
     } else {
         console.dir(result);
         console.log(JSON.stringify(result));
-        console.log(result.NetworkSettings.Networks.ctest_ctesttomcat1);
     }
 
 });

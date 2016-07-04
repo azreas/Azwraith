@@ -13,7 +13,7 @@ var dockerapitest=require('../../../../../settings').dockerapitest;
 // 搜索 images ,只需要提供imagesName就可以获取images数据
 // GET /images/search?term=sshd HTTP/1.1
 
-var imagesName='nginx';
+var imagesName='Busybox';
 
 rest.get('http://'+dockerapitest.host+':'+dockerapitest.port+'/images/search?term='+imagesName).on('complete', function(result) {
     if (result instanceof Error) {

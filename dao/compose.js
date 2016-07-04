@@ -7,17 +7,20 @@ var dockerservice = require('../settings').dockerservice;
 
 function getComposeByUserId(userId) {
     return new Promise((resolve, reject)=> {
-        request.get('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/compose/' + userId, (error, response, body)=> {
-            if (!error) {
-                if (body.result === true) {
-                    resolve(body);
+        request.get('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/compose/list/' + userId, {json: true},
+            (error, response, body) => {
+                if (!error) {
+                    if (body.result === true) {
+                        resolve(body);
+                    } else {
+                        reject(body);
+                    }
                 } else {
-                    reject(body);
+                    reject(error);
                 }
-            } else {
-                reject(error);
             }
-        });
+        )
+        ;
     });
 }
 
@@ -42,7 +45,7 @@ function saveCompose(composeJson) {
 
 function updateCompose(composeJson) {
     return new Promise((resolve, reject)=> {
-        request.put('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/compose/', {
+        request.put('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/compose', {
             body: composeJson,
             json: true
         }, (error, response, body)=> {
@@ -61,7 +64,7 @@ function updateCompose(composeJson) {
 
 function deleteComposeById(composeId) {
     return new Promise((resolve, reject)=> {
-        request.del('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/compose/' + composeId, (error, response, body)=> {
+        request.del('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/compose/' + composeId, {json: true}, (error, response, body)=> {
             if (!error) {
                 if (body.result === true) {
                     resolve(body);
@@ -75,4 +78,26 @@ function deleteComposeById(composeId) {
     });
 }
 
-module.exports = {getComposeByUserId, saveCompose, updateCompose, deleteComposeById};
+function getComposeByID(composeId) {
+    return new Promise((resolve, reject)=> {
+        request.get('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/compose/' + composeId, {json: true}, (error, response, body)=> {
+            if (!error) {
+                if (body.result === true) {
+                    resolve(body);
+                } else {
+                    reject(body);
+                }
+            } else {
+                reject(error);
+            }
+        });
+    });
+}
+
+module.exports = {
+    getComposeByUserId,
+    saveCompose,
+    updateCompose,
+    deleteComposeById,
+    getComposeByID
+};

@@ -72,6 +72,7 @@ exports.create = function (token, serveConfig, callback) {
                 }
             });
         }, function (waterfallCallback) {// 根据网络名称生成网络，然后记录网络 id
+            waterfallCallback(null);//触发下一步
             var postdata = {
                 "Name": serveConfig.network, // 网络名
                 "Driver": "overlay",
@@ -94,6 +95,91 @@ exports.create = function (token, serveConfig, callback) {
                 }
             });
         }, function (waterfallCallback) { // 保存服务配置信息
+            serveDao.save(serveConfig, function (err, result) {
+                try {
+                    if (!err) {
+                        logger.debug(moment().format('h:mm:ss') + '   保存服务配置信息');
+                        waterfallCallback(null);//触发下一步
+                    } else {
+                        logger.info('保存服务配置失败:' + err);
+                        waterfallCallback(err);
+                    }
+                } catch (e) {
+                    logger.info('保存服务配置失败:' + e);
+                    waterfallCallback('保存服务配置失败');
+                }
+            });
+        }, function (waterfallCallback) {// 存储服务事件
+            var containerEventConfig = {
+                appid: serveConfig.id,
+                event: "创建成功",
+                titme: new Date().getTime(),
+                script: "create app ：" + serveConfig.id,
+                status: 1//1:success;2:failed
+            };
+            serveDao.saveEvent(containerEventConfig, function (err, result) {
+                try {
+                    if (!err) {
+                        logger.debug(moment().format('h:mm:ss') + '   存储服务事件');
+                        waterfallCallback(null);//触发下一步
+                    } else {
+                        containerEventConfig.status = 2;
+                        logger.info('存储服务事件失败:' + err);
+                        waterfallCallback(err);
+                    }
+                } catch (e) {
+                    containerEventConfig.status = 2;
+                    logger.info('存储服务事件失败:' + e);
+                    waterfallCallback('存储服务事件失败');
+                }
+            });
+        }
+    ], function (error) {
+        if (error) {
+            serveConfig.status = 7;
+            logger.info("创建服务失败：" + error);
+            return callback("创建服务失败：" + error);
+        } else {
+            logger.debug("创建服务成功");
+            return callback(null, serveConfig);
+        }
+    });
+};
+
+/**
+ * 根据编排信息创建服务配置
+ * @param token
+ * @param serveConfig
+ * @param callback
+ */
+exports.createByCompose = function (token, serveConfig, callback) {
+    async.waterfall([
+        function (waterfallCallback) {
+            var status = serveConfig.status;
+            if (status == 7) {
+                logger.info("服务创建失败");
+                waterfallCallback("服务创建失败");
+            } else {
+                waterfallCallback(null);//触发下一步
+            }
+        },
+        function (waterfallCallback) {// 根据 token 获取用户id
+            userDao.getIdByToken(token, function (err, result) {
+                try {
+                    if (!err) {
+                        logger.debug(moment().format('h:mm:ss') + '   根据token  ' + token + '  获取用户id');
+                        serveConfig.owner = result.id;
+                        waterfallCallback(null);//触发下一步
+                    } else {
+                        logger.info("根据token " + token + " 获取用户id失败：" + err);
+                        waterfallCallback(err);
+                    }
+                } catch (e) {
+                    logger.info("根据token " + token + " 获取用户id失败：" + e);
+                    waterfallCallback("根据token获取用户id失败");
+                }
+            });
+        }, function (waterfallCallback) { // 获取用户信息
             serveDao.save(serveConfig, function (err, result) {
                 try {
                     if (!err) {
@@ -143,7 +229,7 @@ exports.create = function (token, serveConfig, callback) {
             return callback(null, serveConfig);
         }
     });
-}
+};
 
 /**
  * 根据服务id更新实例个数和实例类型

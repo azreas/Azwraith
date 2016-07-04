@@ -5,7 +5,7 @@
 // DELETE /containers/(id or name)
 var rest = require('restler');
 var dockerapitest=require('../../../../../settings').dockerapitest;
-var containerid='f4bafbceb1076955e6cd37c15301354f6ae479fc5ced766a35d4cf2706253042';
+var containerid='cec7649710299031ef4b5f8a78dc0c0f0d55fc8eb6debc52e1de0b1cb4983a57';
 // 参数
 // v – 1/True/true or 0/False/false, Remove the volumes associated to the container. Default false.
 // force - 1/True/true or 0/False/false, Kill then remove the container. Default false.

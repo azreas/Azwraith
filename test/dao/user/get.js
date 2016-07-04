@@ -5,7 +5,7 @@
 
 var userService = require("../../../dao/user");
 
-var id = "6afad05c-dd75-414e-89cc-bb948895f455";
+var id = "e4db4100-1722-11e6-a3f5-1fbbb51888b5";
 userService.get(id, function (err, data) {
     console.log("err ---> "+err);
     console.log(data);

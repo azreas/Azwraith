@@ -10,61 +10,184 @@ let userDao = require('../dao/user');
 let composeDao = require('../dao/compose');
 let uuid = require('node-uuid');
 let logger = require("../modules/log/log").logger();
+var serveService = require('../service/serve');
+var containerService = require('../service/container');
 let moment = require('moment');
 
-function startByList(name, startList, createDatas, callback) {
+/**
+ * 生成服务配置
+ * @param serverName
+ * @param createParameter
+ * @param cb
+ */
+function generateServeConfig(serverName, createParameter, cb) {
+    let serveConfig = {
+        id: uuid.v4(), // 服务 id
+        owner: "", // 用户 id，通过 token 获取
+        name: serverName, // 服务名称
+        image: '', // 镜像名称
+        imagetag: 'latest', // 镜像版本
+        conflevel: '', // 配置级别
+        instance: 1, // 实例个数
+        autoscale: false, // 拓展方式，true表示自动，false表示手动
+        command: '', // 执行命令
+        env: createParameter.Env || [],//环境变量
+        network: "", // 网络名（email-name+appname）
+        networkid: "", // 网络 id
+        subdomain: "", // 子域名（email-name+appname）
+        status: 1, // 服务状态，1.启动中，2.运行中，3.停止中，4.已停止,5.启动失败,6.停止失败,7.创建失败
+        createtime: new Date().getTime(), // 创建时间
+        updatetime: new Date().getTime(), // 更新时间
+        address: "-", // 服务地址
+        aliasesName: ''
+
+    };
+    //判断镜像名是否带tag
+    let imageName = createParameter.Image.split(':');
+    serveConfig.image = imageName[0];
+    if (imageName.length > 1) {
+        serveConfig.imagetag = imageName[1];
+    }
+    let aliasesName = serverName.split('-');
+    aliasesName = aliasesName[aliasesName.length - 1];
+    serveConfig.aliasesName = aliasesName;
+    logger.debug('serveConfig=============');
+    logger.debug(serveConfig);
+    cb(serveConfig);
+}
+
+function serverCreate(token, network, serverName, createParameter, conflevel, cb) {
+    async.waterfall([
+        waterfallCallback=> {//获取服务配置
+            generateServeConfig(serverName, createParameter, serveConfig=> {
+                serveConfig.conflevel = conflevel;
+                serveConfig.network = network.name;
+                serveConfig.subdomain = network.name;
+                serveConfig.networkid = network.id;
+                waterfallCallback(null, serveConfig);
+            });
+        },
+        (serveConfig, waterfallCallback)=> {//创建服务信息
+            serveService.createByCompose(token, serveConfig, (err, serveConfig)=> {
+                if (!err) {
+                    waterfallCallback(null, serveConfig);
+                } else {
+                    waterfallCallback(err);
+                }
+            })
+        },
+        // (serveConfig, waterfallCallback)=> {//根据服务信息启动容器
+        // containerService.composeCreate(serveConfig.id, null, (err)=> {
+        //     if (!err) {
+        //         waterfallCallback(null);
+        //     } else {
+        //         waterfallCallback(err);
+        //     }
+        // });
+        // }
+    ], (err, serveConfig)=> {
+        if (!err) {
+            logger.debug('yes~~~~');
+            containerService.composeCreate(serveConfig.id, null, (err)=> {
+                if (!err) {
+                } else {
+                    logger.info(err);
+                }
+            });
+            cb(null);
+        } else {
+            logger.info(err);
+            cb(err);
+        }
+    });
+
+}
+
+/**
+ *
+ * @param composeName
+ * @param startList
+ * @param createDatas
+ * @param conflevel
+ * @param token
+ * @param callback
+ */
+function startByList(composeName, startList, createDatas, conflevel, token, callback) {
     let startFirst = startList.startFirst,
-        startLater = startList.startLater,
-        networkConfig = {
-            "HostConfig": {
-                "NetworkMode": name
-            }
-        };
+        startLater = startList.startLater;
     async.waterfall([
         waterfallCallback=> {
-            docker.createNetwork(name).then(res=> {
+            userDao.getIdByToken(token, function (err, result) {
+                try {
+                    if (!err) {
+                        waterfallCallback(null, result.id);//触发下一步
+                    } else {
+                        waterfallCallback(err);
+                    }
+                } catch (e) {
+                    waterfallCallback("token获取用户信息失败" + e);
+                }
+            });
+        },
+        (userId, waterfallCallback)=> {
+            userDao.get(userId, function (err, result) {
+                try {
+                    if (!err) {
+                        logger.debug(moment().format('h:mm:ss') + '   获取用户基本信息成功');
+                        let networkName = result.people.profile.sub_domain + "." + composeName + ".app";
+                        waterfallCallback(null, networkName);//触发下一步
+                    } else {
+                        waterfallCallback(err);
+                    }
+                } catch (e) {
+                    waterfallCallback('networkAndSubdomain  ' + e);
+                }
+            });
+        },
+        (networkName, waterfallCallback)=> {//创建覆盖网络
+            docker.createNetwork(networkName).then(res=> {
                 logger.debug(res);
-                waterfallCallback(null);
+                let networkConfig = {
+                    "HostConfig": {
+                        "NetworkMode": res.Id
+                    }
+                };
+                let network = {
+                    name: networkName,
+                    id: res.Id,
+                    config: networkConfig
+                };
+                waterfallCallback(null, network);
             }).catch(e=> {
                 waterfallCallback('createNetwork err ' + e);
             });
         },
-        waterfallCallback=> {
-            let startCount = 0;
-            startFirst.forEach(serverName=> {
+        (network, waterfallCallback)=> {
+            startFirst.forEach(serverName=> {//启动容器
+                logger.debug('startFirst serverName ' + serverName);
                 let createParameter = createDatas.get(serverName);
-                createParameter = _.defaultsDeep(createParameter, networkConfig);
-                docker.createContainer(createParameter, name + '-' + serverName).then(res=> {
-                    logger.debug(res);
-                    return docker.startContainer(res.Id);
-                }).then(res=> {
-                    logger.debug(res);
-                    startCount++;
-                    if (startCount === startFirst.length) {
-                        waterfallCallback(null);
+                let userComposeName = composeName + '-' + serverName;//服务名
+                createParameter = _.defaultsDeep(createParameter, network.config);
+                serverCreate(token, network, userComposeName, createParameter, conflevel, err=> {
+                    if (!err) {
+                        waterfallCallback(null, network);
+                    } else {
+                        waterfallCallback('startFirst err ' + err);
                     }
-                }).catch(e=> {
-                    waterfallCallback('startFirst err ' + e);
                 });
             });
         },
-        waterfallCallback=> {
+        (network, waterfallCallback)=> {
             if (startLater.length > 0) {
-                let startCount = 0;
                 startLater.forEach(serverName=> {
                     let createParameter = createDatas.get(serverName);
-                    createParameter = _.defaultsDeep(createParameter, networkConfig);
-                    docker.createContainer(createParameter, name + '-' + serverName).then(res=> {
-                        logger.debug(res);
-                        return docker.startContainer(res.Id);
-                    }).then(res=> {
-                        logger.debug(res);
-                        startCount++;
-                        if (startCount === startFirst.length) {
+                    createParameter = _.defaultsDeep(createParameter, network.config);
+                    serverCreate(token, network, composeName + '-' + serverName, createParameter, conflevel, err=> {
+                        if (!err) {
                             waterfallCallback(null);
+                        } else {
+                            waterfallCallback('startFirst err ' + err);
                         }
-                    }).catch(e=> {
-                        waterfallCallback('startLater err ' + e);
                     });
                 });
             } else {
@@ -73,24 +196,28 @@ function startByList(name, startList, createDatas, callback) {
         }
     ], err=> {
         if (err) {
-            logger.info(err);
+            logger.error(err);
             callback(err);
         } else {
             callback(null);
         }
     });
 }
+
+
 /**
- * 根据compose文件部署服务
- * @param name
+ *根据compose文件部署服务
+ * @param composeName
  * @param composeJson
+ * @param token
+ * @param conflevel
  * @param callback
  */
-exports.serverCompose = function (name, composeJson, callback) {
+function serverCompose(composeName, composeJson, token, conflevel, callback) {
     try {
         composeParser(composeJson, (startList, createDatas)=> {
             try {
-                startByList(name, startList, createDatas, callback);
+                startByList(composeName, startList, createDatas, conflevel, token, callback);
             } catch (e) {
                 logger.info(e);
             }
@@ -98,10 +225,67 @@ exports.serverCompose = function (name, composeJson, callback) {
     } catch (e) {
         logger.info(e);
     }
-};
+}
+
+/**
+ * 根据composeId从数据库取出数据创建服务
+ * @param composeId
+ * @param conflevel
+ * @param token
+ * @param callback
+ */
+function serverByComposeId(composeId, conflevel, token, callback) {
+    async.waterfall([
+        waterfallCallback=> {//根据composeId获取compose信息
+            getComposeByid(composeId, (err, data)=> {
+                waterfallCallback(err, data);
+            });
+        },
+        (data, waterfallCallback)=> {//把compose信息解析成启动参数
+            composeParser(data.composeJson, (startList, createDatas)=> {
+                try {
+                    waterfallCallback(null, data, startList, createDatas);
+                }
+                catch (e) {
+                    waterfallCallback(e);
+                }
+
+            });
+        },
+        (data, startList, createDatas, waterfallCallback)=> {//创建服务，启动容器
+            startByList(data.composeName, startList, createDatas, conflevel, token, (err)=> {
+                waterfallCallback(err);
+            });
+        }
+    ], e=> {
+        if (!e) {
+            callback(null);
+        } else {
+            logger.error(e);
+            callback(e);
+        }
+    });
+}
 
 
-function saveCompose(token, composeName, compose, cb) {
+function getComposeByid(composeId, callback) {
+    composeDao.getComposeByID(composeId)
+        .then(res=> {
+            callback(null, res.compose);
+        })
+        .catch(e=> {
+            callback(e.info);
+        });
+}
+
+/**
+ * 保存compose文件
+ * @param token
+ * @param composeName
+ * @param composeJson
+ * @param cb
+ */
+function saveCompose(token, composeName, composeJson, cb) {
     async.waterfall([
         waterfallCb=> {
             userDao.getIdByToken(token, (err, result)=> {
@@ -113,15 +297,15 @@ function saveCompose(token, composeName, compose, cb) {
             });
         },
         (userId, waterfallCb)=> {
-            let composeJson = {
+            let compose = {
                 id: uuid.v4(),
-                name: composeName,
+                composeName: composeName,
                 ownerid: userId,
-                compose: compose,
+                composeJson: composeJson,
                 createTime: moment().format('YYYY-MM-DD HH:mm:ss'),
                 updateTime: moment().format('YYYY-MM-DD HH:mm:ss')
             };
-            composeDao.saveCompose(composeJson)
+            composeDao.saveCompose(compose)
                 .then(res=> {
                     logger.debug(res);
                     waterfallCb(null);
@@ -156,6 +340,11 @@ function updateCompose() {
         })
 }
 
+/**
+ * 读取compose文件
+ * @param token
+ * @param cb
+ */
 function getCompose(token, cb) {
     async.waterfall([
         waterfallCb=> {
@@ -187,7 +376,33 @@ function getCompose(token, cb) {
 }
 
 
+function composeUp() {
+    let serveConfig = {
+        id: uuid.v4(), // 服务 id
+        owner: "", // 用户 id，通过 token 获取
+        name: req.body.name, // 服务名称
+        image: req.body.image, // 镜像名称
+        imagetag: req.body.imagetag ? req.body.imagetag : "latest", // 镜像版本
+        conflevel: req.body.conflevel, // 配置级别
+        instance: parseInt(req.body.instance, 10), // 实例个数
+        autoscale: req.body.autoscale, // 拓展方式，true表示自动，false表示手动
+        command: req.body.command, // 执行命令
+        env: env,//环境变量
+        network: "", // 网络名（email-name+appname）
+        networkid: "", // 网络 id
+        subdomain: "", // 子域名（email-name+appname）
+        status: 1, // 服务状态，1.启动中，2.运行中，3.停止中，4.已停止,5.启动失败,6.停止失败,7.创建失败
+        createtime: new Date().getTime(), // 创建时间
+        updatetime: new Date().getTime(), // 更新时间
+        address: "-" // 服务地址
+
+    };
+}
+
+
 module.exports = {
     getCompose,
-    saveCompose
+    saveCompose,
+    serverCompose,
+    serverByComposeId
 };

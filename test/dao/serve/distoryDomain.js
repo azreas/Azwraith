@@ -5,7 +5,7 @@
 
 var serveService = require("../../../dao/serve");
 
-var domain = "testdomain";
+var domain = "kai.qiu.emt.app";
 serveService.distoryDomain(domain, function (err, data) {
     console.log("err ---> "+err);
     console.log(data);

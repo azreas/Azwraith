@@ -6,13 +6,13 @@
 //创建容器
 //POST /containers/create
 var rest = require('restler');
-var dockerapitest=require('../../../../../settings').dockerapitest;
-/*var postdata={};
-postdata={
+var dockerapitest = require('../../../../../settings').dockerapitest;
+var postdata = {};
+postdata = {
     "Hostname": "",     //容器名称
     "Domainname": "",   //域名
     "User": "",         //用户
-    "Memory ":5000,     //内存限制 字节
+    "Memory ": 5000,     //内存限制 字节
     "AttachStdin": false,
     "AttachStdout": true,
     "AttachStderr": true,
@@ -62,7 +62,7 @@ postdata={
         "MemorySwappiness": 60,
         "OomKillDisable": false,
         "OomScoreAdj": 500,
-        "PortBindings": { "22/tcp": [{ "HostPort": "11022" }] },
+        "PortBindings": {"22/tcp": [{"HostPort": "11022"}]},
         "PublishAllPorts": false,
         "Privileged": false,
         "ReadonlyRootfs": false,
@@ -73,11 +73,11 @@ postdata={
         "CapAdd": ["NET_ADMIN"],
         "CapDrop": ["MKNOD"],
         "GroupAdd": ["newgroup"],
-        "RestartPolicy": { "Name": "", "MaximumRetryCount": 0 },
+        "RestartPolicy": {"Name": "", "MaximumRetryCount": 0},
         "NetworkMode": "bridge",
         "Devices": [],
         "Ulimits": [{}],
-        "LogConfig": { "Type": "json-file", "Config": {} },
+        "LogConfig": {"Type": "json-file", "Config": {}},
         "SecurityOpt": [],
         "CgroupParent": "",
         "VolumeDriver": "",
@@ -85,38 +85,39 @@ postdata={
     },
     "NetworkingConfig": {
         "EndpointsConfig": {
-            "isolated_nw" : {
+            "isolated_nw": {
                 "IPAMConfig": {
-                    "IPv4Address":"172.20.30.33",
-                    "IPv6Address":"2001:db8:abcd::3033"
+                    "IPv4Address": "172.20.30.33",
+                    "IPv6Address": "2001:db8:abcd::3033"
                 },
-                "Links":["container_1", "container_2"],
-                "Aliases":["server_x", "server_y"]
+                "Links": ["container_1", "container_2"],
+                "Aliases": ["server_x", "server_y"]
             }
         }
     }
-};*/
-var postdata=      {
-    Image: 'tomcat',
-    // "Labels": {
-    //     "interlock.hostname": "test",
-    //     "interlock.domain": "local"
+};
+var postdata = {
+    Image: 'mysql:latest',
+    Env: '',
+    // Labels: {
+    //     'interlock.hostname': 'xzj.332.app',
+    //     'interlock.domain': 'zerocloud.club'
     // },
-    // "ExposedPorts": {
-    //     "8080/tcp": {}
-    // },
-    "HostConfig": {
-        // "PortBindings": { "8080/tcp": [{ "HostPort": "38300" }] },
-        "PublishAllPorts": true,
-        // "MemorySwap":16*1024*1024,
-        // "Memory": 1024*1024*256,
-        "MemoryReservation": 1024*1024*4,
-        "CpuShares":2,
-        "NetworkMode": "ctest-mytomcat105"
+    HostConfig: {
+        Binds: ['/etc/localtime:/etc/localtime:ro'],
+        PublishAllPorts: true,
+        // MemoryReservation: 268435456,
+        // NetworkMode: 'xzj.332.app',
+        // RestartPolicy: {Name: 'always'}
     }
 };
-rest.postJson('http://'+dockerapitest.host+':'+dockerapitest.port+'/containers/create', postdata).on('complete', function(data, response) {
-    console.log(response.statusCode);
+var time1 = new Date().getTime();
+rest.postJson('http://192.168.1.240:3375' + '/containers/create', postdata, {timeout: 5000}).on('timeout', function (ms) {
+    console.log('did not return within ' + ms + ' ms');
+}).on('complete', function (data, response) {
+    var time2 = new Date().getTime();
+    console.log(time2 - time1);
+    // console.log(response.statusCode);
     //console.log(response);
     console.log(data);
 });

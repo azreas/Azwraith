@@ -5,7 +5,7 @@
 
 var userService = require("../../../dao/user");
 
-var token = "792fb33b-14bb-48c0-96a0-75a5fd2a1e40";
+var token = "2160e6c0-1750-11e6-967f-7f975921c00d";
 userService.logout(token, function (err, data) {
     console.log("err ---> "+err);
     console.log(data);
