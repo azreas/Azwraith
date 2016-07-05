@@ -12,7 +12,7 @@ var async = require('async');
  * @param res
  * @param next
  */
-function compose(req, res, next) {
+function composeStart(req, res, next) {
     let composeId = req.body.composeId,
         conflevel = req.body.conflevel,
         token = req.cookies.token;
@@ -99,40 +99,82 @@ function saveCompose(req, res, next) {
     }
 }
 
-function updateCompose() {
-
+function updateCompose(req, res, next) {
+    try {
+        let composeName = req.body.composeName,
+            composeJson = req.body.composeJson,
+            composeId = req.params.id;
+        if (composeName && composeJson && composeId) {
+            let compose = {composeId, composeName, composeJson};
+            compoSeserver.updateComposeById(compose, (err)=> {
+                try {
+                    if (!err) {
+                        res.json({
+                            result: true,
+                            msg: '保存compose成功'
+                        });
+                    } else {
+                        res.json({
+                            result: false,
+                            msg: err
+                        });
+                    }
+                } catch (e) {
+                    logger.info(e);
+                    next(e);
+                }
+            });
+        } else {
+            res.json({
+                result: false,
+                msg: '参数错误'
+            });
+        }
+    } catch (e) {
+        logger.info(e);
+        next(e);
+    }
 }
 
-function deleteCompose() {
-
+function deleteCompose(req, res, next) {
+    let composeId = req.params.composeId;
+    try {
+        if (composeId) {
+            compoSeserver.deleteComposeById(composeId, err=> {
+                try {
+                    if (!err) {
+                        res.json({
+                            result: true,
+                            msg: '保存compose成功'
+                        });
+                    } else {
+                        res.json({
+                            result: false,
+                            msg: err
+                        });
+                    }
+                } catch (e) {
+                    logger.info(e);
+                    next(e);
+                }
+            });
+        } else {
+            res.json({
+                result: false,
+                msg: '参数错误'
+            });
+        }
+    } catch (e) {
+        logger.info(e);
+        next(e);
+    }
 }
 
-function composeUp(req, res, next) {
-
-    let serveConfig = {
-        id: uuid.v4(), // 服务 id
-        owner: "", // 用户 id，通过 token 获取
-        name: req.body.name, // 服务名称
-        image: req.body.image, // 镜像名称
-        imagetag: req.body.imagetag ? req.body.imagetag : "latest", // 镜像版本
-        conflevel: req.body.conflevel, // 配置级别
-        instance: parseInt(req.body.instance, 10), // 实例个数
-        autoscale: req.body.autoscale, // 拓展方式，true表示自动，false表示手动
-        command: req.body.command, // 执行命令
-        env: env,//环境变量
-        network: "", // 网络名（email-name+appname）
-        networkid: "", // 网络 id
-        subdomain: "", // 子域名（email-name+appname）
-        status: 1, // 服务状态，1.启动中，2.运行中，3.停止中，4.已停止,5.启动失败,6.停止失败,7.创建失败
-        createtime: new Date().getTime(), // 创建时间
-        updatetime: new Date().getTime(), // 更新时间
-        address: "-" // 服务地址
-
-    };
-}
 
 module.exports = {
     getCompose,
     saveCompose,
-    compose
+    composeStart,
+    updateCompose,
+    deleteCompose
 };

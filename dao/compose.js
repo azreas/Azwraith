@@ -78,6 +78,11 @@ function deleteComposeById(composeId) {
     });
 }
 
+/**
+ * 根据id修改
+ * @param composeId
+ * @returns {Promise}
+ */
 function getComposeByID(composeId) {
     return new Promise((resolve, reject)=> {
         request.get('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/compose/' + composeId, {json: true}, (error, response, body)=> {

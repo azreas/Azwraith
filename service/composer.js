@@ -14,6 +14,8 @@ var serveService = require('../service/serve');
 var containerService = require('../service/container');
 let moment = require('moment');
 var stringUtil = require('../modules/util/stringUtil');
+
+
 /**
  * 生成服务配置
  * @param serverName
@@ -53,6 +55,16 @@ function generateServeConfig(serverName, userComposeName, createParameter, cb) {
     cb(serveConfig);
 }
 
+/**
+ * 服务创建
+ * @param token
+ * @param network 网络配置
+ * @param serverName  服务别名
+ * @param userComposeName  服务名称
+ * @param createParameter
+ * @param conflevel
+ * @param cb
+ */
 function serverCreate(token, network, serverName, userComposeName, createParameter, conflevel, cb) {
     async.waterfall([
         waterfallCallback=> {//获取服务配置
@@ -72,17 +84,8 @@ function serverCreate(token, network, serverName, userComposeName, createParamet
                     waterfallCallback(err);
                 }
             })
-        },
-        // (serveConfig, waterfallCallback)=> {//根据服务信息启动容器
-        // containerService.composeCreate(serveConfig.id, null, (err)=> {
-        //     if (!err) {
-        //         waterfallCallback(null);
-        //     } else {
-        //         waterfallCallback(err);
-        //     }
-        // });
-        // }
-    ], (err, serveConfig)=> {
+        }
+    ], (err, serveConfig)=> {//根据服务信息启动容器
         if (!err) {
             logger.debug('yes~~~~');
             containerService.composeCreate(serveConfig.id, null, (err)=> {
@@ -101,15 +104,15 @@ function serverCreate(token, network, serverName, userComposeName, createParamet
 }
 
 /**
- *
+ * 根据列表按顺序启动
  * @param composeName
  * @param startList
  * @param createDatas
- * @param conflevel
+ * @param confLevel
  * @param token
  * @param callback
  */
-function startByList(composeName, startList, createDatas, conflevel, token, callback) {
+function startByList(composeName, startList, createDatas, confLevel, token, callback) {
     let startFirst = startList.startFirst,
         startLater = startList.startLater,
         suffix = stringUtil.randomString(5);
@@ -166,7 +169,7 @@ function startByList(composeName, startList, createDatas, conflevel, token, call
                 let createParameter = createDatas.get(serverName);
                 let userComposeName = composeName + '-' + serverName + '-' + suffix;//服务名
                 createParameter = _.defaultsDeep(createParameter, network.config);
-                serverCreate(token, network, serverName, userComposeName, createParameter, conflevel, err=> {
+                serverCreate(token, network, serverName, userComposeName, createParameter, confLevel, err=> {
                     if (!err) {
                         waterfallCallback(null, network);
                     } else {
@@ -181,7 +184,7 @@ function startByList(composeName, startList, createDatas, conflevel, token, call
                     let createParameter = createDatas.get(serverName);
                     let userComposeName = composeName + '-' + serverName + '-' + suffix;//服务名
                     createParameter = _.defaultsDeep(createParameter, network.config);
-                    serverCreate(token, network, serverName, userComposeName, createParameter, conflevel, err=> {
+                    serverCreate(token, network, serverName, userComposeName, createParameter, confLevel, err=> {
                         if (!err) {
                             waterfallCallback(null);
                         } else {
@@ -209,14 +212,14 @@ function startByList(composeName, startList, createDatas, conflevel, token, call
  * @param composeName
  * @param composeJson
  * @param token
- * @param conflevel
+ * @param confLevel
  * @param callback
  */
-function serverCompose(composeName, composeJson, token, conflevel, callback) {
+function composeStart(composeName, composeJson, token, confLevel, callback) {
     try {
         composeParser(composeJson, (startList, createDatas)=> {
             try {
-                startByList(composeName, startList, createDatas, conflevel, token, callback);
+                startByList(composeName, startList, createDatas, confLevel, token, callback);
             } catch (e) {
                 logger.info(e);
             }
@@ -229,14 +232,14 @@ function serverCompose(composeName, composeJson, token, conflevel, callback) {
 /**
  * 根据composeId从数据库取出数据创建服务
  * @param composeId
- * @param conflevel
+ * @param confLevel
  * @param token
  * @param callback
  */
-function serverByComposeId(composeId, conflevel, token, callback) {
+function serverByComposeId(composeId, confLevel, token, callback) {
     async.waterfall([
         waterfallCallback=> {//根据composeId获取compose信息
-            getComposeByid(composeId, (err, data)=> {
+            getComposeById(composeId, (err, data)=> {
                 waterfallCallback(err, data);
             });
         },
@@ -252,7 +255,7 @@ function serverByComposeId(composeId, conflevel, token, callback) {
             });
         },
         (data, startList, createDatas, waterfallCallback)=> {//创建服务，启动容器
-            startByList(data.composeName, startList, createDatas, conflevel, token, (err)=> {
+            startByList(data.composeName, startList, createDatas, confLevel, token, (err)=> {
                 waterfallCallback(err);
             });
         }
@@ -266,8 +269,12 @@ function serverByComposeId(composeId, conflevel, token, callback) {
     });
 }
 
-
-function getComposeByid(composeId, callback) {
+/**
+ * 根据id读取compose详情
+ * @param composeId
+ * @param callback
+ */
+function getComposeById(composeId, callback) {
     composeDao.getComposeByID(composeId)
         .then(res=> {
             callback(null, res.compose);
@@ -324,18 +331,42 @@ function saveCompose(token, composeName, composeJson, cb) {
     });
 }
 
-function updateCompose() {
-
+/**
+ * 根据compose id 修改compose
+ *
+ * @param newCompose ={composeId , composeName , composeJson}
+ *
+ * @param callback
+ */
+function updateComposeById(newCompose, callback) {
     async.waterfall([
             waterfallCb=> {
-
+                composeDao.getComposeByID(newCompose.composeId)
+                    .then(data=> {
+                        waterfallCb(null, data.compose);
+                    })
+                    .catch(e=> {
+                        waterfallCb(e);
+                    });
             },
-            waterfallCb=> {
-
+            (oldCompose, waterfallCb)=> {
+                oldCompose.composeName = newCompose.composeName;
+                oldCompose.composeJson = newCompose.composeJson;
+                composeDao.updateCompose(oldCompose)
+                    .then(data=> {
+                        logger.debug(data);
+                        waterfallCb(null);
+                    })
+                    .catch(e=> {
+                        waterfallCb(e);
+                    });
             }
         ],
         err=> {
-
+            if (!err) {
+                callback(null);
+            }
+            callback(err);
         })
 }
 
@@ -374,34 +405,28 @@ function getCompose(token, cb) {
     })
 }
 
-
-function composeUp() {
-    let serveConfig = {
-        id: uuid.v4(), // 服务 id
-        owner: "", // 用户 id，通过 token 获取
-        name: req.body.name, // 服务名称
-        image: req.body.image, // 镜像名称
-        imagetag: req.body.imagetag ? req.body.imagetag : "latest", // 镜像版本
-        conflevel: req.body.conflevel, // 配置级别
-        instance: parseInt(req.body.instance, 10), // 实例个数
-        autoscale: req.body.autoscale, // 拓展方式，true表示自动，false表示手动
-        command: req.body.command, // 执行命令
-        env: env,//环境变量
-        network: "", // 网络名（email-name+appname）
-        networkid: "", // 网络 id
-        subdomain: "", // 子域名（email-name+appname）
-        status: 1, // 服务状态，1.启动中，2.运行中，3.停止中，4.已停止,5.启动失败,6.停止失败,7.创建失败
-        createtime: new Date().getTime(), // 创建时间
-        updatetime: new Date().getTime(), // 更新时间
-        address: "-" // 服务地址
-
-    };
+/**
+ * 根据id删除compose
+ * @param composeId
+ * @param callback
+ */
+function deleteComposeById(composeId, callback) {
+    composeDao.deleteComposeById(composeId)
+        .then(data=> {
+            logger.debug(data);
+            callback(null);
+        })
+        .catch(e=> {
+            callback(e);
+        })
 }
 
 
 module.exports = {
     getCompose,
     saveCompose,
-    serverCompose,
-    serverByComposeId
+    updateComposeById,
+    composeStart,
+    serverByComposeId,
+    deleteComposeById
 };
