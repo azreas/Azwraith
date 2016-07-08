@@ -7,7 +7,7 @@ let docker = require('../dao/docker');
 let async = require('async');
 let _ = require('lodash');
 let userDao = require('../dao/user');
-let composeDao = require('../dao/compose');
+let composeDao = require('../dao/composer');
 let uuid = require('node-uuid');
 let logger = require("../modules/log/log").logger();
 var serveService = require('../service/serve');
@@ -367,7 +367,7 @@ function updateComposeById(newCompose, callback) {
                 callback(null);
             }
             callback(err);
-        })
+        });
 }
 
 /**
@@ -402,7 +402,7 @@ function getCompose(token, cb) {
         } else {
             cb(err);
         }
-    })
+    });
 }
 
 /**
@@ -418,9 +418,19 @@ function deleteComposeById(composeId, callback) {
         })
         .catch(e=> {
             callback(e);
-        })
+        });
 }
 
+function getpublicCompose(callback) {
+    composeDao.getPublicCompose()
+        .then(data=> {
+            logger.debug(data);
+            callback(null);
+        })
+        .catch(e=> {
+            callback(e);
+        });
+}
 
 module.exports = {
     getCompose,
@@ -428,5 +438,6 @@ module.exports = {
     updateComposeById,
     composeStart,
     serverByComposeId,
-    deleteComposeById
+    deleteComposeById,
+    getpublicCompose
 };

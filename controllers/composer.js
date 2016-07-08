@@ -170,11 +170,39 @@ function deleteCompose(req, res, next) {
     }
 }
 
+function getPublicCompose(req, res, next) {
+    try {
+        compoSeserver.getpublicCompose((err, publicCompose)=> {
+            try {
+                if (!err) {
+                    res.json({
+                        result: true,
+                        msg: '获取公有编排成功',
+                        data: publicCompose
+                    });
+                } else {
+                    res.json({
+                        result: false,
+                        msg: err
+                    });
+                }
+            } catch (e) {
+                logger.info(e);
+                next(e);
+            }
+        })
+    } catch (e) {
+        logger.info(e);
+        next(e);
+    }
+}
+
 
 module.exports = {
     getCompose,
     saveCompose,
     composeStart,
     updateCompose,
-    deleteCompose
+    deleteCompose,
+    getPublicCompose
 };

@@ -14,6 +14,9 @@ module.exports = function (app) {
     //根据用户获取编排列表
     router.get('/list', composer.getCompose);
 
+    //获取公有编排
+    router.get('/list', composer.getPublicCompose);
+
     //保存编排
     router.post('/save', composer.saveCompose);
 

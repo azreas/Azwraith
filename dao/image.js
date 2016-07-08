@@ -52,7 +52,8 @@ exports.inspect = function (imagesName, callback) {
 
 /**
  * 从DockerHub 拉取镜像
- * @param imagesName
+ * @param imageName
+ * @param tag
  * @param callback(err,data)  err: 1-拉取失败
  */
 exports.pullImage = function (imageName, tag, callback) {
@@ -108,8 +109,8 @@ exports.pullImage = function (imageName, tag, callback) {
 
 /**
  * 镜像构建DAO层，连接服务器并执行命令
- * @param server
- * @param commandArray
+ * @param commands
+ * @param callback
  */
 exports.buildImage = function (commands, callback) {
     var err = null;
@@ -213,7 +214,7 @@ exports.updateBuildImage = function (buildImage, callback) {
 
 /**
  * 数据取出镜像信息
- * @param buildImageId
+ * @param userId
  * @param callback
  */
 exports.getBuildImageByUserId = function (userId, callback) {
@@ -278,17 +279,6 @@ exports.tag = function (imageName, tag, callback) {
  * @param callback
  */
 exports.push = function (imageName, callback) {
-    // rest.postJson('http://' + buildService.host + ':' + buildService.port + '/images/' + imageName + '/push', {"tag": "latest"}).on('complete', function (data, response) {
-    //     try {
-    //         if (response.statusCode !== 200) {
-    //             throw new Error(response.statusCode);
-    //         }
-    //     } catch (e) {
-    //         return callback(e.message, data);
-    //     }
-    //     return callback(null, data);
-    // });
-
     var options = {
         hostname: buildService.host,
         port: buildService.docker_port,
@@ -298,7 +288,7 @@ exports.push = function (imageName, callback) {
             'X-Registry-Auth': {
                 "username": "",
                 "password": "",
-                "email": "",
+                "email": ""
             }
         }
     };

@@ -120,7 +120,7 @@ exports.buildImage = function (req, res, next) {
             imageDao.updateBuildImage(buildImage, function (err, data) {
                 if (!err) {
                     //res.redirect('/create/2');
-                    logger.info("build success >>>>>>>>>>>>>>");
+                    logger.debug("build success >>>>>>>>>>>>>>");
                 } else {
                     //res.render('build',{});
                     logger.info(err);
@@ -166,6 +166,12 @@ exports.getBuildImage = function (req, res, next) {
     }
 };
 
+/**
+ * 从数据库删除已构建的镜像
+ * @param req
+ * @param res
+ * @param next
+ */
 exports.delBuildImage = function (req, res, next) {
     try {
         imageService.deleteBuildImage(req.params.imageId, function (err, data) {

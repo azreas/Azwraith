@@ -99,10 +99,28 @@ function getComposeByID(composeId) {
     });
 }
 
+function getPublicCompose() {
+    return new Promise((resolve, reject)=> {
+        request.get('http://' + dockerservice.host + ':' + dockerservice.port + '/v1/compose/public', {json: true}, (error, response, body)=> {
+            if (!error) {
+                if (body.result === true) {
+                    resolve(body.data);
+                } else {
+                    reject(body);
+                }
+            } else {
+                reject(error);
+            }
+        });
+    });
+}
+
+
 module.exports = {
     getComposeByUserId,
     saveCompose,
     updateCompose,
     deleteComposeById,
-    getComposeByID
+    getComposeByID,
+    getPublicCompose
 };

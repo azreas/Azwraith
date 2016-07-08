@@ -24,7 +24,6 @@ exports.listByCondition = function (condition, callback) {
         queryParameters += 'label=' + condition.label;
     }
     return imageDao.list(queryParameters, callback);
-    // TODO
 };
 
 
@@ -32,9 +31,11 @@ exports.listByCondition = function (condition, callback) {
  * 构建镜像
  * @param imageName
  * @param gitAddress
+ * @param dockerfilePath dockerfile路径
  * @param callback
  */
 exports.buildImage = function (imageName, gitAddress, dockerfilePath, callback) {
+    //shell命令
     var commands = [
         'mkdir /imageBuild',
         'cd "$_"',
@@ -86,7 +87,7 @@ exports.pushImageOnPublicRegistry = function (imageName, tag, callback) {
  * @param callback
  */
 exports.deleteBuildImage = function (imageId, callback) {
-//TODO仅清除了数据库，没有物理删除
+    // TODO  仅清除了数据库，没有物理删除
     imageDao.delBuildImageById(imageId, function (err, data) {
         return callback(err, data);
     });
