@@ -3,9 +3,9 @@
  */
 var userService = require("../../../dao/user");
 
-var id = "be4c4c50-172c-11e6-a1cc-27b85716e397";
-userService.getIdByToken(id, function (err, data) {
-    console.log("err ---> "+err);
+var token = "1b992c40-4714-11e6-8e7a-a1e76559a1f7";
+userService.getIdByToken(token, function (err, data) {
+    console.log("err ---> " + err);
     console.log(data);
     console.log(data.info);
 });

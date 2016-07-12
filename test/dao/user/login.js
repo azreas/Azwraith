@@ -8,8 +8,8 @@ var userService = require("../../../dao/user");
 
 var user = {
     account : {
-        email:"hechangtest@163.com",
-        password:"hechang"
+        email:"xzj@163.com",
+        password:"zxc123"
     }
 };
 userService.login(user, function (err, data) {

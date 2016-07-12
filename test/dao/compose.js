@@ -1,7 +1,7 @@
 /**
  * Created by xzj on 2016/6/28 0028.
  */
-let composeDao = require('../../dao/compose');
+let composeDao = require('../../dao/composer');
 let uuid = require('node-uuid');
 let composeId = uuid.v4();
 let userId = 'test';
@@ -41,7 +41,7 @@ composeDao.saveCompose(composeJson)
         return composeDao.updateCompose(composeJson);
     })
     .then(res=> {
-        console.log('updateCompose', res);
+        console.log('updateComposeById', res);
         return composeDao.deleteComposeById(composeId);
     })
     .then(res=> {
